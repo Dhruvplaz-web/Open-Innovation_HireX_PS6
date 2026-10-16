@@ -1,5 +1,5 @@
 /**
- * SkillBridge AI Proctoring Subsystem — Production Configuration & Types
+ * HireX AI Proctoring Subsystem — Production Configuration & Types
  */
 
 export interface ProctorConfig {

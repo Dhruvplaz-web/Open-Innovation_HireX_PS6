@@ -1,5 +1,5 @@
 """
-SkillBridge: Master Architecture, Unified Ecosystem & Closed-Loop Integration Dossier
+HireX: Master Architecture, Unified Ecosystem & Closed-Loop Integration Dossier
 Generates a publication-grade PDF documenting all platform systems, features,
 the four roles (Student, Academician, Recruiter, Admin), the central core engine
 (Assess -> Verify -> Match), the 7-stage journey, and the complete closed-loop learning
@@ -64,14 +64,14 @@ class NumberedCanvas(canvas.Canvas):
         
         self.setFont("Helvetica", 7.5)
         self.setFillColor(colors.HexColor("#64748B"))
-        self.drawString(36, 20, "SkillBridge Sovereign Architecture | Bridge Skills to Opportunities | Production Release v1.1")
+        self.drawString(36, 20, "HireX Sovereign Architecture | Bridge Skills to Opportunities | Production Release v1.1")
         
         page_str = f"Page {self._pageNumber} of {page_count}"
         self.drawRightString(page_w - 36, 20, page_str)
         self.restoreState()
 
 
-def build_pdf(filename="SkillBridge_Master_Integration_Dossier.pdf"):
+def build_pdf(filename="HireX_Master_Integration_Dossier.pdf"):
     doc = SimpleDocTemplate(
         filename,
         pagesize=A4,
@@ -241,9 +241,9 @@ def build_pdf(filename="SkillBridge_Master_Integration_Dossier.pdf"):
     elements.append(HRFlowable(width="100%", thickness=1.2, color=C_PRIMARY, spaceBefore=1, spaceAfter=6))
     
     p_core = (
-        "<b>SkillBridge</b> is built upon the foundational axiom: <i>'Four Roles, One Shared Skill Record'</i>. "
+        "<b>HireX</b> is built upon the foundational axiom: <i>'Four Roles, One Shared Skill Record'</i>. "
         "Unlike legacy placement portals (e.g. Superset, Unstop, or standard job boards) where Students, Academicians, "
-        "and Recruiters operate in disconnected data silos with divergent, unverified resumes, SkillBridge unites all "
+        "and Recruiters operate in disconnected data silos with divergent, unverified resumes, HireX unites all "
         "four stakeholders around a centralized, authoritative core engine: <b>ASSESS → VERIFY → MATCH</b>."
     )
     elements.append(Paragraph(p_core, body_style))
@@ -300,8 +300,8 @@ def build_pdf(filename="SkillBridge_Master_Integration_Dossier.pdf"):
     elements.append(HRFlowable(width="100%", thickness=1.2, color=C_PRIMARY, spaceBefore=1, spaceAfter=6))
 
     p_loop_desc = (
-        "The core innovation of SkillBridge is the <b>Continuous Closed-Loop Learning Ecosystem</b>. "
-        "Traditional platforms treat assessment and placement as a static, one-way street. In SkillBridge, "
+        "The core innovation of HireX is the <b>Continuous Closed-Loop Learning Ecosystem</b>. "
+        "Traditional platforms treat assessment and placement as a static, one-way street. In HireX, "
         "every assessment gap feeds into academic intelligence, which triggers targeted remediation, "
         "enabling student reassessment that immediately updates AI matching for newly unlocked opportunities."
     )
@@ -383,7 +383,7 @@ def build_pdf(filename="SkillBridge_Master_Integration_Dossier.pdf"):
     # =========================================================================
     # SECTION 3: THE SEVEN-STAGE SKILLBRIDGE JOURNEY
     # =========================================================================
-    elements.append(Paragraph("3. The Seven-Stage SkillBridge Journey", h1_style))
+    elements.append(Paragraph("3. The Seven-Stage HireX Journey", h1_style))
     elements.append(HRFlowable(width="100%", thickness=1.2, color=C_PRIMARY, spaceBefore=1, spaceAfter=6))
 
     stages_data = [
@@ -624,7 +624,7 @@ def build_pdf(filename="SkillBridge_Master_Integration_Dossier.pdf"):
     signoff_data = [
         [
             Paragraph("<b>Ecosystem Certification:</b> All 4 roles (Student, Academician, Recruiter, Admin) operate seamlessly on the single Shared Skill Record. Zero broken links. Full closed loop operational.", ParagraphStyle('Signoff', fontName='Helvetica-Bold', fontSize=8, leading=11, textColor=C_DARK)),
-            Paragraph("<b>SkillBridge Engineering Core</b><br/>Verified & Production Ready", ParagraphStyle('SignoffR', fontName='Helvetica', fontSize=7.5, leading=10, textColor=C_MUTED, alignment=2))
+            Paragraph("<b>HireX Engineering Core</b><br/>Verified & Production Ready", ParagraphStyle('SignoffR', fontName='Helvetica', fontSize=7.5, leading=10, textColor=C_MUTED, alignment=2))
         ]
     ]
     t_signoff = Table(signoff_data, colWidths=[380, 143])
@@ -637,10 +637,10 @@ def build_pdf(filename="SkillBridge_Master_Integration_Dossier.pdf"):
     elements.append(t_signoff)
 
     doc.build(elements, canvasmaker=NumberedCanvas)
-    print(f"[SUCCESS] SkillBridge Master Integration Dossier built successfully: {filename}")
+    print(f"[SUCCESS] HireX Master Integration Dossier built successfully: {filename}")
 
 if __name__ == "__main__":
-    out_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "SkillBridge_Master_Integration_Dossier.pdf"))
+    out_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "HireX_Master_Integration_Dossier.pdf"))
     if len(sys.argv) > 1:
         out_path = sys.argv[1]
     build_pdf(out_path)

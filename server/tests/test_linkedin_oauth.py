@@ -105,7 +105,7 @@ def test_linkedin_callback_user_cancelled():
 def test_linkedin_connect_correlation_and_audit():
     """
     Verify successful OAuth connection:
-    - Attaches to existing SkillBridge student account (no duplicate user created)
+    - Attaches to existing HireX student account (no duplicate user created)
     - Retrieves permitted fields (sub, name, email, email_verified)
     - Records audit log
     """
@@ -178,7 +178,7 @@ def test_linkedin_disconnect():
 
 def test_skill_extraction_evidence_sources_hierarchy():
     """
-    Verify SkillBridge Evidence System:
+    Verify HireX Evidence System:
     Skill
     ├── source: RESUME
     ├── source: GITHUB

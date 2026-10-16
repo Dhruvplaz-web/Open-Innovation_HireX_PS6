@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routes import student, recruiter, academician, admin, auth, ai_agent, assessments, aptitude, code_lab, resume, projects, linkedin
+from app.routes import student, recruiter, academician, admin, auth, ai_agent, assessments, aptitude, code_lab, resume, projects, linkedin, sync
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -31,6 +31,7 @@ app.include_router(assessments.router)
 app.include_router(aptitude.router)
 app.include_router(code_lab.router)
 app.include_router(resume.router)
+app.include_router(sync.router)
 
 @app.get("/")
 def root():

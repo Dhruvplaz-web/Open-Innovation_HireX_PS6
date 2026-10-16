@@ -1,5 +1,5 @@
 /**
- * SkillBridge AI Proctoring Subsystem — Temporal Violation Engine (Phase 13 & 14)
+ * HireX AI Proctoring Subsystem — Temporal Violation Engine (Phase 13 & 14)
  * Consumes raw computer vision signals, enforces temporal grace windows, applies hysteresis & cooldowns,
  * and manages event lifecycles (PENDING -> CONFIRMED -> ACTIVE -> ENDED).
  */

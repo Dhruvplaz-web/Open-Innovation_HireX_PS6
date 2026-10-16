@@ -74,7 +74,7 @@ export const App: React.FC = () => {
 
   // Role state: 'student' | 'recruiter' | 'academician' | 'admin'
   const [currentRole, setCurrentRole] = useState<Role>(() => {
-    return (localStorage.getItem('skillbridge_auth_role') as Role) || 'student';
+    return (localStorage.getItem('hirex_auth_role') as Role) || 'student';
   });
 
   // Active navigation tab (Default to 'landing' if user has no saved role session and is on root path)
@@ -180,12 +180,12 @@ export const App: React.FC = () => {
 
   const handleEnterRoleFromLanding = (role: Role) => {
     setCurrentRole(role);
-    localStorage.setItem('skillbridge_auth_role', role);
+    localStorage.setItem('hirex_auth_role', role);
     handleNavigateTab('dashboard');
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem('skillbridge_auth_role');
+    localStorage.removeItem('hirex_auth_role');
     handleNavigateTab('landing');
   };
 
@@ -196,7 +196,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (userProfile) {
       setCurrentRole(userProfile.role);
-      localStorage.setItem('skillbridge_auth_role', userProfile.role);
+      localStorage.setItem('hirex_auth_role', userProfile.role);
       if (userProfile.role === 'student') {
         setStudent(prev => ({
           ...prev,

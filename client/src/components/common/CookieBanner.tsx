@@ -19,7 +19,7 @@ export const CookieBanner: React.FC<CookieBannerProps> = ({ openLegalModal }) =>
 
   useEffect(() => {
     // Check existing stored consent
-    const stored = localStorage.getItem('skillbridge_cookie_consent');
+    const stored = localStorage.getItem('hirex_cookie_consent');
     if (!stored) {
       const timer = setTimeout(() => setShowBanner(true), 800);
       return () => clearTimeout(timer);
@@ -36,7 +36,7 @@ export const CookieBanner: React.FC<CookieBannerProps> = ({ openLegalModal }) =>
 
     // Global listener for "Manage Cookie Preferences" links from footer
     const handleOpenPreferences = () => {
-      const currentStored = localStorage.getItem('skillbridge_cookie_consent');
+      const currentStored = localStorage.getItem('hirex_cookie_consent');
       if (currentStored) {
         try {
           const parsed = JSON.parse(currentStored) as CookieConsentState;
@@ -56,7 +56,7 @@ export const CookieBanner: React.FC<CookieBannerProps> = ({ openLegalModal }) =>
       analytics: analyticsChoice,
       timestamp: new Date().toISOString()
     };
-    localStorage.setItem('skillbridge_cookie_consent', JSON.stringify(consent));
+    localStorage.setItem('hirex_cookie_consent', JSON.stringify(consent));
     setShowBanner(false);
     setShowPreferences(false);
 
@@ -139,7 +139,7 @@ export const CookieBanner: React.FC<CookieBannerProps> = ({ openLegalModal }) =>
               Cookie Preferences
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Select which cookie categories you permit SkillBridge to utilize on your device.
+              Select which cookie categories you permit HireX to utilize on your device.
             </p>
 
             <div className="mt-5 space-y-3">

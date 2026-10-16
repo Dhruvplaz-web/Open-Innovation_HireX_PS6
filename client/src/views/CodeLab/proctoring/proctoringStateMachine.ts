@@ -1,5 +1,5 @@
 /**
- * SkillBridge AI Proctoring Subsystem — Explicit State Machine (Phase 1)
+ * HireX AI Proctoring Subsystem — Explicit State Machine (Phase 1)
  * Centralizes proctoring state transitions with strict lifecycle enforcement.
  */
 

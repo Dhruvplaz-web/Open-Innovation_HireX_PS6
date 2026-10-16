@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Bell, LogOut } from 'lucide-react';
 import { Role } from '../../types';
-import { HireXLogo } from '../common/HireXLogo';
 
 interface TopNavBarProps {
   currentRole?: Role;
@@ -67,15 +66,15 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
 
   return (
     <header className="w-full flex items-center justify-between py-3 px-4 md:px-8 shrink-0 bg-porcelain-100/80 dark:bg-porcelain-950/80 backdrop-blur-sm z-20 border-b border-slate-200/50 dark:border-slate-800/50">
-      {/* Brand Title with Live Status & HireX Logo */}
+      {/* Brand Title with Live Status */}
       <div 
         onClick={() => setActiveTab('dashboard')}
         className="flex items-center gap-3 cursor-pointer group select-none"
       >
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <HireXLogo size="md" />
-        </div>
+        <span className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          HireX
+        </span>
         <span className="hidden sm:inline-block text-xs font-semibold text-slate-500 dark:text-slate-400 border-l border-slate-300 dark:border-slate-700 pl-3">
           {getBreadcrumbTitle()}
         </span>

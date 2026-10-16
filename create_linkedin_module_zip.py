@@ -1,5 +1,5 @@
 """
-Script to package the SkillBridge LinkedIn OAuth 2.0 / OpenID Connect module
+Script to package the HireX LinkedIn OAuth 2.0 / OpenID Connect module
 into a self-contained, drop-in zip file with an intelligent patch installer.
 """
 
@@ -8,7 +8,7 @@ import shutil
 import zipfile
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-ZIP_OUTPUT = os.path.join(BASE_DIR, "SkillBridge_LinkedIn_OAuth_Module.zip")
+ZIP_OUTPUT = os.path.join(BASE_DIR, "HireX_LinkedIn_OAuth_Module.zip")
 STAGING_DIR = os.path.join(BASE_DIR, "_staging_linkedin_module")
 
 # Clean staging dir
@@ -48,8 +48,8 @@ for src_rel, dst_rel in files_to_copy:
 # 2. Create the standalone auto-patch installer script inside staging
 installer_script = '''#!/usr/bin/env python3
 """
-SkillBridge LinkedIn OAuth 2.0 / OpenID Connect Intelligent Patch Installer.
-Safely integrates the LinkedIn module into any PC running SkillBridge:
+HireX LinkedIn OAuth 2.0 / OpenID Connect Intelligent Patch Installer.
+Safely integrates the LinkedIn module into any PC running HireX:
 - Detects project root automatically (whether run from root or unzipped folder).
 - Backs up existing files (.bak) before modifying.
 - Idempotent and non-destructive: intelligently injects router, config, types, and endpoints
@@ -64,7 +64,7 @@ import subprocess
 import re
 
 def log(msg):
-    print(f"[SkillBridge LinkedIn Installer] {msg}")
+    print(f"[HireX LinkedIn Installer] {msg}")
 
 def find_project_root():
     # 1. Check current working directory
@@ -109,11 +109,11 @@ def patch_file(path, check_str, patch_fn):
 def main():
     root_dir = find_project_root()
     if not root_dir:
-        print("[ERROR] Could not find SkillBridge project root (must contain 'server' and 'client' directories).")
+        print("[ERROR] Could not find HireX project root (must contain 'server' and 'client' directories).")
         print("Please run this script from the project root or specify the target folder.")
         sys.exit(1)
 
-    log(f"Target SkillBridge project root identified: {root_dir}")
+    log(f"Target HireX project root identified: {root_dir}")
     source_dir = os.path.abspath(os.path.dirname(__file__))
 
     # 1. Copy Standalone LinkedIn Modules
@@ -256,9 +256,9 @@ with open(os.path.join(STAGING_DIR, "apply_linkedin_patch.py"), "w", encoding="u
     f.write(installer_script)
 
 # 3. Create comprehensive README in staging
-readme_content = '''# SkillBridge: Official LinkedIn OAuth 2.0 / OpenID Connect Module
+readme_content = '''# HireX: Official LinkedIn OAuth 2.0 / OpenID Connect Module
 
-This package contains the complete, production-ready, official **LinkedIn OAuth 2.0 / OpenID Connect (OIDC)** module for the SkillBridge application.
+This package contains the complete, production-ready, official **LinkedIn OAuth 2.0 / OpenID Connect (OIDC)** module for the HireX application.
 
 ---
 
@@ -274,7 +274,7 @@ This package contains the complete, production-ready, official **LinkedIn OAuth 
   - `GET /api/auth/linkedin/authorize`: Generates cryptographic state and official LinkedIn authorization URL with scopes `openid profile email`. Enforces HTTPS in production.
   - `GET /api/auth/linkedin/callback`: Validates CSRF state, securely exchanges authorization code on backend (`POST https://www.linkedin.com/oauth/v2/accessToken`), decodes & validates ID token claims (`iss`, `aud`, `exp`), retrieves userinfo from `https://api.linkedin.com/v2/userinfo`, prevents duplicate account collisions across students, encrypts access token, associates with existing student ID, records immutable audit trail (`log_audit_trail`), and redirects back to frontend.
   - `GET /api/auth/linkedin/status`: Returns real-time connection status, public profile info, last sync timestamp, and explicit disclosure of unavailable permission fields.
-  - `POST /api/auth/linkedin/disconnect`: Revokes SkillBridge connection state, stops future sync, clears encrypted tokens, and logs audit trail.
+  - `POST /api/auth/linkedin/disconnect`: Revokes HireX connection state, stops future sync, clears encrypted tokens, and logs audit trail.
   - `POST /api/auth/linkedin/simulate-callback`: Deterministic local sandbox endpoint for automated testing without live LinkedIn credentials.
 - `server/app/main.py`: Router registration for `linkedin.router`.
 - `server/app/config.py`: OAuth configuration constants and environment variables.
@@ -294,7 +294,7 @@ This package contains the complete, production-ready, official **LinkedIn OAuth 
 
 ## 🚀 Quick 1-Click Installation (Any Other PC)
 
-1. Unzip `SkillBridge_LinkedIn_OAuth_Module.zip` directly into the SkillBridge root folder of the target PC (overwrite/merge files).
+1. Unzip `HireX_LinkedIn_OAuth_Module.zip` directly into the HireX root folder of the target PC (overwrite/merge files).
 2. Run the automated patch validator:
    ```bash
    python apply_linkedin_patch.py
@@ -344,7 +344,7 @@ print(f"File size: {os.path.getsize(ZIP_OUTPUT)} bytes")
 # Also copy to parent directory if applicable
 parent_dir = os.path.dirname(BASE_DIR)
 if os.path.exists(parent_dir) and parent_dir != BASE_DIR:
-    parent_zip = os.path.join(parent_dir, "SkillBridge_LinkedIn_OAuth_Module.zip")
+    parent_zip = os.path.join(parent_dir, "HireX_LinkedIn_OAuth_Module.zip")
     try:
         shutil.copy2(ZIP_OUTPUT, parent_zip)
         print(f"[SUCCESS] Also copied to workspace root: {parent_zip}")

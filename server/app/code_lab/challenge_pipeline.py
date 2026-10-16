@@ -1,5 +1,5 @@
 """
-SkillBridge Code Lab 2.0 - Automated Challenge Validation & Ingestion Pipeline
+HireX Code Lab 2.0 - Automated Challenge Validation & Ingestion Pipeline
 Implements Section 31 of Code Lab 2.0 Specification:
 1. AI Generation / Input Schema Validation
 2. Reference Solution Execution & Self-Test Verification

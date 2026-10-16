@@ -97,7 +97,7 @@ export const CookiePolicyView: React.FC<CookiePolicyViewProps> = ({ onNavigateTa
                 These cookies are required for platform security and navigation. They maintain Firebase authentication state, protect against Cross-Site Request Forgery (CSRF), and verify whether a student or recruiter session is valid. The platform cannot function securely without these cookies.
               </p>
               <div className="text-[10px] font-mono text-slate-400 bg-slate-50 dark:bg-slate-900/40 p-2 rounded-lg">
-                Examples: <code>__session</code>, <code>firebase:authUser</code>, <code>skillbridge_cookie_consent</code>
+                Examples: <code>__session</code>, <code>firebase:authUser</code>, <code>hirex_cookie_consent</code>
               </div>
             </div>
 

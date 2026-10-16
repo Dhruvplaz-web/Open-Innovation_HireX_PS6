@@ -73,7 +73,7 @@ export const CodeLabView: React.FC = () => {
   const [telemetryTab, setTelemetryTab] = useState<'tests' | 'ast' | 'proof' | 'sql' | 'hints'>('tests');
 
   // Legacy DevProof & QR State
-  const [repoUrl, setRepoUrl] = useState<string>('https://github.com/dhruv-patil/skillbridge-microservices');
+  const [repoUrl, setRepoUrl] = useState<string>('https://github.com/dhruv-patil/hirex-microservices');
   const [isAuditingRepo, setIsAuditingRepo] = useState<boolean>(false);
   const [repoAuditResult, setRepoAuditResult] = useState<any>(null);
   const [qrPayload, setQrPayload] = useState<string>('NPTEL:2026:CS84:DHRUV_PATIL:SHA256:a4f89d31b9e28f110c7e2b74051a96da438fbcd58269e8b15a6b0c20188941cf');

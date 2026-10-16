@@ -23,7 +23,6 @@ import {
 import { Role } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { SEOHead } from '../components/common/SEOHead';
-import { HireXLogo } from '../components/common/HireXLogo';
 
 interface AuthViewProps {
   onEnterRole: (role: Role) => void;
@@ -238,12 +237,27 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
             {/* Top Bar inside Image: Brand Logo (Left) & Back to Website (Right) */}
             <div className="relative z-10 flex items-center justify-between w-full">
-              {/* Brand Logo */}
+              {/* Brand Logo (Matching NMU style in reference image) */}
               <div 
                 onClick={() => onNavigateTab('landing')}
                 className="flex items-center gap-2.5 cursor-pointer group/logo"
               >
-                <HireXLogo size="md" />
+                <div className="w-8 h-8 rounded-xl bg-white text-slate-950 flex items-center justify-center font-bold shadow-md shadow-black/20 group-hover/logo:scale-105 transition">
+                  <svg className="w-4 h-4" viewBox="0 0 64 64" fill="none">
+                    <circle cx="20" cy="42" r="5" fill="#4f46e5"/>
+                    <circle cx="44" cy="42" r="5" fill="#10b981"/>
+                    <circle cx="32" cy="22" r="6" fill="#0f172a"/>
+                    <path d="M20 42 C 24 28, 40 28, 44 42" stroke="#0f172a" strokeWidth="4.5" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-black text-base text-white tracking-wider leading-none">
+                    HireX
+                  </span>
+                  <span className="text-[9px] font-mono text-indigo-300 font-semibold tracking-widest uppercase mt-0.5">
+                    Talent Intel
+                  </span>
+                </div>
               </div>
 
               {/* Back to Website Pill Button (Matching reference top right) */}

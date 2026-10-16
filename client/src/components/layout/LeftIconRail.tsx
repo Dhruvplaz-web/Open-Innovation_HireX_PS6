@@ -1,7 +1,6 @@
 import React from 'react';
 import { Home, Briefcase, Code2, Zap, Award, User, Sun, Moon, Info, ShieldCheck, UserCheck, GraduationCap, Building, FolderGit2, Lock } from 'lucide-react';
 import { Role } from '../../types';
-import { HireXLogo } from '../common/HireXLogo';
 
 interface LeftIconRailProps {
   activeTab: string;
@@ -25,12 +24,16 @@ export const LeftIconRail: React.FC<LeftIconRailProps> = ({
       {/* Top Logo Icon -> Navigates to Landing Page */}
       <div 
         onClick={() => setActiveTab('landing')}
-        title="HireX Platform • Return to Landing Page"
-        className="cursor-pointer hover:scale-105 active:scale-95 transition-all duration-150 group relative"
+        title="HireX Landing Page • JSPM RSCOE"
+        className="w-11 h-11 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center shadow-sm cursor-pointer hover:scale-102 active:scale-98 transition-all duration-150 group relative border border-slate-800 dark:border-slate-200"
       >
-        <HireXLogo size="lg" showText={false} />
-        <span className="absolute left-16 top-1 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-semibold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md border border-slate-800 dark:border-slate-200">
-          HireX • Landing Page
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" />
+          <path d="M2 17l10 5 10-5" />
+          <path d="M2 12l10 5 10-5" />
+        </svg>
+        <span className="absolute left-16 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-semibold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md border border-slate-800 dark:border-slate-200">
+          Return to Landing Page
         </span>
       </div>
 

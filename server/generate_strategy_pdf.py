@@ -1,6 +1,6 @@
 """
-SkillBridge: Strategic Platform Architecture & Competitive Advantage Report Generator
-Generates a publication-grade PDF analyzing SkillBridge vs Superset, Unstop, HackerRank, LinkedIn,
+HireX: Strategic Platform Architecture & Competitive Advantage Report Generator
+Generates a publication-grade PDF analyzing HireX vs Superset, Unstop, HackerRank, LinkedIn,
 its decisive competitive moats, unique plus points, future roadmap expansions, and edge risk mitigations.
 """
 
@@ -65,7 +65,7 @@ class NumberedCanvas(canvas.Canvas):
         self.restoreState()
 
 
-def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
+def build_pdf(filename="HireX_Competitive_Advantage_Report.pdf"):
     pdf_path = os.path.abspath(filename)
     doc = SimpleDocTemplate(
         pdf_path,
@@ -215,14 +215,14 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
     story.append(badge_table)
     story.append(Spacer(1, 4))
 
-    story.append(Paragraph("SkillBridge: Architectural Moat & Comparative Edge Analysis", style_cover_title))
-    story.append(Paragraph("How SkillBridge Disrupts Legacy Campus Placement Software (Superset, Unstop, HackerRank, LinkedIn) via Tripartite Synchronization, AST Code Forensics & Real-Time Curriculum Diagnostics", style_cover_sub))
+    story.append(Paragraph("HireX: Architectural Moat & Comparative Edge Analysis", style_cover_title))
+    story.append(Paragraph("How HireX Disrupts Legacy Campus Placement Software (Superset, Unstop, HackerRank, LinkedIn) via Tripartite Synchronization, AST Code Forensics & Real-Time Curriculum Diagnostics", style_cover_sub))
     story.append(HRFlowable(width="100%", thickness=1.5, color=C_ACCENT, spaceAfter=10))
 
     # Meta bar
     meta_data = [
         [
-            Paragraph("<b>Author:</b> SkillBridge Core Engineering & Product Group", style_callout),
+            Paragraph("<b>Author:</b> HireX Core Engineering & Product Group", style_callout),
             Paragraph("<b>Focus:</b> National Tech Workforce Acceleration", style_callout),
             Paragraph("<b>Date:</b> October 2026", style_callout),
             Paragraph("<b>Scope:</b> Pan-India (SPPU, VTU, IIT, COEP, RSCOE)", style_callout)
@@ -251,7 +251,7 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
         style_body
     ))
     story.append(Paragraph(
-        "<b>SkillBridge solves this at the architectural layer</b>. By creating an autonomous, closed-loop sovereign platform where Students, Recruiters, and Academic Deans collaborate in real time, "
+        "<b>HireX solves this at the architectural layer</b>. By creating an autonomous, closed-loop sovereign platform where Students, Recruiters, and Academic Deans collaborate in real time, "
         "every verified code snippet, assessment score, and credential instantly feeds into an institutional curriculum sync radar and an explainable recruiter candidate-matching engine.",
         style_body
     ))
@@ -260,13 +260,13 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
     # ==================== SECTION 2: COMPETITIVE COMPARISON MATRIX ====================
     story.append(Paragraph("2. Comprehensive Competitive Landscape Matrix", style_h1))
     story.append(Paragraph(
-        "The following matrix benchmarks SkillBridge across 8 operational and technological dimensions against the dominant platforms in campus hiring and coding assessments.",
+        "The following matrix benchmarks HireX across 8 operational and technological dimensions against the dominant platforms in campus hiring and coding assessments.",
         style_body
     ))
 
     matrix_headers = [
         Paragraph("Dimension / Feature", style_table_header),
-        Paragraph("SkillBridge (Ours)", style_table_header),
+        Paragraph("HireX (Ours)", style_table_header),
         Paragraph("Superset (Legacy CRM)", style_table_header),
         Paragraph("Unstop (Contests)", style_table_header),
         Paragraph("HackerRank / LeetCode", style_table_header),
@@ -347,7 +347,7 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('GRID', (0, 0), (-1, -1), 0.5, C_BORDER),
-        ('BACKGROUND', (1, 1), (1, -1), colors.HexColor("#F0FDF4")), # Highlight SkillBridge column
+        ('BACKGROUND', (1, 1), (1, -1), colors.HexColor("#F0FDF4")), # Highlight HireX column
         ('TOPPADDING', (0, 0), (-1, -1), 4),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
         ('LEFTPADDING', (0, 0), (-1, -1), 4),
@@ -357,19 +357,19 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
     story.append(Spacer(1, 12))
 
     # ==================== SECTION 3: DECISIVE COMPETITIVE ADVANTAGES ====================
-    story.append(Paragraph("3. What SkillBridge Has That Gives Us a Decisive Competitive Edge", style_h1))
+    story.append(Paragraph("3. What HireX Has That Gives Us a Decisive Competitive Edge", style_h1))
     
     edges = [
         (
             "Edge 1: The Sovereign Tripartite Ecosystem (Closing the University Loop)",
-            "Every legacy competitor is a two-sided marketplace (Recruiter-to-Student or College-to-Recruiter). SkillBridge is the first platform where "
+            "Every legacy competitor is a two-sided marketplace (Recruiter-to-Student or College-to-Recruiter). HireX is the first platform where "
             "academic leadership (Deans, HODs, TPOs) holds an active, real-time command center. When Barclays or persistent tech companies change their skill requirements "
             "in Bengaluru or Pune, the university curriculum sync score updates instantly, providing HODs with actionable AICTE-compliant module modifications."
         ),
         (
             "Edge 2: AST Static Code Complexity Auditor (Big-O Mathematical Verification)",
             "Traditional platforms evaluate code by executing test cases against stdout/stderr. Candidates exploit this by writing large hardcoded lookup dictionaries "
-            "or cheating using secondary LLM windows. SkillBridge parses the Abstract Syntax Tree (AST) directly into memory: it statically computes Big-O Time Complexity, "
+            "or cheating using secondary LLM windows. HireX parses the Abstract Syntax Tree (AST) directly into memory: it statically computes Big-O Time Complexity, "
             "space allocation, loop nesting depth, and recursion guards, guaranteeing algorithmic integrity before an interview is even scheduled."
         ),
         (
@@ -380,17 +380,17 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
         ),
         (
             "Edge 4: Cryptographic Anti-Tamper Credential Verification (SHA-256 QR)",
-            "With Photoshop and generative AI tools, certificate fraud is at an all-time high in campus drives. SkillBridge validates digital QR verification hashes against "
+            "With Photoshop and generative AI tools, certificate fraud is at an all-time high in campus drives. HireX validates digital QR verification hashes against "
             "institutional accreditation registries (NPTEL/SWAYAM, AWS, Coursera, AICTE), ensuring that claimed certifications possess cryptographic provenance."
         ),
         (
             "Edge 5: Explainable Semantic Vector Job Matcher & Gap Roadmaps",
-            "Unlike legacy ATS systems that discard candidates based on missing keywords or CGPA cutoffs, SkillBridge provides transparent semantic cosine matching. "
+            "Unlike legacy ATS systems that discard candidates based on missing keywords or CGPA cutoffs, HireX provides transparent semantic cosine matching. "
             "If a student matches 88% for a Barclays internship, the system outputs an exact, actionable gap roadmap: 'Mastering Docker (+10%) and CI/CD elevates profile to 98%.'"
         ),
         (
             "Edge 6: Autonomous 6-Tool ReAct Co-Pilot",
-            "SkillBridge incorporates an autonomous agent equipped with 6 production operational tools (Roadmap Generator, Recruiter Candidate Query, Curriculum Gap Auditor, "
+            "HireX incorporates an autonomous agent equipped with 6 production operational tools (Roadmap Generator, Recruiter Candidate Query, Curriculum Gap Auditor, "
             "ATS Scanner, AST Auditor, and Student Scoreboard), allowing users to execute complex multi-step workflows conversationally."
         )
     ]
@@ -408,7 +408,7 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
     usps_data = [
         [
             Paragraph("<b>Core Metric / Metric Moat</b>", style_table_header),
-            Paragraph("<b>SkillBridge Impact</b>", style_table_header),
+            Paragraph("<b>HireX Impact</b>", style_table_header),
             Paragraph("<b>Industry Baseline (Legacy)</b>", style_table_header),
             Paragraph("<b>Strategic Value Proposition</b>", style_table_header)
         ],
@@ -462,7 +462,7 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
     # ==================== SECTION 5: WHAT MORE WE CAN IMPLEMENT ====================
     story.append(Paragraph("5. Future Horizon: What More We Can Implement to Widen the Gap", style_h1))
     story.append(Paragraph(
-        "To transform SkillBridge from a high-performing product into an <b>insurmountable technological monopoly</b> across campus recruitment, "
+        "To transform HireX from a high-performing product into an <b>insurmountable technological monopoly</b> across campus recruitment, "
         "the following 5 high-impact modules should be added to our engineering roadmap:",
         style_body
     ))
@@ -490,7 +490,7 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
         ),
         (
             "4. Sovereign APAAR / DigiLocker & AICTE Blockchain Credential Passport",
-            "<b>Specification:</b> Bind SkillBridge verified competency credentials to the Government of India's APAAR (Automated Permanent Academic Account Registry) "
+            "<b>Specification:</b> Bind HireX verified competency credentials to the Government of India's APAAR (Automated Permanent Academic Account Registry) "
             "and DigiLocker NAD (National Academic Depository). This turns student skill badges into legally verifiable sovereign micro-degrees."
         ),
         (
@@ -510,7 +510,7 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
     # ==================== SECTION 6: EDGE POINTS & VULNERABILITY MITIGATION ====================
     story.append(Paragraph("6. Critical Edge Points, Risks & Defensive Architecture", style_h1))
     story.append(Paragraph(
-        "To ensure sustainable long-term scale and eliminate potential systemic failure modes, SkillBridge incorporates strict engineering safeguards against the following 4 edge hazards:",
+        "To ensure sustainable long-term scale and eliminate potential systemic failure modes, HireX incorporates strict engineering safeguards against the following 4 edge hazards:",
         style_body
     ))
 
@@ -518,7 +518,7 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
         [
             Paragraph("<b>Edge Risk / Hazard</b>", style_table_header),
             Paragraph("<b>Potential Failure Mode</b>", style_table_header),
-            Paragraph("<b>SkillBridge Architectural Mitigation Strategy</b>", style_table_header)
+            Paragraph("<b>HireX Architectural Mitigation Strategy</b>", style_table_header)
         ],
         [
             Paragraph("<b>False Positives in AI Proctoring</b>", style_table_cell_bold),
@@ -538,7 +538,7 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
         [
             Paragraph("<b>Academic Senate Bureaucracy</b>", style_table_cell_bold),
             Paragraph("Universities taking 18–24 months to formally approve syllabus updates recommended by the platform.", style_table_cell),
-            Paragraph("<b>Non-Credit Elective Acceleration Model:</b> SkillBridge packages missing industry modules as 4-week micro-electives and hackathon tracks, allowing rapid rollout without waiting for Board of Studies approval.", style_table_cell)
+            Paragraph("<b>Non-Credit Elective Acceleration Model:</b> HireX packages missing industry modules as 4-week micro-electives and hackathon tracks, allowing rapid rollout without waiting for Board of Studies approval.", style_table_cell)
         ]
     ]
 
@@ -560,9 +560,9 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
     conclusion_box = [
         [
             Paragraph(
-                "<b>CONCLUSION & VERDICT:</b> SkillBridge is fundamentally distinct from transactional quiz tools (HackerRank) or administrative campus CRMs (Superset). "
+                "<b>CONCLUSION & VERDICT:</b> HireX is fundamentally distinct from transactional quiz tools (HackerRank) or administrative campus CRMs (Superset). "
                 "By uniting verified code execution, multi-signal regression scoring, cryptographic credential provenance, and real-time university syllabus updating into a single sovereign engine, "
-                "SkillBridge establishes the definitive next-generation standard for university talent development across India.",
+                "HireX establishes the definitive next-generation standard for university talent development across India.",
                 style_callout
             )
         ]
@@ -584,5 +584,5 @@ def build_pdf(filename="SkillBridge_Competitive_Advantage_Report.pdf"):
     return pdf_path
 
 if __name__ == "__main__":
-    out_file = sys.argv[1] if len(sys.argv) > 1 else "SkillBridge_Competitive_Advantage_Report.pdf"
+    out_file = sys.argv[1] if len(sys.argv) > 1 else "HireX_Competitive_Advantage_Report.pdf"
     build_pdf(out_file)

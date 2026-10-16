@@ -1,5 +1,5 @@
 """
-SkillBridge: Complete Workflow & Technology Stack Specification PDF Generator
+HireX: Complete Workflow & Technology Stack Specification PDF Generator
 Generates a publication-grade, multi-page PDF document detailing:
 1. Architectural Foundation & Core Principles (Four Roles, One Shared Skill Record)
 2. Complete End-to-End Stakeholder Workflows (Student 9-Step, Recruiter, Academician, Admin, Code Lab, Aptitude)
@@ -67,14 +67,14 @@ class NumberedCanvas(canvas.Canvas):
         
         self.setFont("Helvetica", 7.5)
         self.setFillColor(colors.HexColor("#64748B"))
-        self.drawString(36, 20, "SkillBridge Sovereign Architecture | Bridge Skills to Opportunities | CRAFTVERSE Hackathon (PCCOER)")
+        self.drawString(36, 20, "HireX Sovereign Architecture | Bridge Skills to Opportunities | CRAFTVERSE Hackathon (PCCOER)")
         
         page_str = f"Page {self._pageNumber} of {page_count}"
         self.drawRightString(page_w - 36, 20, page_str)
         self.restoreState()
 
 
-def build_pdf(filename="SkillBridge_Workflow_and_Tech_Stack.pdf"):
+def build_pdf(filename="HireX_Workflow_and_Tech_Stack.pdf"):
     doc = SimpleDocTemplate(
         filename,
         pagesize=A4,
@@ -235,9 +235,9 @@ def build_pdf(filename="SkillBridge_Workflow_and_Tech_Stack.pdf"):
     elements.append(HRFlowable(width="100%", thickness=1.2, color=C_PRIMARY, spaceBefore=1, spaceAfter=5))
     
     p_core = (
-        "<b>SkillBridge</b> is built upon the foundational axiom: <i>'Four Roles, One Shared Skill Record'</i>. "
+        "<b>HireX</b> is built upon the foundational axiom: <i>'Four Roles, One Shared Skill Record'</i>. "
         "Unlike legacy placement portals (Superset, Unstop, HackerRank, or LinkedIn) where Students, Academicians, "
-        "and Recruiters operate in disconnected data silos with divergent, unverified resumes, SkillBridge unites all "
+        "and Recruiters operate in disconnected data silos with divergent, unverified resumes, HireX unites all "
         "four stakeholders around a centralized, authoritative core engine: <b>ASSESS ➔ VERIFY ➔ MATCH ➔ REMEDIATE ➔ REASSESS</b>."
     )
     elements.append(Paragraph(p_core, body_style))
@@ -428,7 +428,7 @@ def build_pdf(filename="SkillBridge_Workflow_and_Tech_Stack.pdf"):
     elements.append(HRFlowable(width="100%", thickness=1.2, color=C_PRIMARY, spaceBefore=1, spaceAfter=5))
     
     p_closed_loop = (
-        "Traditional platforms treat assessment and placement as a static, one-way street. In SkillBridge, "
+        "Traditional platforms treat assessment and placement as a static, one-way street. In HireX, "
         "every assessment deficiency feeds into academic cohort intelligence, which triggers institutional mentoring, "
         "enabling student reassessment that immediately updates AI matching for newly unlocked corporate opportunities."
     )
@@ -669,7 +669,7 @@ def build_pdf(filename="SkillBridge_Workflow_and_Tech_Stack.pdf"):
 
 
 if __name__ == "__main__":
-    out_name = "SkillBridge_Workflow_and_Tech_Stack.pdf"
+    out_name = "HireX_Workflow_and_Tech_Stack.pdf"
     if len(sys.argv) > 1:
         out_name = sys.argv[1]
     build_pdf(out_name)

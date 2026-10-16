@@ -13,18 +13,12 @@ import {
   CodeLabOverview
 } from './codeLab.types';
 
-const rawCodeLabApi = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_BASE_URL) ||
-                       (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_BASE) ||
-                       (typeof process !== 'undefined' && process.env?.REACT_APP_API_BASE);
+const envApi = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_BASE_URL) ||
+               (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_BASE) ||
+               (typeof process !== 'undefined' && process.env?.REACT_APP_API_BASE);
 
-const normalizedCodeLabApi = rawCodeLabApi
-  ? (rawCodeLabApi.startsWith('http://') || rawCodeLabApi.startsWith('https://')
-      ? rawCodeLabApi.trim()
-      : `https://${rawCodeLabApi.trim()}`)
-  : undefined;
-
-const API_BASE = normalizedCodeLabApi
-  ? (normalizedCodeLabApi.endsWith('/api/code-lab') ? normalizedCodeLabApi : `${normalizedCodeLabApi.replace(/\/$/, '')}/api/code-lab`)
+const API_BASE = envApi
+  ? (envApi.endsWith('/api/code-lab') ? envApi : `${envApi.replace(/\/$/, '')}/api/code-lab`)
   : '/api/code-lab';
 
 async function request(endpoint: string, options: RequestInit = {}) {

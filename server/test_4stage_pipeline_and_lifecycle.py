@@ -1,5 +1,5 @@
 """
-Automated Test Suite for SkillBridge 4-Stage Ingestion & 4-Pillar Time-Aware Opportunity Engine
+Automated Test Suite for HireX 4-Stage Ingestion & 4-Pillar Time-Aware Opportunity Engine
 Verifies:
 1. Zero-Manual-Work Expiration Engine:
    - Expired drives (e.g., September 09, 2026) are automatically detected and marked EXPIRED.

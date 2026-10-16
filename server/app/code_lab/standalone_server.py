@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes_code_lab import router as code_lab_router
 
 app = FastAPI(
-    title="SkillBridge Algorithmic Code Lab & AST Auditor API",
+    title="HireX Algorithmic Code Lab & AST Auditor API",
     description="Deterministic AST complexity analysis, multi-dimensional sandbox execution, and cryptographic proof-of-skill generation.",
     version="2.0.0"
 )
@@ -62,7 +62,7 @@ def health():
 if __name__ == "__main__":
     import uvicorn
     print("\n=================================================================")
-    print("  SkillBridge Algorithmic Code Lab & AST Auditor Server")
+    print("  HireX Algorithmic Code Lab & AST Auditor Server")
     print("  Listening on: http://127.0.0.1:8000")
     print("  Swagger Docs: http://127.0.0.1:8000/docs")
     print("=================================================================\n")

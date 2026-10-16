@@ -103,7 +103,7 @@ export const DEMO_PERSONAS: Record<Role, UserProfile> = {
   },
   admin: {
     uid: 'adm_1',
-    email: 'admin@skillbridge.edu.in',
+    email: 'admin@hirex.edu.in',
     displayName: 'Admin Controller',
     photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin',
     role: 'admin',
@@ -213,7 +213,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error?.code === 'auth/unauthorized-domain' || error?.code === 'auth/popup-blocked') {
         const localDevUser: UserProfile = {
           uid: 'google_dev_student',
-          email: 'google.student@skillbridge.edu.in',
+          email: 'google.student@hirex.edu.in',
           displayName: 'Google Verified Student',
           photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=GoogleStudent',
           role: 'student',

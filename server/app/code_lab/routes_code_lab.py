@@ -18,7 +18,7 @@ except (ImportError, ValueError):
     from code_lab_engine import code_lab_engine
     from challenge_pipeline import challenge_pipeline
 
-router = APIRouter(prefix="/api/code-lab", tags=["SkillBridge Code Lab 2.0"])
+router = APIRouter(prefix="/api/code-lab", tags=["HireX Code Lab 2.0"])
 
 # -----------------------------------------------------------------------------
 # Request & Response Schemas
@@ -41,7 +41,7 @@ class AuditASTRequest(BaseModel):
         return self.source_code or self.code or ""
 
 class AuditRepoRequest(BaseModel):
-    repo_url: str = "https://github.com/dhruv-patil/skillbridge-microservices"
+    repo_url: str = "https://github.com/dhruv-patil/hirex-microservices"
 
 class SelectChallengeRequest(BaseModel):
     student_id: Optional[str] = "std_1"

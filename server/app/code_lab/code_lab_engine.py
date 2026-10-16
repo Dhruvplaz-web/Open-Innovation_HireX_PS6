@@ -1,5 +1,5 @@
 """
-SkillBridge Code Lab 2.0 - Core Engine
+HireX Code Lab 2.0 - Core Engine
 Handles:
 1. Student Profile & Claimed Skill Evidence Analysis (Resume, GitHub, Projects, Assessments)
 2. Deterministic Challenge Selection & Adaptive Difficulty Calibration

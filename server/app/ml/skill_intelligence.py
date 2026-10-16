@@ -1,5 +1,5 @@
 """
-Skill Intelligence Engine (Core Brain of SkillBridge)
+Skill Intelligence Engine (Core Brain of HireX)
 Maintains:
 1. Canonical Skill Normalization & Aliases
 2. Transparent Evidence Evaluation Model (Assessment, GitHub, Projects, Certs, LinkedIn, Academic, Recruiter)
@@ -160,7 +160,7 @@ class SkillIntelligenceEngine:
         Builds the Verified Skill Passport item list for a student with transparent evidence points.
         Rules:
         - LinkedIn evidence is professional evidence only, NEVER automatically verified.
-        - SkillBridge objective/proctored assessment is the primary verification mechanism.
+        - HireX objective/proctored assessment is the primary verification mechanism.
         - Poor assessment (e.g. score < 70) remains IMPROVEMENT REQUIRED even with social evidence.
         """
         skills_dict = student.get("skills", {})
@@ -193,7 +193,7 @@ class SkillIntelligenceEngine:
                     evidence_items.append({
                         "type": "ASSESSMENT",
                         "status": "VERIFIED",
-                        "label": f"SkillBridge Proctored Assessment ({score}%)",
+                        "label": f"HireX Proctored Assessment ({score}%)",
                         "verified": True
                     })
                 else:
@@ -392,7 +392,7 @@ class SkillIntelligenceEngine:
         return {
             "has_sufficient_data": True,
             "total_jobs": total_jobs,
-            "attribution": "Calculated from active SkillBridge job and internship postings.",
+            "attribution": "Calculated from active HireX job and internship postings.",
             "skills": demand_list
         }
 
@@ -401,7 +401,7 @@ class SkillIntelligenceEngine:
         Industry Demand vs Student Readiness Gap.
         Compares:
         Industry Demand % against Student Readiness % (average score of cohort).
-        Clearly labeled: "Based on SkillBridge job-posting data."
+        Clearly labeled: "Based on HireX job-posting data."
         Zero fabrication.
         """
         if not cohort_students:
@@ -461,7 +461,7 @@ class SkillIntelligenceEngine:
 
         return {
             "has_sufficient_data": True,
-            "disclaimer": "Based on SkillBridge job-posting data.",
+            "disclaimer": "Based on HireX job-posting data.",
             "total_cohort_size": len(cohort_students),
             "total_jobs_analyzed": len(opportunities),
             "gaps": comparative_gaps
@@ -583,7 +583,7 @@ class SkillIntelligenceEngine:
         4. Skill Coverage (15%)
         5. Placement Outcome (10%)
         Weights are configurable and documented.
-        Label: 'Calculated by SkillBridge based on available platform data.'
+        Label: 'Calculated by HireX based on available platform data.'
         """
         if not cohort_students:
             return {
@@ -636,7 +636,7 @@ class SkillIntelligenceEngine:
             "has_sufficient_data": True,
             "overall_index": overall_index,
             "label": "Institutional Skill Readiness Index",
-            "disclaimer": "Calculated by SkillBridge based on available platform data.",
+            "disclaimer": "Calculated by HireX based on available platform data.",
             "components": [
                 {
                     "name": "Assessment Verification",

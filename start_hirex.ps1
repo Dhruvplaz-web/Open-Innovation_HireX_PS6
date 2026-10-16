@@ -1,6 +1,6 @@
 # HireX Platform Launcher
 Write-Host "==========================================================" -ForegroundColor Cyan
-Write-Host "   🚀 Starting HireX AI-Powered Talent Platform            " -ForegroundColor Yellow
+Write-Host "   🚀 Starting HireX (CraftVerse Hackathon Build)   " -ForegroundColor Yellow
 Write-Host "==========================================================" -ForegroundColor Cyan
 
 # Ensure NODE_OPTIONS does not reference non-existent patches

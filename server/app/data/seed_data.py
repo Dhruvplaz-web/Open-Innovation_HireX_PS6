@@ -1,5 +1,5 @@
 """
-Seed data for SkillBridge platform.
+Seed data for HireX platform.
 Provides realistic academia, student, recruiter, and market data for Pan-India National context.
 """
 

@@ -1,7 +1,7 @@
 @echo off
-title SkillBridge — CraftVerse Hackathon Launcher
+title HireX — CraftVerse Hackathon Launcher
 echo ==========================================================
-echo    SkillBridge: Academia-Industry Collaboration Platform
+echo    HireX: Academia-Industry Collaboration Platform
 echo ==========================================================
 
 rem Clear invalid NODE_OPTIONS if present

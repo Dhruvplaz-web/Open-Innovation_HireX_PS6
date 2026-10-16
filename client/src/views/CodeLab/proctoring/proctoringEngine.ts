@@ -1,5 +1,5 @@
 /**
- * SkillBridge AI Intelligent Proctoring Engine (Subsystem Orchestrator)
+ * HireX AI Intelligent Proctoring Engine (Subsystem Orchestrator)
  * Combines Computer Vision frame analysis, landmark tracking, head pose, gaze estimation,
  * phone object detection, audio energy analysis, browser security monitoring,
  * state machine transitions, and developer debug HUD rendering.

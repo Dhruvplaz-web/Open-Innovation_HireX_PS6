@@ -1,6 +1,6 @@
-# SkillBridge Platform Launcher
+# HireX Platform Launcher
 Write-Host "==========================================================" -ForegroundColor Cyan
-Write-Host "   🚀 Starting SkillBridge (CraftVerse Hackathon Build)   " -ForegroundColor Yellow
+Write-Host "   🚀 Starting HireX (CraftVerse Hackathon Build)   " -ForegroundColor Yellow
 Write-Host "==========================================================" -ForegroundColor Cyan
 
 # Ensure NODE_OPTIONS does not reference non-existent patches
@@ -16,7 +16,7 @@ Start-Sleep -Seconds 2
 
 # 2. Start Vite Frontend Dev Server
 Write-Host "`n[2/2] Starting Vite Frontend on http://localhost:5173 ..." -ForegroundColor Green
-Write-Host "`n🔥 SkillBridge is live at http://localhost:5173" -ForegroundColor Yellow
+Write-Host "`n🔥 HireX is live at http://localhost:5173" -ForegroundColor Yellow
 Write-Host "📚 API Swagger Docs at http://127.0.0.1:8000/docs" -ForegroundColor Cyan
 
 Set-Location client

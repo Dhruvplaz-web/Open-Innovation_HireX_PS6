@@ -32,7 +32,7 @@ export const AssessmentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   // Broadcast window custom event for any listening sub-components
   useEffect(() => {
     window.dispatchEvent(
-      new CustomEvent('skillbridge_assessment_state_change', {
+      new CustomEvent('hirex_assessment_state_change', {
         detail: { isAssessmentActive, assessmentPhase }
       })
     );

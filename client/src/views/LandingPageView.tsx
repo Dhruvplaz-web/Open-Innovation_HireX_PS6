@@ -34,7 +34,6 @@ import {
 } from 'lucide-react';
 import { SEOHead } from '../components/common/SEOHead';
 import { Role } from '../types';
-import { HireXLogo } from '../components/common/HireXLogo';
 
 interface LandingPageViewProps {
   onEnterRole: (role: Role) => void;
@@ -157,10 +156,17 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
             onClick={() => onEnterRole('student')} 
             className="flex items-center gap-3 cursor-pointer group"
           >
-            <HireXLogo size="md" />
-            <span className="text-[10px] font-mono tracking-widest uppercase font-semibold text-slate-400 dark:text-slate-500 border border-black/[0.08] dark:border-white/[0.1] px-2 py-0.5 rounded-full hidden sm:inline-block">
-              India Enterprise v3.0
-            </span>
+            <div className="w-8 h-8 rounded-lg bg-black dark:bg-white text-white dark:text-black flex items-center justify-center font-bold text-sm tracking-tighter shadow-sm transition-transform group-hover:scale-95">
+              SB
+            </div>
+            <div className="flex items-center gap-2.5">
+              <span className="font-extrabold text-lg tracking-tight text-black dark:text-white">
+                HireX
+              </span>
+              <span className="text-[10px] font-mono tracking-widest uppercase font-semibold text-slate-400 dark:text-slate-500 border border-black/[0.08] dark:border-white/[0.1] px-2 py-0.5 rounded-full">
+                India Enterprise v3.0
+              </span>
+            </div>
           </div>
 
           {/* Navigation Links */}
@@ -766,7 +772,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
         </div>
       </section>
 
-      {/* 8. THE COMPARISON MATRIX: TRADITIONAL VS HIREX */}
+      {/* 8. THE COMPARISON MATRIX: TRADITIONAL VS SKILLBRIDGE */}
       <section id="the-matrix" className="border-t border-black/[0.06] dark:border-white/[0.08] py-28 max-w-7xl mx-auto px-6 space-y-12">
         <div className="max-w-3xl space-y-4">
           <span className="text-xs font-mono font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
@@ -832,7 +838,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
         </div>
       </section>
 
-      {/* 8.5 WHY HIREX? ARCHITECTURAL DIFFERENTIATION & DATA NETWORK EFFECT (REQUIREMENTS 33 & 34) */}
+      {/* 8.5 WHY SKILLBRIDGE? ARCHITECTURAL DIFFERENTIATION & DATA NETWORK EFFECT (REQUIREMENTS 33 & 34) */}
       <section id="why-hirex" className="border-t border-black/[0.06] dark:border-white/[0.08] py-28 max-w-7xl mx-auto px-6 space-y-16">
         <div className="max-w-3xl space-y-4">
           <span className="text-xs font-mono font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">

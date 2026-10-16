@@ -8,7 +8,7 @@
 export const SITE_CONFIG = {
   name: "HireX",
   shortName: "HireX",
-  tagline: "Bridge Skills to Opportunities with Precision",
+  tagline: "Bridge Skills to Opportunities",
   taglineSecondary: "Verified Skills • AI Matching • Career Opportunities",
   description: "HireX connects students, academia and recruiters through verified skill assessments, explainable AI matching, internships, jobs and placement analytics.",
   

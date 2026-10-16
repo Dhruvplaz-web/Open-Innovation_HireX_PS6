@@ -1,5 +1,5 @@
 """
-LinkedIn OAuth 2.0 / OpenID Connect Router for SkillBridge.
+LinkedIn OAuth 2.0 / OpenID Connect Router for HireX.
 
 Implements the official LinkedIn Authorization Code flow with OpenID Connect:
 - Scopes: openid, profile, email (minimum required permissions)
@@ -7,7 +7,7 @@ Implements the official LinkedIn Authorization Code flow with OpenID Connect:
 - Secure server-side authorization code exchange
 - ID token claim validation
 - Profile userinfo retrieval (permitted fields only: sub, name, email, email_verified, picture)
-- Account correlation with existing SkillBridge student (no duplicate user accounts)
+- Account correlation with existing HireX student (no duplicate user accounts)
 - Duplicate account linking prevention across students
 - Authenticated encryption of access tokens (never stored in plaintext)
 - Immutable audit logging for connect and disconnect operations
@@ -81,7 +81,7 @@ def _decode_jwt_unverified(token: str) -> Dict[str, Any]:
 
 @router.get("/authorize")
 def get_linkedin_authorize_url(
-    student_id: str = Query("std_1", description="Target SkillBridge Student ID"),
+    student_id: str = Query("std_1", description="Target HireX Student ID"),
     redirect_to: str = Query("workflow", description="Target frontend destination (workflow or profile)")
 ):
     """
@@ -143,7 +143,7 @@ def linkedin_oauth_callback(
     - Handles user cancellation or denied permissions.
     - Securely exchanges authorization code on the server side (client secret is never exposed).
     - Validates OpenID Connect ID token and retrieves permitted user profile.
-    - Attaches connection to the existing SkillBridge student profile.
+    - Attaches connection to the existing HireX student profile.
     - Redirects student back to the frontend with completion status.
     """
     frontend_base = settings.LINKEDIN_FRONTEND_REDIRECT_URI.rstrip("/")
@@ -259,7 +259,7 @@ def linkedin_oauth_callback(
             existing_conn.get("connection_status") == ConnectionStatus.CONNECTED.value
         ):
             return RedirectResponse(
-                url=f"{frontend_base}/{destination_tab}?linkedin_status=error&error_type=account_already_linked&error_message={urllib.parse.quote('This LinkedIn profile is already connected to another student account in SkillBridge.')}"
+                url=f"{frontend_base}/{destination_tab}?linkedin_status=error&error_type=account_already_linked&error_message={urllib.parse.quote('This LinkedIn profile is already connected to another student account in HireX.')}"
             )
 
     # 6. Encrypt access token before storage (NEVER plaintext)

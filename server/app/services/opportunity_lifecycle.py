@@ -7,7 +7,7 @@ from datetime import datetime, date
 import re
 from typing import Optional, Dict, Any, List, Tuple
 
-# Current simulation baseline for SkillBridge (2026-10-06)
+# Current simulation baseline for HireX (2026-10-06)
 CURRENT_PLATFORM_DATE = date(2026, 10, 6)
 
 def parse_deadline(deadline_val: Any) -> Optional[date]:

@@ -129,7 +129,7 @@ PROJECTS:
       id: 'proj_1',
       title: 'HireX - Autonomous Placement Engine',
       description: 'End-to-end talent calibration platform with FastAPI backend and React frontend.',
-      github_repo_url: 'https://github.com/dhruv-patil/skillbridge-core',
+      github_repo_url: 'https://github.com/dhruv-patil/hirex-core',
       technologies: ['React', 'FastAPI', 'Python', 'PostgreSQL', 'Tailwind CSS'],
       documentation_files: [
         {

@@ -1,3 +1,3 @@
 """
-Data models package for SkillBridge.
+Data models package for HireX.
 """

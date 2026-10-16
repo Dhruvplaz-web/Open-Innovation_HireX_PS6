@@ -32,7 +32,7 @@ class AnalyticsService {
 
   private hasConsent(): boolean {
     try {
-      const consentStr = localStorage.getItem('skillbridge_cookie_consent');
+      const consentStr = localStorage.getItem('hirex_cookie_consent');
       if (!consentStr) return false;
       const parsed = JSON.parse(consentStr);
       return parsed?.analytics === true;

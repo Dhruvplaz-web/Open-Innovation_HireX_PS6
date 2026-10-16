@@ -23,7 +23,7 @@
     "providers": {
       "emailPassword": true,
       "googleSignIn": {
-        "oAuthBrandDisplayName": "SkillBridge",
+        "oAuthBrandDisplayName": "HireX",
         "supportEmail": "dhruvpatil4555@gmail.com"
       }
     }

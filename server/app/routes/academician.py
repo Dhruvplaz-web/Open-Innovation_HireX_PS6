@@ -280,7 +280,7 @@ def get_institutional_readiness(
     Computes transparent Institutional Skill Readiness Index with component weights:
     Assessment Verification (30%), Industry Alignment (25%), Project Evidence (20%),
     Skill Coverage (15%), Placement Outcomes (10%).
-    Label: 'Calculated by SkillBridge based on available platform data.'
+    Label: 'Calculated by HireX based on available platform data.'
     """
     academician = resolve_current_academician(email, acad_id)
     cohort = get_authorized_cohort_students(academician)
@@ -409,7 +409,7 @@ def get_industry_demand_gap(
     """
     Compares live Industry Demand % against Student Readiness %.
     Calculates Gap percentage points and highlights largest gaps.
-    Clearly labeled: 'Based on SkillBridge job-posting data.'
+    Clearly labeled: 'Based on HireX job-posting data.'
     """
     academician = resolve_current_academician(email, acad_id)
     cohort = get_authorized_cohort_students(academician)
@@ -565,7 +565,7 @@ def get_industry_requirement_analysis(
     auth_check = Depends(require_roles(["academician", "admin"]))
 ):
     """
-    PART 12: Uses actual opportunity/job requirements in SkillBridge.
+    PART 12: Uses actual opportunity/job requirements in HireX.
     Compares live industry demand against cohort proficiency to identify HIGH PRIORITY SKILL GAPS.
     """
     academician = resolve_current_academician(email, acad_id)
@@ -777,7 +777,7 @@ def create_academician_project(
     """
     FEATURE 2 — CREATE PROJECT:
     Academician initiates a new Research, Capstone, or Industry project.
-    Skills are normalized from the existing SkillBridge taxonomy.
+    Skills are normalized from the existing HireX taxonomy.
     """
     academician = resolve_current_academician(email, acad_id)
     if not academician.get("is_email_verified", False):
@@ -1144,7 +1144,7 @@ def get_cohort_role_gaps(
                 "percentageOfCohort": pct,
                 "recommendedCourse": matched_course.get("title") if matched_course else f"{sk} Mastery Lab",
                 "recommendedCourseId": matched_course.get("id") if matched_course else None,
-                "provider": matched_course.get("provider", "SkillBridge Academy") if matched_course else "SkillBridge Academy"
+                "provider": matched_course.get("provider", "HireX Academy") if matched_course else "HireX Academy"
             })
 
         roles_summary.append({

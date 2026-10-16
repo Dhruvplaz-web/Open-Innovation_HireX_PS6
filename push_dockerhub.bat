@@ -8,18 +8,18 @@ if "%DOCKER_USER%"=="" (
 
 echo.
 echo ==========================================================
-echo    🚀 Publishing SkillBridge to Docker Hub
+echo    🚀 Publishing HireX to Docker Hub
 echo ==========================================================
 echo 1. Logging into Docker Hub...
 docker login
 
 echo.
-echo 2. Tagging image as %DOCKER_USER%/skillbridge:latest ...
-docker tag skillbridge:latest %DOCKER_USER%/skillbridge:latest
+echo 2. Tagging image as %DOCKER_USER%/hirex:latest ...
+docker tag hirex:latest %DOCKER_USER%/hirex:latest
 
 echo.
 echo 3. Pushing image to Docker Hub...
-docker push %DOCKER_USER%/skillbridge:latest
+docker push %DOCKER_USER%/hirex:latest
 
 echo.
 echo ==========================================================
@@ -27,6 +27,6 @@ echo ✅ SUCCESS! Your shareable Docker link is:
 echo https://hub.docker.com/r/%DOCKER_USER%/skillbridge
 echo.
 echo Anyone on any computer can now run your app with:
-echo   docker run -d -p 5173:80 -p 8000:8000 %DOCKER_USER%/skillbridge:latest
+echo   docker run -d -p 5173:80 -p 8000:8000 %DOCKER_USER%/hirex:latest
 echo ==========================================================
 pause

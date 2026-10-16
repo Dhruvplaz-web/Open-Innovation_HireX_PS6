@@ -1,5 +1,5 @@
 """
-SkillBridge Code Lab 2.0 - Comprehensive Challenge Bank
+HireX Code Lab 2.0 - Comprehensive Challenge Bank
 Contains versioned technical challenges across all required categories:
 - STANDARD_CODING (Algorithms, Data Structures)
 - FUNCTION_IMPLEMENTATION (API Routing, LRU Cache, Rate Limiter)

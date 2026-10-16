@@ -1,0 +1,146 @@
+"""
+Real-Time Sync Router
+Exposes Authorization-Aware Server-Sent Events (SSE) Stream
+and Cursor Replay Polling for Real-Time ERP Synchronization.
+"""
+
+from fastapi import APIRouter, Query, Header, Request
+from fastapi.responses import StreamingResponse
+import asyncio
+import json
+import time
+from typing import Optional
+from app.services.sync_service import sync_service
+
+router = APIRouter(prefix="/api/sync", tags=["Real-Time Synchronization"])
+
+@router.get("/events")
+def get_sync_events(
+    since: float = Query(0.0),
+    last_event_id: Optional[str] = Query(None),
+    limit: int = Query(50),
+    role: str = Query("student"),
+    user_id: str = Query("")
+):
+    """
+    Cursor-based event replay with authorization filtering.
+    Enables clients to catch up after momentary network disconnection.
+    """
+    return sync_service.get_events_since(
+        since_ts=since,
+        last_event_id=last_event_id,
+        limit=limit,
+        role=role,
+        user_id=user_id
+    )
+
+@router.get("/status")
+def get_sync_status():
+    """Returns telemetry status of real-time synchronization broker."""
+    return sync_service.get_latest_status()
+
+@router.get("/stream")
+async def sync_event_stream(
+    request: Request,
+    role: str = Query("student"),
+    user_id: str = Query(""),
+    institution_id: str = Query(""),
+    company_id: str = Query(""),
+    last_event_id: Optional[str] = Query(None),
+    last_event_header: Optional[str] = Header(None, alias="Last-Event-ID")
+):
+    """
+    Authorization-Aware Server-Sent Events (SSE) stream for live reactive updates.
+    Replays missed events if Last-Event-ID is provided (via header or query), then streams live domain events.
+    """
+    eff_cursor = last_event_header or last_event_id
+
+    async def event_generator():
+        sub = await sync_service.subscribe(
+            role=role,
+            user_id=user_id,
+            institution_id=institution_id,
+            company_id=company_id
+        )
+        try:
+            # 1. Send initial connection confirmation
+            init_payload = {
+                "type": "CONNECTION_ESTABLISHED",
+                "timestamp": time.time(),
+                "role": role,
+                "user_id": user_id,
+                "sync_mode": "SCOPED_REALTIME_SSE"
+            }
+            yield f"event: connect\ndata: {json.dumps(init_payload)}\n\n"
+
+            # 2. Replay missed events if client reconnected with cursor
+            if eff_cursor:
+                replayed = sync_service.get_events_since(
+                    last_event_id=eff_cursor,
+                    role=role,
+                    user_id=user_id,
+                    limit=50
+                )
+                if replayed.get("reset_required"):
+                    yield f"event: reset_required\ndata: {json.dumps({'type': 'SYNC_RESET_REQUIRED', 'message': 'Reconnection cursor expired. Perform authoritative refresh.'})}\n\n"
+                else:
+                    for ev in replayed.get("events", []):
+                        yield f"id: {ev['event_id']}\nevent: {ev['event_type']}\ndata: {json.dumps(ev)}\n\n"
+
+            # 3. Live stream loop with 15s heartbeat
+            while True:
+                # Check for client disconnect
+                if await request.is_disconnected():
+                    break
+
+                try:
+                    event = await asyncio.wait_for(sub.queue.get(), timeout=15.0)
+                    yield f"id: {event['event_id']}\nevent: {event['event_type']}\ndata: {json.dumps(event)}\n\n"
+                except asyncio.TimeoutError:
+                    heartbeat = {"type": "HEARTBEAT", "timestamp": time.time()}
+                    yield f": heartbeat {time.time()}\n\n"
+
+        except asyncio.CancelledError:
+            pass
+        finally:
+            sync_service.unsubscribe(sub)
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
+
+@router.get("/audit-logs")
+def get_audit_logs(
+    entity_type: Optional[str] = Query(None),
+    entity_id: Optional[str] = Query(None),
+    limit: int = Query(50)
+):
+    """Returns persistent audit log trail for compliance, debugging, and verification."""
+    from app.db.canonical_store import canonical_store
+    logs = canonical_store.audit_logs
+    if entity_type:
+        logs = [l for l in logs if l.get("entity_type") == entity_type]
+    if entity_id:
+        logs = [l for l in logs if l.get("entity_id") == entity_id]
+    return {
+        "status": "success",
+        "total": len(logs),
+        "audit_logs": logs[-limit:][::-1]
+    }
+
+@router.get("/notifications")
+def get_user_notifications(user_id: str = Query("std_1")):
+    """Returns persisted user notifications generated by domain events."""
+    from app.db.canonical_store import canonical_store
+    notifs = canonical_store.get_notifications_for_user(user_id)
+    return {
+        "status": "success",
+        "total": len(notifs),
+        "notifications": notifs[::-1]
+    }

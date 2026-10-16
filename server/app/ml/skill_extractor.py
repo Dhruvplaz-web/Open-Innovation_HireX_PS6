@@ -284,7 +284,7 @@ class SkillExtractor:
                 "message": (
                     "Current authorized LinkedIn scopes ('openid profile email') provide basic profile identity only. "
                     "LinkedIn Skills, Experience, Education, and Certifications are not accessible through these scopes. "
-                    "SkillBridge accurately uses student Resume, GitHub, and Projects as primary objective evidence."
+                    "HireX accurately uses student Resume, GitHub, and Projects as primary objective evidence."
                 )
             },
             "notice": "DETECTED ≠ VERIFIED. A detected skill is not automatically a verified skill. Review and select skills to be assessed on.",

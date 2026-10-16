@@ -157,7 +157,7 @@ def check_link_liveness(url: Optional[str], timeout: float = 3.0) -> Tuple[bool,
     # For external web requests
     try:
         headers = {
-            "User-Agent": "SkillBridge-VerificationEngine/1.1 (Campus Placement Integrity Checker)"
+            "User-Agent": "HireX-VerificationEngine/1.1 (Campus Placement Integrity Checker)"
         }
         resp = requests.get(clean_url, headers=headers, timeout=timeout, allow_redirects=True, stream=True)
         if resp.status_code in (404, 410):
