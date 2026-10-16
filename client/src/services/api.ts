@@ -3821,6 +3821,62 @@ export const apiService = {
       console.warn("Backend proctoring event report fallback:", e);
     }
     return { status: "recorded" };
+  },
+
+  async parseRawJobOpening(rawText: string, sourceType: string = "WHATSAPP_FORWARD", submittedBy: string = "TPO Desk") {
+    try {
+      const res = await fetch(`${API_BASE}/academician/jobs/parse-raw`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          raw_text: rawText,
+          source_type: sourceType,
+          submitted_by: submittedBy
+        })
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend parseRawJobOpening failed:", e);
+    }
+    return null;
+  },
+
+  async confirmJobIngestion(payload: {
+    raw_text: string;
+    source_type?: string;
+    submitted_by?: string;
+    company: string;
+    title: string;
+    ctc_display: string;
+    min_ctc: number;
+    max_ctc: number;
+    eligible_batch: string;
+    required_skills: string[];
+    preferred_skills: string[];
+    action_type: 'MERGE_EXISTING' | 'CREATE_CANONICAL';
+    matched_job_id?: string | null;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/academician/jobs/confirm-ingest`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend confirmJobIngestion failed:", e);
+    }
+    return null;
+  },
+
+  async getAcademicianJobs() {
+    try {
+      const res = await fetch(`${API_BASE}/academician/jobs`);
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend getAcademicianJobs failed:", e);
+    }
+    return { status: "fallback", total: 0, jobs: [] };
   }
 };
 

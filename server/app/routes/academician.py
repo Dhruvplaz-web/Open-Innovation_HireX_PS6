@@ -1181,4 +1181,159 @@ def get_cohort_role_gaps(
     }
 
 
+class RawJobIngestRequest(BaseModel):
+    raw_text: str
+    source_type: Optional[str] = "WHATSAPP_FORWARD"
+    submitted_by: Optional[str] = "Placement Cell Coordinator"
+
+
+class ConfirmJobIngestRequest(BaseModel):
+    company: str
+    title: str
+    min_ctc: float
+    max_ctc: float
+    ctc_display: str
+    eligible_batch: str
+    required_skills: List[str]
+    preferred_skills: List[str]
+    source_type: Optional[str] = "WHATSAPP_FORWARD"
+    submitted_by: Optional[str] = "Placement Cell Coordinator"
+    raw_snippet: Optional[str] = ""
+    is_duplicate: Optional[bool] = False
+    matched_job_id: Optional[str] = None
+
+
+@router.post("/jobs/parse-raw")
+def parse_raw_job_forward(payload: RawJobIngestRequest):
+    """
+    Parses unformatted WhatsApp forward or email text, extracts structured entities,
+    tiers skills into Required (70%) vs Preferred (30%), and checks against existing
+    active campus drives for duplicate detection (>80% similarity threshold).
+    """
+    from app.services.job_dedup import job_dedup_service
+    active_opps = filter_active_opportunities(OPPORTUNITIES)
+    result = job_dedup_service.process_raw_ingestion(
+        raw_text=payload.raw_text,
+        source_type=payload.source_type,
+        submitted_by=payload.submitted_by,
+        existing_jobs=active_opps
+    )
+    return {
+        "status": "success",
+        "analysis": result,
+        "is_duplicate": result["is_duplicate"],
+        "duplicate_analysis": {
+            "is_duplicate": result["is_duplicate"],
+            "composite_score": result["similarity_score"],
+            "matched_job_id": result["matched_job_id"],
+            "reason": result["duplicate_reason"]
+        },
+        "extracted_entities": {
+            "company": result["parsed_job"]["company"],
+            "title": result["parsed_job"]["title"],
+            "ctc_display": result["parsed_job"]["ctc_display"],
+            "min_ctc": result["parsed_job"]["min_ctc"],
+            "max_ctc": result["parsed_job"]["max_ctc"],
+            "eligible_batch": result["parsed_job"]["eligible_batch"]
+        },
+        "tiered_skills": {
+            "required": result["parsed_job"]["required_skills"],
+            "preferred": result["parsed_job"]["preferred_skills"]
+        }
+    }
+
+
+@router.post("/jobs/confirm-ingest")
+def confirm_job_ingest(payload: ConfirmJobIngestRequest):
+    """
+    Confirms and registers the canonical job. If duplicate, merges the referral source
+    into the existing drive. If new, creates a canonical opening and broadcasts an SSE event.
+    """
+    from app.services.sync_service import sync_service
+    import time
+    import uuid
+
+    if payload.is_duplicate and payload.matched_job_id:
+        # Merge referral source into existing opening
+        for opp in OPPORTUNITIES:
+            if opp.get("id") == payload.matched_job_id:
+                if "sources" not in opp:
+                    opp["sources"] = [{"type": "OFFICIAL_DRIVE", "submitted_by": "TPO Desk", "timestamp": opp.get("deadline", "Active")}]
+                opp["sources"].append({
+                    "type": payload.source_type,
+                    "submitted_by": payload.submitted_by,
+                    "timestamp": time.strftime("%Y-%m-%d %H:%M:%SZ")
+                })
+                # Log audit trail
+                log_audit_trail("tpo_admin", "JOB_DUPLICATE_MERGED", "opportunity", payload.matched_job_id, {"merged_source": payload.submitted_by})
+                sync_service.publish_event("JOB_UPDATED", {"id": payload.matched_job_id, "company": opp.get("company"), "action": "MERGED_REFERRAL"})
+                return {
+                    "status": "success",
+                    "action": "MERGED_INTO_EXISTING",
+                    "message": f"Successfully merged referral source into active drive '{payload.matched_job_id}'.",
+                    "job": opp
+                }
+
+    # Otherwise, create fresh canonical opening
+    new_id = f"opp_wa_{uuid.uuid4().hex[:8]}"
+    new_opp = {
+        "id": new_id,
+        "title": payload.title,
+        "company": payload.company,
+        "location": "Pune / Hybrid",
+        "stipend": payload.ctc_display,
+        "min_ctc": payload.min_ctc,
+        "max_ctc": payload.max_ctc,
+        "deadline": "2026-11-30",
+        "description": f"Verified placement drive for {payload.company} - {payload.title}. Target: {payload.eligible_batch}.",
+        "required_skills": payload.required_skills,
+        "preferred_skills": payload.preferred_skills,
+        "skills": payload.required_skills + payload.preferred_skills,
+        "eligible_batch": payload.eligible_batch,
+        "status": "ACTIVE",
+        "verified_drive": True,
+        "sources": [
+            {
+                "type": payload.source_type,
+                "submitted_by": payload.submitted_by,
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%SZ")
+            }
+        ]
+    }
+
+    # Prepend to opportunities list
+    OPPORTUNITIES.insert(0, new_opp)
+    log_audit_trail("tpo_admin", "JOB_CREATED_CANONICAL", "opportunity", new_id, {"company": payload.company, "title": payload.title})
+    
+    # Broadcast live SSE pulse to all connected students and TPO
+    sync_service.publish_event("JOB_POSTED", {
+        "id": new_id,
+        "company": payload.company,
+        "title": payload.title,
+        "ctc": payload.ctc_display,
+        "required_skills": payload.required_skills
+    })
+
+    return {
+        "status": "success",
+        "action": "CREATED_NEW_CANONICAL",
+        "message": f"Created verified canonical drive '{payload.company} — {payload.title}'.",
+        "job": new_opp
+    }
+
+
+@router.get("/jobs")
+def get_academician_jobs():
+    """
+    Returns all placement drives and opportunities along with their multi-source ingestion lineage
+    (WhatsApp forwards, alumni referrals, partner direct) and required/preferred skill tiers.
+    """
+    return {
+        "status": "success",
+        "total": len(OPPORTUNITIES),
+        "jobs": OPPORTUNITIES
+    }
+
+
+
 
