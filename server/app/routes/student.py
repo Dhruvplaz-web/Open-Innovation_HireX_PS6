@@ -26,8 +26,16 @@ from app.ml.job_matcher import matcher
 from app.ml.demand_predictor import trend_predictor
 from app.ml.skill_extractor import skill_extractor
 from app.ml.skill_intelligence import skill_intelligence, normalize_skill_name
-from app.ml.aadhaar_verifier import verify_aadhaar, generate_verhoeff_sample
-from app.ml.id_card_auditor import id_card_auditor
+try:
+    from app.ml.aadhaar_verifier import verify_aadhaar, generate_verhoeff_sample
+except ImportError:
+    verify_aadhaar = None
+    generate_verhoeff_sample = None
+
+try:
+    from app.ml.id_card_auditor import id_card_auditor
+except ImportError:
+    id_card_auditor = None
 from app.db.canonical_store import canonical_store
 from app.models.linkedin import validate_linkedin_url, LINKEDIN_CONNECTIONS
 from app.services.opportunity_lifecycle import validate_can_apply, evaluate_opportunity_lifecycle, filter_active_opportunities
