@@ -1,0 +1,27 @@
+# SkillBridge: Academia-Industry Collaboration Platform
+
+## Platform Overview
+SkillBridge bridges the gap between academic skills and industry opportunities through verified skill assessments, skill-gap analysis, explainable AI matching, and placement analytics.
+
+## Purpose
+Facilitating objective, verified academia–industry collaboration and campus talent pipelines without algorithmic opacity or credential fabrication.
+
+## Users & Stakeholders
+- **Students & Candidates:** Undertake algorithmic assessments, build verified skill portfolios, explore curriculum-gap roadmaps, and apply to relevant opportunities.
+- **Academicians & Institutions:** Monitor student cohort readiness, identify syllabus desynchronization against market trends, and coordinate campus placement drives.
+- **Recruiters & Industry:** Post verified opportunities, inspect code-verified candidate competencies, and receive explainable candidate-match analytics.
+- **Administrators & Placement Officers (TPOs):** Manage institutional governance, audit verification records, and configure role-based access control.
+
+## Core Features & Workflow
+1. **Skill Assessment:** Real-time AST code auditing, complexity verification (Big-O analysis), and aptitude evaluations.
+2. **Verified Skills:** Transparent, tamper-evident skill profiles backed by objective evaluation artifacts.
+3. **Skill-Gap Analysis:** Actionable diagnostics contrasting student capabilities with current hiring requisites.
+4. **Internship/Job Opportunities:** Curated listings with explicit required skill sets and transparent parameters.
+5. **Explainable AI Matching:** Decision-support vector compatibility scores with matched competencies, gap lists, and reasoning.
+6. **Applications:** Direct application pipeline tracking for candidates and recruiters.
+7. **Placement Analytics:** Institutional dashboards visualizing readiness scores, cohort progression, and hiring demand trends.
+
+## Critical Compliance & Transparency Disclaimers
+- **Indicative Recommendations:** All AI matching metrics, compatibility scores, and gap roadmaps are decision-support aids only.
+- **Non-Guarantee:** SkillBridge does not guarantee employment, selection, or interview invitations. Final hiring determinations rest entirely with independent recruiter organizations.
+- **Data Integrity:** SkillBridge does not expose private student credentials, assessment answer keys, or private communications. No secrets or confidential keys are included.
