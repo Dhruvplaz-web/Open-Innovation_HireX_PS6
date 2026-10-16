@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Briefcase, Code2, Zap, Award, User, Sun, Moon, Info, ShieldCheck, UserCheck, GraduationCap, Building, FolderGit2, Lock } from 'lucide-react';
+import { Home, Briefcase, Code2, Zap, Award, User, Sun, Moon, ShieldCheck, GraduationCap, Building, FolderGit2, Lock } from 'lucide-react';
 import { Role } from '../../types';
 
 interface LeftIconRailProps {
@@ -205,37 +205,6 @@ export const LeftIconRail: React.FC<LeftIconRailProps> = ({
           </>
         )}
 
-        <div className="w-5 h-[1px] bg-slate-200 dark:bg-slate-800 my-1" />
-
-        {/* Info */}
-        <button
-          onClick={() => openModal('about')}
-          title="About Project & Hackathon"
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all"
-          aria-label="About Project"
-        >
-          <Info className="w-4.5 h-4.5" />
-        </button>
-
-        {/* Account & Firebase Authentication */}
-        <button
-          onClick={() => setActiveTab('login')}
-          title="Firebase Auth & Persona Gateway"
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all"
-          aria-label="Account & Auth"
-        >
-          <UserCheck className="w-4.5 h-4.5" />
-        </button>
-
-        {/* Legal & Compliance */}
-        <button
-          onClick={() => openModal('legal')}
-          title="Compliance & DPDP Act 2023"
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all"
-          aria-label="Legal & Compliance"
-        >
-          <ShieldCheck className="w-4.5 h-4.5" />
-        </button>
       </nav>
 
       {/* Bottom Theme Switcher Pill (Sun/Moon) */}
