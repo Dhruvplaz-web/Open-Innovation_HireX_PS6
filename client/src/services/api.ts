@@ -3998,6 +3998,140 @@ export const apiService = {
       console.warn("Backend getAcademicianJobs failed:", e);
     }
     return { status: "fallback", total: 0, jobs: [] };
+  },
+
+  async scanCertificateForensics(payload: {
+    raw_text: string;
+    student_id?: string;
+    student_kyc_name?: string;
+    custom_hash?: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/assessments/certificates/scan`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+      const err = await res.json().catch(() => ({}));
+      return { status: "error", message: err.detail || "Scanning failed" };
+    } catch (e: any) {
+      console.warn("Backend scanCertificateForensics failed:", e);
+      return { status: "error", message: e.message || "Network error" };
+    }
+  },
+
+  async commitCertificateToProfile(payload: {
+    student_id: string;
+    certificate_data: any;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/assessments/certificates/commit-to-profile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+      const err = await res.json().catch(() => ({}));
+      return { status: "error", message: err.detail || "Commit failed" };
+    } catch (e: any) {
+      console.warn("Backend commitCertificateToProfile failed:", e);
+      return { status: "error", message: e.message || "Network error" };
+    }
+  },
+
+  async getEvidenceMatrix(studentId: string = "std_1") {
+    try {
+      const res = await fetch(`${API_BASE}/student/evidence-matrix?student_id=${studentId}`);
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend getEvidenceMatrix failed:", e);
+    }
+    return { status: "fallback", matrix: { total_skills: 0, summary: {}, skills: [] } };
+  },
+
+  async submitEvidence(payload: {
+    student_id?: string;
+    title: string;
+    type?: string;
+    description?: string;
+    url_or_repo?: string;
+    extracted_skills?: string[];
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/student/evidence/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+      const err = await res.json().catch(() => ({}));
+      return { status: "error", message: err.detail || "Submission failed" };
+    } catch (e: any) {
+      console.warn("Backend submitEvidence failed:", e);
+      return { status: "error", message: e.message || "Network error" };
+    }
+  },
+
+  async getOpportunityCounterfactual(oppId: string, studentId: string = "std_1") {
+    try {
+      const res = await fetch(`${API_BASE}/student/opportunities/${oppId}/counterfactual?student_id=${studentId}`);
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend getOpportunityCounterfactual failed:", e);
+    }
+    return null;
+  },
+
+  async fileOpportunityDispute(oppId: string, payload: {
+    student_id?: string;
+    disputed_skill: string;
+    student_argument: string;
+    supporting_evidence_url?: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/student/opportunities/${oppId}/dispute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+      const err = await res.json().catch(() => ({}));
+      return { status: "error", message: err.detail || "Dispute filing failed" };
+    } catch (e: any) {
+      console.warn("Backend fileOpportunityDispute failed:", e);
+      return { status: "error", message: e.message || "Network error" };
+    }
+  },
+
+  async getTruthfulResume(studentId: string = "std_1", targetRole: string = "Full-Stack AI Developer") {
+    try {
+      const res = await fetch(`${API_BASE}/resume/truthful-builder/${studentId}?target_role=${encodeURIComponent(targetRole)}`);
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend getTruthfulResume failed:", e);
+    }
+    return null;
+  },
+
+  async auditTruthfulResumeClaims(payload: {
+    student_id?: string;
+    claimed_skills: string[];
+    target_role?: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/resume/truthful-builder/audit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+      const err = await res.json().catch(() => ({}));
+      return { status: "error", message: err.detail || "Audit failed" };
+    } catch (e: any) {
+      console.warn("Backend auditTruthfulResumeClaims failed:", e);
+      return { status: "error", message: e.message || "Network error" };
+    }
   }
 };
 

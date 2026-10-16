@@ -1332,5 +1332,70 @@ def get_student_jd_analysis(
         "analyses": analyses
     }
 
+class SubmitEvidenceRequest(BaseModel):
+    student_id: str = "std_1"
+    title: str
+    type: str = "PROJECT"  # PROJECT, ASSESSMENT, CERTIFICATE, INTERNSHIP
+    description: Optional[str] = ""
+    url_or_repo: Optional[str] = ""
+    extracted_skills: Optional[List[str]] = None
+
+class FileDisputeRequest(BaseModel):
+    student_id: str = "std_1"
+    disputed_skill: str
+    student_argument: str
+    supporting_evidence_url: Optional[str] = None
+
+@router.get("/evidence-matrix")
+def get_student_evidence_matrix(student_id: str = Query("std_1")):
+    """
+    Returns the complete Skill-to-Evidence Matrix with multi-tier weighting,
+    time-decayed confidence, and ESCO canonical categorization.
+    """
+    from app.services.evidence_mapper import evidence_mapper_service
+    matrix = evidence_mapper_service.compute_student_matrix(student_id)
+    return {
+        "status": "success",
+        "matrix": matrix
+    }
+
+@router.post("/evidence/submit")
+def submit_student_evidence(req: SubmitEvidenceRequest):
+    """
+    Submits new concrete evidence (repository, project, or certificate) and extracts canonical skills.
+    """
+    from app.services.evidence_mapper import evidence_mapper_service
+    payload = req.model_dump() if hasattr(req, "model_dump") else req.dict()
+    res = evidence_mapper_service.submit_evidence(req.student_id, payload)
+    return res
+
+@router.get("/opportunities/{opp_id}/counterfactual")
+def get_opportunity_counterfactual_guidance(opp_id: str, student_id: str = Query("std_1")):
+    """
+    Returns natural language match explainability and minimum-effort counterfactual advice.
+    """
+    from app.services.counterfactual_guidance import counterfactual_guidance_service
+    guidance = counterfactual_guidance_service.get_guidance_for_opportunity(student_id, opp_id)
+    return {
+        "status": "success",
+        "guidance": guidance
+    }
+
+@router.post("/opportunities/{opp_id}/dispute")
+def file_opportunity_dispute(opp_id: str, req: FileDisputeRequest):
+    """
+    Files a human review / dispute request with faculty and TPO coordinators.
+    """
+    from app.services.counterfactual_guidance import counterfactual_guidance_service
+    res = counterfactual_guidance_service.file_human_review_dispute(
+        student_id=req.student_id,
+        opportunity_id=opp_id,
+        disputed_skill=req.disputed_skill,
+        student_argument=req.student_argument,
+        supporting_evidence_url=req.supporting_evidence_url
+    )
+    return res
+
+
 
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MatchedOpportunity, StudentProfile } from '../types';
 import { apiService } from '../services/api';
 import { FileText, Printer, Mail, CheckCircle2, ShieldCheck, AlertCircle, Building2, Zap, Car, Sparkles, Clock, ShieldAlert } from 'lucide-react';
+import { CounterfactualGuidanceModal } from '../components/modals/CounterfactualGuidanceModal';
 
 interface OpportunitiesViewProps {
   opportunities: MatchedOpportunity[];
@@ -23,6 +24,8 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
   const [loadingArchive, setLoadingArchive] = useState<boolean>(false);
   const [selectedCompanyIntel, setSelectedCompanyIntel] = useState<string>('barclays');
   const [nocPrinted, setNocPrinted] = useState<boolean>(false);
+  const [isCounterfactualOpen, setIsCounterfactualOpen] = useState<boolean>(false);
+  const [counterfactualOpp, setCounterfactualOpp] = useState<MatchedOpportunity | null>(null);
 
   // ATS Scanner state
   const [resumeText, setResumeText] = useState<string>(
@@ -335,7 +338,18 @@ PROJECTS:
                         ))}
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCounterfactualOpp(opp);
+                            setIsCounterfactualOpen(true);
+                          }}
+                          className="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 text-xs font-bold transition flex items-center gap-1.5 border border-purple-200 dark:border-purple-800/60"
+                        >
+                          <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+                          <span>Explain Fit & Bridge Gap</span>
+                        </button>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -419,6 +433,16 @@ PROJECTS:
                     className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-black dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 text-white text-xs font-bold transition shadow-xs flex items-center justify-center gap-1.5"
                   >
                     Scan Resume with ATS for this Job
+                  </button>
+                  <button
+                    onClick={() => {
+                      setCounterfactualOpp(selectedOpp);
+                      setIsCounterfactualOpen(true);
+                    }}
+                    className="w-full py-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 text-xs font-bold transition flex items-center justify-center gap-1.5 border border-purple-200 dark:border-purple-800/60 shadow-xs"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+                    <span>Explain Fit & Bridge Gap (AI)</span>
                   </button>
                   {selectedOpp.is_expired ? (
                     <button
@@ -974,6 +998,20 @@ PROJECTS:
           </div>
         </div>
       )}
+
+      {/* AI Explainability & Counterfactual Guidance Modal */}
+      <CounterfactualGuidanceModal
+        isOpen={isCounterfactualOpen}
+        onClose={() => {
+          setIsCounterfactualOpen(false);
+          setCounterfactualOpp(null);
+        }}
+        opportunityId={counterfactualOpp?.opportunity_id || selectedOppId}
+        studentId={student.id || "std_1"}
+        opportunityTitle={counterfactualOpp?.title || selectedOpp.title}
+        companyName={counterfactualOpp?.company || selectedOpp.company}
+      />
     </div>
   );
 };
+

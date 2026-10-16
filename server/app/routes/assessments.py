@@ -916,6 +916,16 @@ class VerifyQRRequest(BaseModel):
     qr_payload: str
     student_id: Optional[str] = "std_1"
 
+class ForensicScanCertificateRequest(BaseModel):
+    raw_text: str
+    student_id: Optional[str] = "std_1"
+    student_kyc_name: Optional[str] = None
+    custom_hash: Optional[str] = None
+
+class CommitCertificateToProfileRequest(BaseModel):
+    student_id: str = "std_1"
+    certificate_data: Dict[str, Any]
+
 
 
 @router.get("/integrity-config")
@@ -2050,6 +2060,84 @@ def verify_qr(req: VerifyQRRequest):
         "confidence_pct": result.get("confidence_pct", 98.4),
         "verification": result
     }
+
+
+@router.post("/certificates/scan")
+def scan_certificate_forensics(req: ForensicScanCertificateRequest):
+    """
+    Forensic OCR & Fraud Verification Engine (Phase 1):
+    Ingests raw certificate text, extracts anchors (issuer, title, holder, score, tier),
+    runs Levenshtein KYC name mismatch audits and SHA-256 duplicate image collision checks,
+    and returns verified skills with NCrF academic credit assignment.
+    """
+    from app.services.certificate_scanner import certificate_scanner_service
+    student = next((s for s in STUDENTS if s["id"] == req.student_id), STUDENTS[0])
+    kyc_name = req.student_kyc_name or student.get("name", "Dhruv Patil")
+
+    result = certificate_scanner_service.parse_and_audit_certificate(
+        raw_text=req.raw_text,
+        student_id=req.student_id or "std_1",
+        student_kyc_name=kyc_name,
+        custom_hash=req.custom_hash
+    )
+    return {"status": "success", "audit": result}
+
+
+@router.post("/certificates/commit-to-profile")
+def commit_certificate_to_profile(req: CommitCertificateToProfileRequest):
+    """
+    Commits a verified certificate and its canonical skills into the student's profile,
+    updating the verified score and triggering domain event synchronization.
+    """
+    from app.services.sync_service import sync_service
+    student = next((s for s in STUDENTS if s["id"] == req.student_id), None)
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    cert = req.certificate_data
+    if not cert.get("is_authentic"):
+        raise HTTPException(status_code=400, detail="Cannot commit unverified or suspicious certificate to institutional profile.")
+
+    # 1. Add to achievements / certifications list
+    if "achievements" not in student:
+        student["achievements"] = []
+    
+    cert_entry = f"{cert.get('issuer_key', 'CERT')} — {cert.get('course_title', 'Course')} ({cert.get('tier', 'Verified')})"
+    if cert_entry not in student["achievements"]:
+        student["achievements"].append(cert_entry)
+
+    # 2. Add or elevate skills in student profile
+    for sk in cert.get("skills", []):
+        if sk in student.get("skills", {}):
+            student["skills"][sk]["verified"] = True
+            student["skills"][sk]["score"] = max(student["skills"][sk]["score"], cert.get("score") or 85)
+        else:
+            student["skills"][sk] = {
+                "level": "Intermediate",
+                "score": cert.get("score") or 85,
+                "verified": True
+            }
+
+    # 3. Elevate verified composite score (+2 to +5)
+    student["verified_score"] = min(99, student.get("verified_score", 85) + 3)
+
+    # 4. Broadcast live domain event
+    sync_service.publish_event("CERTIFICATE_VERIFIED", {
+        "student_id": req.student_id,
+        "student_name": student.get("name"),
+        "issuer": cert.get("issuer"),
+        "course": cert.get("course_title"),
+        "sha256": cert.get("sha256_hash"),
+        "ncrf_credits": cert.get("ncrf_credits", 2)
+    })
+
+    return {
+        "status": "success",
+        "message": f"Successfully committed verified credential '{cert.get('course_title')}' to profile.",
+        "student": student,
+        "new_verified_score": student["verified_score"]
+    }
+
 
 @router.get("/jd-analysis")
 def get_student_jd_analysis(

@@ -32,3 +32,28 @@ def scan_resume_fit(req: ResumeScanRequest):
         "status": "success",
         "result": scan_result
     }
+
+class TruthfulResumeAuditRequest(BaseModel):
+    student_id: str = "std_1"
+    claimed_skills: List[str]
+    target_role: Optional[str] = "Full-Stack AI Developer"
+
+@router.get("/truthful-builder/{student_id}")
+def get_truthful_resume(student_id: str, target_role: Optional[str] = "Full-Stack AI Developer"):
+    from app.services.truthful_resume import truthful_resume_service
+    doc = truthful_resume_service.generate_truthful_resume(student_id, target_role=target_role)
+    return {
+        "status": "success",
+        "resume": doc
+    }
+
+@router.post("/truthful-builder/audit")
+def audit_truthful_resume_claims(req: TruthfulResumeAuditRequest):
+    from app.services.truthful_resume import truthful_resume_service
+    payload = req.model_dump() if hasattr(req, "model_dump") else req.dict()
+    audit = truthful_resume_service.audit_resume_claims(req.student_id, payload)
+    return {
+        "status": "success",
+        "audit": audit
+    }
+

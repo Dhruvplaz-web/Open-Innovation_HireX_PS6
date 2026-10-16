@@ -23,12 +23,18 @@ import {
   Globe,
   Linkedin,
   RefreshCw,
-  AlertCircle
+  AlertCircle,
+  Fingerprint,
+  Layers,
+  Lock
 } from 'lucide-react';
 import { StudentProfile, LinkedInConnectionProfile } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { apiService } from '../services/api';
 import { TalentVisibilityCard } from '../components/profile/TalentVisibilityCard';
+import { CertificateScannerModal } from '../components/modals/CertificateScannerModal';
+import { TruthfulResumeBuilderModal } from '../components/modals/TruthfulResumeBuilderModal';
+import { EvidenceMatrixDrawer } from '../components/evidence/EvidenceMatrixDrawer';
 
 interface ProfileViewProps {
   student: StudentProfile;
@@ -50,6 +56,34 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const [college, setCollege] = useState<string>(student.college || userProfile?.college || "JSPM RSCOE, Pune");
   const [department, setDepartment] = useState<string>(student.department || userProfile?.department || "Computer Engineering");
   const [targetRole, setTargetRole] = useState<string>(student.target_role || userProfile?.targetRole || "Full-Stack AI Developer");
+
+  // New Modals State
+  const [isScannerOpen, setIsScannerOpen] = useState<boolean>(false);
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState<boolean>(false);
+  const [isEvidenceMatrixOpen, setIsEvidenceMatrixOpen] = useState<boolean>(false);
+  const [liveSkills, setLiveSkills] = useState<Record<string, any>>(student.skills || {});
+  const [committedCertificates, setCommittedCertificates] = useState<any[]>([]);
+
+  const handleCertificateCommitted = (result: any) => {
+    if (!result) return;
+    const cert = result.certificate;
+    if (cert) {
+      setCommittedCertificates(prev => [cert, ...prev]);
+      if (cert.canonical_skills && cert.canonical_skills.length > 0) {
+        setLiveSkills(prev => {
+          const next = { ...prev };
+          for (const sk of cert.canonical_skills) {
+            next[sk.skill] = {
+              level: sk.level || "Intermediate",
+              score: Math.min(99, (next[sk.skill]?.score || 72) + (sk.evidence_weight || 15)),
+              verified: true
+            };
+          }
+          return next;
+        });
+      }
+    }
+  };
   const [bio, setBio] = useState<string>(
     student.bio || userProfile?.bio ||
     "Final year Computer Engineering student building autonomous agentic systems and high-throughput microservices in Python & TypeScript. Aiming for Tier-1 Product, R&D, and High-Frequency Tech roles across India."
@@ -220,6 +254,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-2.5 self-stretch sm:self-auto">
             <button
+              onClick={() => setIsEvidenceMatrixOpen(true)}
+              className="px-4 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs font-bold transition flex items-center gap-1.5 border border-indigo-200 dark:border-indigo-800/60"
+            >
+              <Layers className="w-3.5 h-3.5 text-indigo-500" />
+              <span>Evidence-to-Skill Matrix</span>
+            </button>
+
+            <button
               onClick={() => setIsEditing(!isEditing)}
               className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1.5"
             >
@@ -228,9 +270,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </button>
 
             <button
-              onClick={() => {
-                alert("Downloading verified PDF resume with cryptographic AICTE/APAAR verification tokens...");
-              }}
+              onClick={() => setIsResumeModalOpen(true)}
               className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5 text-indigo-400" />
@@ -411,19 +451,37 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 </p>
               </div>
 
-              {onOpenAssessment && (
+              <div className="flex flex-wrap items-center gap-2">
                 <button
-                  onClick={onOpenAssessment}
-                  className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5"
+                  onClick={() => setIsScannerOpen(true)}
+                  className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5"
                 >
-                  <ShieldCheck className="w-3.5 h-3.5 text-pink-400" />
-                  <span>Verify New Skill / QR</span>
+                  <Fingerprint className="w-3.5 h-3.5 text-indigo-200" />
+                  <span>Scan Certificate (OCR & Anti-Fraud)</span>
                 </button>
-              )}
+
+                <button
+                  onClick={() => setIsEvidenceMatrixOpen(true)}
+                  className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 text-xs font-bold transition shadow-xs flex items-center gap-1.5 border border-slate-200 dark:border-slate-700"
+                >
+                  <Layers className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Evidence Matrix</span>
+                </button>
+
+                {onOpenAssessment && (
+                  <button
+                    onClick={onOpenAssessment}
+                    className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5"
+                  >
+                    <ShieldCheck className="w-3.5 h-3.5 text-pink-400" />
+                    <span>Verify New Skill / QR</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {Object.entries(student.skills).map(([skill, val]) => (
+              {Object.entries(liveSkills).map(([skill, val]) => (
                 <div
                   key={skill}
                   className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700 flex flex-col justify-between gap-2"
@@ -470,6 +528,25 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </div>
 
             <div className="space-y-2.5">
+              {committedCertificates.map((cert: any, cIdx: number) => (
+                <div key={cIdx} className="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-300/80 dark:border-emerald-800/60 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-in fade-in">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-900 dark:text-white">{cert.credential_title}</span>
+                      <span className="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-200 text-emerald-900 dark:bg-emerald-900/80 dark:text-emerald-100 font-mono">
+                        {cert.tier || "VERIFIED"} ({cert.score || "Passed"})
+                      </span>
+                    </div>
+                    <p className="font-mono text-[10px] text-emerald-800 dark:text-emerald-300 mt-0.5 truncate max-w-lg select-all">
+                      SHA-256: {cert.sha256_hash}
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 shrink-0">
+                    +{cert.ncrf_credits || 2} NCrF Credits Added (Live Verified)
+                  </span>
+                </div>
+              ))}
+
               <div className="p-3.5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/70 dark:border-indigo-800/40 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2">
@@ -672,6 +749,33 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       </div>
         </>
       )}
+
+      {/* 4. Modals: Forensic Scanner, Truthful ATS Resume Builder & Evidence Matrix */}
+      <CertificateScannerModal
+        isOpen={isScannerOpen}
+        onClose={() => setIsScannerOpen(false)}
+        studentId={student.id || "std_1"}
+        studentName={name}
+        onCertificateCommitted={handleCertificateCommitted}
+      />
+
+      <TruthfulResumeBuilderModal
+        isOpen={isResumeModalOpen}
+        onClose={() => setIsResumeModalOpen(false)}
+        studentId={student.id || "std_1"}
+        studentName={name}
+      />
+
+      <EvidenceMatrixDrawer
+        isOpen={isEvidenceMatrixOpen}
+        onClose={() => setIsEvidenceMatrixOpen(false)}
+        studentId={student.id || "std_1"}
+        studentName={name}
+        onEvidenceAdded={() => {
+          // Dynamic refresh
+        }}
+      />
     </div>
   );
 };
+

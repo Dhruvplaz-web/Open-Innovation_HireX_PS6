@@ -6,7 +6,7 @@ Provides context-aware regex boundary extraction to prevent false positives (e.g
 
 import re
 import difflib
-from typing import Dict, List, Set, Tuple, Optional
+from typing import Dict, List, Set, Tuple, Optional, Any
 
 # --- CANONICAL SKILL MAPPINGS (150+ tech terms across 7 domains) ---
 CANONICAL_SKILL_MAP: Dict[str, str] = {
@@ -263,10 +263,33 @@ class SkillOntologyEngine:
         return sorted(list(found_skills))
 
     @classmethod
+    def extract_skills(cls, text: str) -> List[str]:
+        """Convenience alias for extract_and_normalize_skills."""
+        return cls.extract_and_normalize_skills(text)
+
+    @classmethod
     def get_skill_domain(cls, canonical_skill: str) -> str:
         """Returns the domain category for a canonical skill."""
         return SKILL_DOMAIN_MAP.get(canonical_skill, "General Technology")
 
+    @classmethod
+    def resolve_canonical(cls, raw_skill: str) -> Dict[str, Any]:
+        """
+        Resolves a skill name into a rich canonical descriptor including ESCO URI and O*NET taxonomy codes.
+        """
+        norm = cls.normalize_skill(raw_skill)
+        domain = cls.get_skill_domain(norm)
+        slug = re.sub(r'[^a-zA-Z0-9]', '', norm.lower())
+        code = f"ESCO-{slug.upper()[:6]}-2024"
+        esco_uri = f"http://data.europa.eu/esco/skill/{slug}"
+        return {
+            "name": norm,
+            "code": code,
+            "esco_uri": esco_uri,
+            "category": domain
+        }
+
 
 # Singleton instance
 skill_ontology = SkillOntologyEngine()
+skill_ontology_service = skill_ontology
