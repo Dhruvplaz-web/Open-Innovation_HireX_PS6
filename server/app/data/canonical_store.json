@@ -1,0 +1,1737 @@
+{
+  "version": 2,
+  "saved_at": 1792158794.5326715,
+  "users": {},
+  "students": {
+    "std_1": {
+      "id": "std_1",
+      "name": "Dhruv Patil",
+      "email": "dhruv.patil@rscoe.edu.in",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "2026",
+      "cgpa": 8.92,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
+      "verified_score": 84,
+      "skills": {
+        "Python": {
+          "level": "Advanced",
+          "score": 92,
+          "verified": true,
+          "project_verified": true
+        },
+        "React": {
+          "level": "Advanced",
+          "score": 89,
+          "verified": true
+        },
+        "FastAPI": {
+          "level": "Intermediate",
+          "score": 84,
+          "verified": true
+        },
+        "Machine Learning": {
+          "level": "Advanced",
+          "score": 85,
+          "verified": true,
+          "project_verified": true
+        },
+        "Docker": {
+          "level": "Beginner",
+          "score": 68,
+          "verified": false
+        },
+        "PostgreSQL": {
+          "level": "Intermediate",
+          "score": 78,
+          "verified": true
+        },
+        "Data Structures": {
+          "level": "Advanced",
+          "score": 90,
+          "verified": true
+        },
+        "Computer Vision": {
+          "level": "Intermediate",
+          "score": 85,
+          "verified": true,
+          "project_verified": true
+        }
+      },
+      "projects_count": 7,
+      "assessments_completed": 14,
+      "rank_in_college": 4,
+      "target_role": "Full-Stack AI Engineer",
+      "bio": "Phase 1 Persistence Verified",
+      "version": 33,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792158794.4751039,
+      "deleted_at": null,
+      "profile_completion": 60,
+      "linkedin_connected": false,
+      "linkedin_url": "https://www.linkedin.com/in/li_sub_dhruv_9821"
+    },
+    "std_2": {
+      "id": "std_2",
+      "name": "Yuvraj Kadam",
+      "email": "yuvraj.kadam@rscoe.edu.in",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "cgpa": 8.75,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Yuvraj",
+      "verified_score": 85,
+      "skills": {
+        "Python": {
+          "level": "Advanced",
+          "score": 88,
+          "verified": true
+        },
+        "Django": {
+          "level": "Intermediate",
+          "score": 81,
+          "verified": true
+        },
+        "Machine Learning": {
+          "level": "Advanced",
+          "score": 86,
+          "verified": true
+        },
+        "SQL": {
+          "level": "Intermediate",
+          "score": 79,
+          "verified": true
+        },
+        "Docker": {
+          "level": "Intermediate",
+          "score": 74,
+          "verified": true
+        }
+      },
+      "projects_count": 5,
+      "assessments_completed": 12,
+      "rank_in_college": 7,
+      "target_role": "ML & Data Engineer",
+      "bio": "Building scalable ML pipelines and data processing engines.",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null,
+      "profile_completion": 60
+    },
+    "std_3": {
+      "id": "std_3",
+      "name": "Nimisha Joshi",
+      "email": "nimisha.joshi@rscoe.edu.in",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "cgpa": 9.1,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Nimisha",
+      "verified_score": 91,
+      "skills": {
+        "React": {
+          "level": "Advanced",
+          "score": 94,
+          "verified": true
+        },
+        "TypeScript": {
+          "level": "Advanced",
+          "score": 91,
+          "verified": true
+        },
+        "Node.js": {
+          "level": "Intermediate",
+          "score": 85,
+          "verified": true
+        },
+        "UI/UX Design": {
+          "level": "Advanced",
+          "score": 93,
+          "verified": true
+        },
+        "Tailwind CSS": {
+          "level": "Advanced",
+          "score": 95,
+          "verified": true
+        }
+      },
+      "projects_count": 8,
+      "assessments_completed": 16,
+      "rank_in_college": 2,
+      "target_role": "Frontend Architect",
+      "bio": "Specializing in micro-interactions, responsive design, and frontend architecture.",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null,
+      "profile_completion": 60
+    },
+    "std_4": {
+      "id": "std_4",
+      "name": "Khushi Patil",
+      "email": "khushi.patil@rscoe.edu.in",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "cgpa": 8.85,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Khushi",
+      "verified_score": 87,
+      "skills": {
+        "Python": {
+          "level": "Advanced",
+          "score": 89,
+          "verified": true
+        },
+        "Deep Learning": {
+          "level": "Intermediate",
+          "score": 84,
+          "verified": true
+        },
+        "PyTorch": {
+          "level": "Intermediate",
+          "score": 82,
+          "verified": true
+        },
+        "Cloud Computing": {
+          "level": "Intermediate",
+          "score": 78,
+          "verified": true
+        },
+        "FastAPI": {
+          "level": "Intermediate",
+          "score": 83,
+          "verified": true
+        }
+      },
+      "projects_count": 6,
+      "assessments_completed": 13,
+      "rank_in_college": 5,
+      "target_role": "AI Research Trainee",
+      "bio": "Deep learning enthusiast working on NLP and vision systems.",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null,
+      "profile_completion": 60
+    },
+    "std_5": {
+      "id": "std_5",
+      "name": "Rohan Deshmukh",
+      "email": "rohan.deshmukh@coep.ac.in",
+      "college": "COEP Pune",
+      "institution_id": "inst_coep",
+      "department": "Information Technology",
+      "department_id": "dept_it",
+      "year": "4th Year",
+      "cgpa": 8.4,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Rohan",
+      "verified_score": 79,
+      "skills": {
+        "Java": {
+          "level": "Advanced",
+          "score": 88,
+          "verified": true
+        },
+        "Spring Boot": {
+          "level": "Intermediate",
+          "score": 80,
+          "verified": true
+        },
+        "AWS": {
+          "level": "Beginner",
+          "score": 64,
+          "verified": false
+        },
+        "SQL": {
+          "level": "Intermediate",
+          "score": 82,
+          "verified": true
+        }
+      },
+      "projects_count": 4,
+      "assessments_completed": 9,
+      "rank_in_college": 18,
+      "target_role": "Backend Engineer",
+      "bio": "Backend specialist focused on distributed microservices.",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null,
+      "profile_completion": 60
+    },
+    "std_6": {
+      "id": "std_6",
+      "name": "Ananya Sharma",
+      "email": "ananya.sharma@rscoe.edu.in",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "2nd Year",
+      "cgpa": 8.65,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Ananya",
+      "verified_score": 81,
+      "skills": {
+        "Python": {
+          "level": "Intermediate",
+          "score": 84,
+          "verified": true
+        },
+        "Data Structures": {
+          "level": "Advanced",
+          "score": 88,
+          "verified": true
+        },
+        "C++": {
+          "level": "Advanced",
+          "score": 90,
+          "verified": true
+        },
+        "SQL": {
+          "level": "Beginner",
+          "score": 62,
+          "verified": false
+        }
+      },
+      "projects_count": 3,
+      "assessments_completed": 8,
+      "rank_in_college": 12,
+      "target_role": "Software Engineering Intern",
+      "bio": "Sophomore competitive programmer and systems enthusiast.",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null,
+      "profile_completion": 60
+    },
+    "std_7": {
+      "id": "std_7",
+      "name": "Siddharth Mane",
+      "email": "siddharth.mane@rscoe.edu.in",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "4th Year",
+      "cgpa": 8.35,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Siddharth",
+      "verified_score": 83,
+      "skills": {
+        "Java": {
+          "level": "Advanced",
+          "score": 86,
+          "verified": true
+        },
+        "Spring Boot": {
+          "level": "Intermediate",
+          "score": 75,
+          "verified": true
+        },
+        "SQL": {
+          "level": "Advanced",
+          "score": 88,
+          "verified": true
+        },
+        "Docker": {
+          "level": "Intermediate",
+          "score": 78,
+          "verified": true
+        }
+      },
+      "projects_count": 7,
+      "assessments_completed": 15,
+      "rank_in_college": 9,
+      "target_role": "Full-Time Backend Engineer",
+      "bio": "Senior graduating engineer looking for distributed backend roles.",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null,
+      "profile_completion": 60
+    },
+    "std_8": {
+      "id": "std_8",
+      "name": "Aditya Joshi",
+      "email": "aditya.joshi@rscoe.edu.in",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Mechanical Engineering",
+      "department_id": "dept_mech",
+      "year": "3rd Year",
+      "cgpa": 8.1,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Aditya",
+      "verified_score": 72,
+      "skills": {
+        "AutoCAD": {
+          "level": "Advanced",
+          "score": 92,
+          "verified": true
+        },
+        "Python": {
+          "level": "Beginner",
+          "score": 58,
+          "verified": false
+        }
+      },
+      "projects_count": 2,
+      "assessments_completed": 4,
+      "rank_in_college": 25,
+      "target_role": "Robotics & Automation Trainee",
+      "bio": "Mechanical engineer specializing in automation robotics.",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null,
+      "profile_completion": 51
+    }
+  },
+  "student_registrations": {
+    "std_1": {
+      "student_id": "std_1",
+      "full_name": "Dhruv Patil",
+      "mobile_number": "9876543210",
+      "email": "dhruv.patil@rscoe.edu.in",
+      "college_name": "JSPM RSCOE, Pune",
+      "graduating_year": "2026",
+      "stream_branch": "Computer Engineering",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "country": "India",
+      "aadhaar_masked": "XXXX-XXXX-1230",
+      "aadhaar_status": "VERIFIED",
+      "college_id_card_url": "",
+      "college_id_card_filename": "",
+      "resume_text": "",
+      "resume_filename": "",
+      "github_url": "https://github.com/dhruv-patil",
+      "linkedin_url": "https://www.linkedin.com/in/dhruv-patil",
+      "linkedin_connected": false,
+      "projects": [],
+      "updated_at": 1792158794,
+      "aadhaar_tx_id": "UIDAI-AUTH-4C5288BE88C6",
+      "college_id_status": "REAL",
+      "college_id_text": "JSPM RSCOE Computer Engineering PRN: 72153921K Valid Till: 2026",
+      "college_id_badge": "Official College ID Verified ✓"
+    }
+  },
+  "companies": {
+    "comp_barclays_i": {
+      "id": "comp_barclays_i",
+      "name": "Barclays India Innovation Centre",
+      "website": "https://company.com",
+      "verification_status": "COMPANY_VERIFIED",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    }
+  },
+  "recruiters": {
+    "rec_1": {
+      "id": "rec_1",
+      "name": "Priya Sharma",
+      "email": "priya.sharma@barclays.com",
+      "title": "Senior Campus Talent Partner",
+      "company": "Barclays India Innovation Centre",
+      "company_id": "comp_barclays",
+      "active_listings": 4,
+      "total_applicants": 84,
+      "verified_shortlisted": 18,
+      "interviews_scheduled": 7,
+      "offers_released": 3,
+      "is_email_verified": true,
+      "status": "APPROVED",
+      "verification_timestamp": "2026-09-10T10:00:00Z",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    }
+  },
+  "academicians": {
+    "acad_1": {
+      "id": "acad_1",
+      "name": "Dr. Rajesh Kulkarni",
+      "email": "hod.comp@rscoe.edu.in",
+      "title": "Head of Department (Computer Engineering)",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "access_scope": "department",
+      "is_email_verified": true,
+      "status": "APPROVED",
+      "verification_timestamp": "2026-09-15T08:00:00Z",
+      "total_students": 240,
+      "active_on_portal": 218,
+      "placed_students": 142,
+      "internship_secured": 76,
+      "placement_rate_pct": 74.2,
+      "average_package_lpa": 7.8,
+      "industry_partnerships": 19,
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    }
+  },
+  "institutions": {
+    "inst_rscoe": {
+      "id": "inst_rscoe",
+      "name": "JSPM RSCOE, Pune",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    },
+    "inst_coep": {
+      "id": "inst_coep",
+      "name": "COEP Pune",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    }
+  },
+  "departments": {
+    "dept_comp": {
+      "id": "dept_comp",
+      "name": "Computer Engineering",
+      "institution_id": "inst_rscoe",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    },
+    "dept_mech": {
+      "id": "dept_mech",
+      "name": "Mechanical Engineering",
+      "institution_id": "inst_rscoe",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    },
+    "dept_it": {
+      "id": "dept_it",
+      "name": "Information Technology",
+      "institution_id": "inst_coep",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    }
+  },
+  "opportunities": {
+    "opp_1": {
+      "id": "opp_1",
+      "title": "Full-Stack AI Developer Intern",
+      "company": "Barclays India Innovation Centre",
+      "logo_text": "BARCLAYS",
+      "location": "Bengaluru & Pune (Hybrid)",
+      "stipend": "₹45,000 / month",
+      "duration": "6 Months",
+      "type": "Internship to PPO",
+      "required_skills": [
+        "Python",
+        "React",
+        "FastAPI",
+        "Machine Learning"
+      ],
+      "good_to_have": [
+        "Docker",
+        "PostgreSQL"
+      ],
+      "skillRequirements": [
+        {
+          "skill": "Python",
+          "importance": "MUST_HAVE",
+          "targetLevel": 80
+        },
+        {
+          "skill": "React",
+          "importance": "MUST_HAVE",
+          "targetLevel": 80
+        },
+        {
+          "skill": "FastAPI",
+          "importance": "MUST_HAVE",
+          "targetLevel": 75
+        },
+        {
+          "skill": "Machine Learning",
+          "importance": "MUST_HAVE",
+          "targetLevel": 75
+        },
+        {
+          "skill": "Docker",
+          "importance": "NICE_TO_HAVE",
+          "targetLevel": 65
+        },
+        {
+          "skill": "PostgreSQL",
+          "importance": "NICE_TO_HAVE",
+          "targetLevel": 70
+        }
+      ],
+      "min_verified_score": 80,
+      "openings": 4,
+      "deadline": "2026-10-30",
+      "color_theme": "indigo",
+      "description": "Work with the Global Technology team across Bengaluru & Pune to build AI-driven financial copilot services.",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    },
+    "opp_2": {
+      "id": "opp_2",
+      "title": "Junior Machine Learning Engineer",
+      "company": "TechCorp Innovations",
+      "logo_text": "TECHCORP",
+      "location": "HITEC City, Hyderabad",
+      "stipend": "₹50,000 / month",
+      "duration": "6 Months",
+      "type": "Full-Time Placement",
+      "required_skills": [
+        "Python",
+        "Machine Learning",
+        "PyTorch",
+        "FastAPI"
+      ],
+      "good_to_have": [
+        "Docker",
+        "Data Structures"
+      ],
+      "skillRequirements": [
+        {
+          "skill": "Python",
+          "importance": "MUST_HAVE",
+          "targetLevel": 85
+        },
+        {
+          "skill": "Machine Learning",
+          "importance": "MUST_HAVE",
+          "targetLevel": 80
+        },
+        {
+          "skill": "PyTorch",
+          "importance": "MUST_HAVE",
+          "targetLevel": 75
+        },
+        {
+          "skill": "FastAPI",
+          "importance": "NICE_TO_HAVE",
+          "targetLevel": 70
+        },
+        {
+          "skill": "Docker",
+          "importance": "NICE_TO_HAVE",
+          "targetLevel": 65
+        }
+      ],
+      "min_verified_score": 82,
+      "openings": 2,
+      "deadline": "2026-11-15",
+      "color_theme": "pink",
+      "description": "Develop and deploy deep learning models for predictive maintenance and intelligent automation.",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    },
+    "opp_3": {
+      "id": "opp_3",
+      "title": "Frontend Architect Trainee",
+      "company": "Persistent Systems",
+      "logo_text": "PERSISTENT",
+      "location": "Pune & Hyderabad",
+      "stipend": "₹38,000 / month",
+      "duration": "4 Months",
+      "type": "Internship",
+      "required_skills": [
+        "React",
+        "TypeScript",
+        "Tailwind CSS"
+      ],
+      "good_to_have": [
+        "UI/UX Design",
+        "Node.js"
+      ],
+      "skillRequirements": [
+        {
+          "skill": "React",
+          "importance": "MUST_HAVE",
+          "targetLevel": 80
+        },
+        {
+          "skill": "TypeScript",
+          "importance": "MUST_HAVE",
+          "targetLevel": 75
+        },
+        {
+          "skill": "Tailwind CSS",
+          "importance": "MUST_HAVE",
+          "targetLevel": 70
+        },
+        {
+          "skill": "UI/UX Design",
+          "importance": "NICE_TO_HAVE",
+          "targetLevel": 70
+        },
+        {
+          "skill": "Node.js",
+          "importance": "NICE_TO_HAVE",
+          "targetLevel": 65
+        }
+      ],
+      "min_verified_score": 78,
+      "openings": 5,
+      "deadline": "2026-11-05",
+      "color_theme": "peach",
+      "description": "Create next-generation web applications with accessible, smooth micro-interactions.",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    },
+    "opp_4": {
+      "id": "opp_4",
+      "title": "Cloud & DevOps Associate",
+      "company": "Tata Technologies",
+      "logo_text": "TATA TECH",
+      "location": "Bengaluru & Pune",
+      "stipend": "₹42,000 / month",
+      "duration": "6 Months",
+      "type": "Placement Track",
+      "required_skills": [
+        "Docker",
+        "Cloud Computing",
+        "Python",
+        "SQL"
+      ],
+      "good_to_have": [
+        "Kubernetes",
+        "Linux"
+      ],
+      "skillRequirements": [
+        {
+          "skill": "Docker",
+          "importance": "MUST_HAVE",
+          "targetLevel": 75
+        },
+        {
+          "skill": "Cloud Computing",
+          "importance": "MUST_HAVE",
+          "targetLevel": 75
+        },
+        {
+          "skill": "Python",
+          "importance": "MUST_HAVE",
+          "targetLevel": 70
+        },
+        {
+          "skill": "SQL",
+          "importance": "NICE_TO_HAVE",
+          "targetLevel": 65
+        },
+        {
+          "skill": "Kubernetes",
+          "importance": "NICE_TO_HAVE",
+          "targetLevel": 65
+        }
+      ],
+      "min_verified_score": 75,
+      "openings": 3,
+      "deadline": "2026-10-28",
+      "color_theme": "sky",
+      "description": "Architect robust CI/CD pipelines and manage multi-cloud infrastructure.",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    },
+    "opp_5": {
+      "id": "opp_5",
+      "title": "High-Throughput Distributed Systems Intern",
+      "company": "Flipkart Commerce Labs",
+      "logo_text": "FLIPKART",
+      "location": "Bellandur, Bengaluru",
+      "stipend": "₹65,000 / month",
+      "duration": "6 Months",
+      "type": "Internship to PPO",
+      "required_skills": [
+        "Data Structures",
+        "Java",
+        "Python",
+        "SQL"
+      ],
+      "good_to_have": [
+        "Kafka",
+        "Redis"
+      ],
+      "min_verified_score": 85,
+      "openings": 4,
+      "deadline": "2026-11-20",
+      "color_theme": "indigo",
+      "description": "Scale distributed inventory caching engines handling millions of transactions per second.",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    }
+  },
+  "applications": {
+    "app_1": {
+      "id": "app_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "student_email": "dhruv.patil@rscoe.edu.in",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "opportunity_id": "opp_1",
+      "company": "Barclays India Innovation Centre",
+      "title": "Full-Stack AI Developer Intern",
+      "match_percentage": 92,
+      "matched_skills": [
+        "Python",
+        "React",
+        "FastAPI"
+      ],
+      "status": "Shortlisted",
+      "applied_at": "2026-10-01T10:30:00Z",
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-01T10:30:00Z",
+          "note": "Direct placement pipeline"
+        },
+        {
+          "status": "Shortlisted",
+          "updated_at": "2026-10-02T14:00:00Z",
+          "note": "Verified React & Python scores meet benchmark cutoff"
+        }
+      ],
+      "jdFitScore": 96,
+      "jdFitVerdict": "STRONG_FIT",
+      "jdFitSummary": {
+        "mustHaveCoverage": 100.0,
+        "niceToHaveCoverage": 100.0,
+        "topGaps": [],
+        "metCount": 6,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-02T14:00:00Z",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    },
+    "app_2": {
+      "id": "app_2",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "student_email": "dhruv.patil@rscoe.edu.in",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "opportunity_id": "opp_2",
+      "company": "TechCorp Innovations",
+      "title": "Junior Machine Learning Engineer",
+      "match_percentage": 84,
+      "matched_skills": [
+        "Python",
+        "Machine Learning",
+        "FastAPI"
+      ],
+      "status": "Applied",
+      "applied_at": "2026-10-03T11:15:00Z",
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-03T11:15:00Z",
+          "note": "Direct campus application (Demo Data)"
+        }
+      ],
+      "jdFitScore": 73,
+      "jdFitVerdict": "PARTIAL_FIT",
+      "jdFitSummary": {
+        "mustHaveCoverage": 71.4,
+        "niceToHaveCoverage": 100.0,
+        "topGaps": [
+          "PyTorch"
+        ],
+        "metCount": 4,
+        "totalCount": 5
+      },
+      "jdFitComputedAt": "2026-10-03T11:15:00Z",
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    },
+    "app_3": {
+      "id": "app_3",
+      "student_id": "std_2",
+      "student_name": "Yuvraj Kadam",
+      "student_email": "yuvraj.kadam@rscoe.edu.in",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "opportunity_id": "opp_1",
+      "company": "Barclays India Innovation Centre",
+      "title": "Full-Stack AI Developer Intern",
+      "match_percentage": 78,
+      "matched_skills": [
+        "Python",
+        "Machine Learning"
+      ],
+      "status": "Applied",
+      "applied_at": "2026-10-04T09:20:00Z",
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-04T09:20:00Z",
+          "note": "Standard applicant without pre-computed snapshot (Demo Data)"
+        }
+      ],
+      "jdFitScore": null,
+      "jdFitVerdict": null,
+      "jdFitSummary": null,
+      "jdFitComputedAt": null,
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    }
+  },
+  "assessments": {},
+  "recommendations": {
+    "rec_c_1": {
+      "id": "rec_c_1",
+      "academician_id": "acad_1",
+      "academician_name": "Dr. Rajesh Kulkarni",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department_id": "dept_comp",
+      "target_type": "cohort",
+      "target_id": "dept_comp",
+      "target_label": "Entire Computer Engineering Cohort",
+      "skill": "FastAPI",
+      "course_id": "crs_fa_1",
+      "course_title": "FastAPI, Docker & Modern Microservices Architecture",
+      "provider": "Coursera / DeepLearning.AI",
+      "duration": "6 Weeks",
+      "link": "https://www.coursera.org",
+      "note": "Critical industry gap identified: +184% live market demand in campus drives.",
+      "created_at": 1792149868.2778537,
+      "version": 1,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    },
+    "rec_c_2": {
+      "id": "rec_c_2",
+      "academician_id": "acad_1",
+      "academician_name": "Dr. Rajesh Kulkarni",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department_id": "dept_comp",
+      "target_type": "individual",
+      "target_id": "std_1",
+      "target_label": "Dhruv Patil (3rd Year)",
+      "skill": "Docker",
+      "course_id": "crs_dk_1",
+      "course_title": "Docker & Container Mastery for Production Engineers",
+      "provider": "NPTEL / IIT Madras",
+      "duration": "4 Weeks",
+      "link": "https://nptel.ac.in",
+      "note": "Completing this micro-lab bridges your Docker gap for the Barclays Innovation Lab drive.",
+      "created_at": 1792149868.2778537,
+      "version": 1,
+      "updated_at": 1792149868.2778537,
+      "deleted_at": null
+    }
+  },
+  "audit_logs": [
+    {
+      "log_id": "aud_1792150682377_c0f1",
+      "timestamp": 1792150682.377721,
+      "iso_time": "2026-10-16T11:38:02Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792150942628_7c72",
+      "timestamp": 1792150942.6280074,
+      "iso_time": "2026-10-16T11:42:22Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792152185220_bd0b",
+      "timestamp": 1792152185.2212029,
+      "iso_time": "2026-10-16T12:03:05Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792153324919_f50c",
+      "timestamp": 1792153324.9195483,
+      "iso_time": "2026-10-16T12:22:04Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792153448028_8f62",
+      "timestamp": 1792153448.028678,
+      "iso_time": "2026-10-16T12:24:08Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792153639582_580e",
+      "timestamp": 1792153639.5823817,
+      "iso_time": "2026-10-16T12:27:19Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792154066315_51cf",
+      "timestamp": 1792154066.3158267,
+      "iso_time": "2026-10-16T12:34:26Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792154373782_48a1",
+      "timestamp": 1792154373.782095,
+      "iso_time": "2026-10-16T12:39:33Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792154469508_93e0",
+      "timestamp": 1792154469.5089068,
+      "iso_time": "2026-10-16T12:41:09Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792158792937_711c",
+      "timestamp": 1792158792.9370534,
+      "iso_time": "2026-10-16T13:53:12Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    }
+  ],
+  "notifications": [],
+  "match_cache": {},
+  "skill_reviews": {},
+  "assessment_questions": {},
+  "assessment_attempts": {},
+  "student_seen_questions": {},
+  "curriculum_mappings": {
+    "cur_dsa": {
+      "id": "cur_dsa",
+      "subject": "Data Structures & Algorithms",
+      "code": "CS-301",
+      "department_id": "dept_comp",
+      "institution_id": "inst_rscoe",
+      "semester": "Semester 5",
+      "topics": [
+        "Arrays & Dynamic Arrays",
+        "Linked Lists",
+        "Stacks & Queues",
+        "Trees & Binary Search Trees",
+        "Graphs & Graph Traversals (BFS/DFS)",
+        "Sorting & Searching Algorithms",
+        "Time & Space Complexity Analysis",
+        "Dynamic Programming Basics"
+      ],
+      "mapped_skills": [
+        "DSA",
+        "Python",
+        "Algorithmic Thinking",
+        "Problem Solving"
+      ],
+      "industry_requirements": [
+        "Array/Graph Manipulations",
+        "LeetCode-Style Optimization",
+        "Clean Code AST Standards"
+      ],
+      "curriculum_coverage_pct": 91,
+      "expected_skill_level_pct": 80,
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537
+    },
+    "cur_dbms": {
+      "id": "cur_dbms",
+      "subject": "Database Management Systems",
+      "code": "CS-302",
+      "department_id": "dept_comp",
+      "institution_id": "inst_rscoe",
+      "semester": "Semester 5",
+      "topics": [
+        "Relational Data Models",
+        "SQL DDL / DML / DQL",
+        "Complex Joins & Subqueries",
+        "Indexes & Query Optimization",
+        "ACID Transactions & Concurrency",
+        "Normalization (1NF to BCNF)",
+        "NoSQL & MongoDB Introduction"
+      ],
+      "mapped_skills": [
+        "SQL",
+        "PostgreSQL",
+        "Database Design",
+        "Performance Tuning"
+      ],
+      "industry_requirements": [
+        "High-Throughput Queries",
+        "Index Strategy",
+        "Data Integrity Assurance"
+      ],
+      "curriculum_coverage_pct": 88,
+      "expected_skill_level_pct": 75,
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537
+    },
+    "cur_web_cloud": {
+      "id": "cur_web_cloud",
+      "subject": "Web Technologies & Cloud Architecture",
+      "code": "CS-303",
+      "department_id": "dept_comp",
+      "institution_id": "inst_rscoe",
+      "semester": "Semester 6",
+      "topics": [
+        "Modern Frontend (React, Component Architecture)",
+        "RESTful API & FastAPI / Express",
+        "Asynchronous JavaScript & TypeScript",
+        "Microservices & Containerization (Docker)",
+        "Cloud Deployment & Serverless Basics (AWS/GCP)",
+        "Security, JWT & OAuth2"
+      ],
+      "mapped_skills": [
+        "React",
+        "FastAPI",
+        "Docker",
+        "AWS",
+        "TypeScript",
+        "REST API"
+      ],
+      "industry_requirements": [
+        "Production Cloud-Native Services",
+        "State Management",
+        "CI/CD Deployment"
+      ],
+      "curriculum_coverage_pct": 82,
+      "expected_skill_level_pct": 70,
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537
+    },
+    "cur_aiml": {
+      "id": "cur_aiml",
+      "subject": "Artificial Intelligence & Applied Machine Learning",
+      "code": "CS-304",
+      "department_id": "dept_comp",
+      "institution_id": "inst_rscoe",
+      "semester": "Semester 6",
+      "topics": [
+        "Supervised Learning (Regression, Classification)",
+        "Scikit-Learn Model Pipelines",
+        "Feature Engineering & Data Cleaning",
+        "Neural Networks & Deep Learning Foundations",
+        "Evaluation Metrics (Precision, Recall, ROC-AUC)",
+        "Agentic Workflows & LLM Integration"
+      ],
+      "mapped_skills": [
+        "Machine Learning",
+        "Python",
+        "Data Science",
+        "Scikit-Learn"
+      ],
+      "industry_requirements": [
+        "Production ML Inference",
+        "Pipeline Robustness",
+        "Model Monitoring"
+      ],
+      "curriculum_coverage_pct": 85,
+      "expected_skill_level_pct": 75,
+      "version": 1,
+      "created_at": 1792149868.2778537,
+      "updated_at": 1792149868.2778537
+    }
+  },
+  "academic_assignments": {
+    "asg_1": {
+      "id": "asg_1",
+      "title": "DSA Intermediate Mastery Challenge",
+      "type": "coding_challenge",
+      "skill": "DSA",
+      "target_type": "cohort",
+      "target_id": "dept_comp",
+      "target_label": "2027 CSE Batch",
+      "institution_id": "inst_rscoe",
+      "department_id": "dept_comp",
+      "created_by": "acad_1",
+      "creator_name": "Dr. Rajesh Kulkarni",
+      "description": "Complete intermediate Tree traversal and Dynamic Programming challenges to bridge the 29% cohort skill gap.",
+      "status": "In Progress",
+      "difficulty": "Intermediate",
+      "due_date": "2026-10-30",
+      "points": 100,
+      "total_assigned": 8,
+      "completed_count": 5,
+      "average_score": 76.4,
+      "created_at": 1791717868.2778537,
+      "version": 1
+    },
+    "asg_2": {
+      "id": "asg_2",
+      "title": "SQL Analytical Query Optimization Lab",
+      "type": "technical_assessment",
+      "skill": "SQL",
+      "target_type": "cohort",
+      "target_id": "dept_comp",
+      "target_label": "2027 CSE Batch",
+      "institution_id": "inst_rscoe",
+      "department_id": "dept_comp",
+      "created_by": "acad_1",
+      "creator_name": "Dr. Rajesh Kulkarni",
+      "description": "Solve complex relational joins, aggregations, and window functions simulating real recruiter technical benchmarks.",
+      "status": "Completed",
+      "difficulty": "Intermediate",
+      "due_date": "2026-10-15",
+      "points": 100,
+      "total_assigned": 8,
+      "completed_count": 7,
+      "average_score": 82.1,
+      "created_at": 1791113068.2778537,
+      "version": 1
+    },
+    "asg_3": {
+      "id": "asg_3",
+      "title": "National Campus Aptitude Simulation Series",
+      "type": "aptitude_test",
+      "skill": "Aptitude",
+      "target_type": "cohort",
+      "target_id": "dept_comp",
+      "target_label": "2027 CSE Batch",
+      "institution_id": "inst_rscoe",
+      "department_id": "dept_comp",
+      "created_by": "acad_1",
+      "creator_name": "Dr. Rajesh Kulkarni",
+      "description": "Timed quantitative aptitude, logical reasoning, and verbal analysis test calibrated against Barclays and TCS benchmarks.",
+      "status": "In Progress",
+      "difficulty": "Advanced",
+      "due_date": "2026-11-05",
+      "points": 100,
+      "total_assigned": 8,
+      "completed_count": 6,
+      "average_score": 84.5,
+      "created_at": 1791890668.2778537,
+      "version": 1
+    }
+  },
+  "assignment_submissions": {
+    "sub_1": {
+      "id": "sub_1",
+      "assignment_id": "asg_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "status": "Evaluated",
+      "submitted_at": "2026-10-16T11:24:28Z",
+      "score": 92,
+      "feedback": "Flawless tree recursion and optimal time complexity.",
+      "skill_updated": true,
+      "created_at": 1791977068.2778537,
+      "version": 1
+    },
+    "sub_2": {
+      "id": "sub_2",
+      "assignment_id": "asg_1",
+      "student_id": "std_2",
+      "student_name": "Yuvraj Kadam",
+      "status": "Evaluated",
+      "submitted_at": "2026-10-16T11:24:28Z",
+      "score": 85,
+      "feedback": "Good algorithmic structure; minor space overhead on memoization.",
+      "skill_updated": true,
+      "created_at": 1791977068.2778537,
+      "version": 1
+    }
+  },
+  "academic_interventions": {
+    "int_1": {
+      "id": "int_1",
+      "student_id": "std_2",
+      "student_name": "Yuvraj Kadam",
+      "institution_id": "inst_rscoe",
+      "department_id": "dept_comp",
+      "cohort": "2027 CSE Batch",
+      "priority": "HIGH",
+      "trigger_reasons": [
+        "DSA proficiency below target (56% vs 85% target)",
+        "Aptitude practice incomplete (< 3 completed tests)"
+      ],
+      "suggested_action": "Assign intermediate DSA practice and schedule peer mentoring",
+      "action_type": "assign_practice",
+      "status": "pending",
+      "created_by": "acad_1",
+      "created_at": "2026-10-16T11:24:28Z",
+      "version": 1
+    },
+    "int_2": {
+      "id": "int_2",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "institution_id": "inst_rscoe",
+      "department_id": "dept_comp",
+      "cohort": "2027 CSE Batch",
+      "priority": "MEDIUM",
+      "trigger_reasons": [
+        "No verified repository or code lab submission for Docker",
+        "SQL assessment incomplete"
+      ],
+      "suggested_action": "Request project evidence and assign SQL starter lab",
+      "action_type": "request_evidence",
+      "status": "pending",
+      "created_by": "acad_1",
+      "created_at": "2026-10-16T11:24:28Z",
+      "version": 1
+    }
+  },
+  "campus_drives": {
+    "drv_1": {
+      "id": "drv_1",
+      "title": "Barclays India 2026/2027 Campus Innovation Drive",
+      "recruiter_id": "recruiter_1",
+      "company": "Barclays India Innovation Centre",
+      "institution_id": "inst_rscoe",
+      "department_id": "dept_comp",
+      "batch": "2027 CSE",
+      "job_id": "opp_1",
+      "eligible_programs": [
+        "B.Tech Computer Engineering",
+        "B.Tech Information Technology"
+      ],
+      "min_cgpa": 7.5,
+      "min_assessment_score": 75,
+      "required_skills": [
+        "Python",
+        "FastAPI",
+        "SQL",
+        "DSA"
+      ],
+      "preferred_skills": [
+        "Docker",
+        "AWS"
+      ],
+      "salary": "₹12.5 LPA - ₹16.0 LPA",
+      "stipend": "₹45,000 / month",
+      "openings": 5,
+      "deadline": "2026-11-20",
+      "current_round": "Technical Interview",
+      "stages": [
+        {
+          "name": "Eligibility & Screening",
+          "candidates_count": 8,
+          "status": "completed"
+        },
+        {
+          "name": "Online Skill Assessment",
+          "candidates_count": 6,
+          "status": "completed"
+        },
+        {
+          "name": "Shortlisting",
+          "candidates_count": 4,
+          "status": "completed"
+        },
+        {
+          "name": "Technical Interview",
+          "candidates_count": 3,
+          "status": "in_progress"
+        },
+        {
+          "name": "HR Interview",
+          "candidates_count": 0,
+          "status": "pending"
+        },
+        {
+          "name": "Offer Release",
+          "candidates_count": 0,
+          "status": "pending"
+        },
+        {
+          "name": "Joined",
+          "candidates_count": 0,
+          "status": "pending"
+        }
+      ],
+      "status": "active",
+      "created_at": 1791545068.2778537,
+      "version": 1
+    }
+  },
+  "recruiter_assessments": {
+    "rec_asg_1": {
+      "id": "rec_asg_1",
+      "recruiter_id": "recruiter_1",
+      "company": "Barclays India Innovation Centre",
+      "title": "Fintech Full-Stack & Algorithm Hiring Assessment",
+      "target_job_id": "opp_1",
+      "duration_minutes": 60,
+      "passing_score": 75,
+      "sections": [
+        {
+          "name": "Quantitative & Logical Aptitude",
+          "questions_count": 10,
+          "weight": 25
+        },
+        {
+          "name": "Coding (DSA & Complexity)",
+          "questions_count": 2,
+          "weight": 35
+        },
+        {
+          "name": "SQL & Relational Architecture",
+          "questions_count": 5,
+          "weight": 25
+        },
+        {
+          "name": "Technical Architecture MCQs",
+          "questions_count": 10,
+          "weight": 15
+        }
+      ],
+      "total_takers": 6,
+      "avg_score": 81.2,
+      "created_at": 1791631468.2778537,
+      "version": 1
+    }
+  },
+  "recruiter_assessment_results": {
+    "res_1": {
+      "id": "res_1",
+      "assessment_id": "rec_asg_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "job_id": "opp_1",
+      "scores_by_section": {
+        "Aptitude": 90,
+        "Coding": 95,
+        "SQL": 88,
+        "Architecture": 92
+      },
+      "overall_score": 91.5,
+      "passed": true,
+      "completed_at": "2026-10-16T11:24:28Z",
+      "is_platform_verification": false,
+      "version": 1
+    }
+  },
+  "candidate_feedbacks": {
+    "fb_1": {
+      "id": "fb_1",
+      "application_id": "app_1",
+      "recruiter_id": "recruiter_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "job_id": "opp_1",
+      "round": "Technical Interview 1",
+      "technical_knowledge": 5,
+      "problem_solving": 5,
+      "communication": 4,
+      "skill_ratings": {
+        "Python": 5,
+        "FastAPI": 4,
+        "DSA": 4,
+        "Docker": 3
+      },
+      "strengths": "Outstanding grasp of async programming, API design, and AST complexity optimization.",
+      "improvement_areas": "Deepen containerization orchestration (Kubernetes / Docker Compose multi-stage builds).",
+      "recommended_student_action": "Complete Docker Production Lab & Multi-Stage Deployment Challenge in Code Lab.",
+      "created_at": "2026-10-16T11:24:28Z",
+      "version": 1
+    }
+  },
+  "skill_timelines": {
+    "std_1": [
+      {
+        "skill": "Python",
+        "month": "Jan",
+        "score": 62,
+        "event": "Self-declared enrollment",
+        "source": "Student Profile",
+        "timestamp": "2026-01-15T10:00:00Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Feb",
+        "score": 74,
+        "event": "Code Lab AST Challenge Completed",
+        "source": "Code Lab",
+        "timestamp": "2026-02-20T14:30:00Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Mar",
+        "score": 86,
+        "event": "Project Repository Verified & Faculty Endorsed",
+        "source": "Faculty Verification",
+        "timestamp": "2026-03-25T11:00:00Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Apr",
+        "score": 92,
+        "event": "Adaptive Timed Skill Assessment Passed",
+        "source": "Platform Assessment",
+        "timestamp": "2026-04-12T16:45:00Z"
+      },
+      {
+        "skill": "DSA",
+        "month": "Jan",
+        "score": 42,
+        "event": "Initial Aptitude Diagnostic",
+        "source": "Platform Assessment",
+        "timestamp": "2026-01-20T09:00:00Z"
+      },
+      {
+        "skill": "DSA",
+        "month": "Feb",
+        "score": 51,
+        "event": "Academic Assignment: Arrays & Linked Lists",
+        "source": "Academician Assignment",
+        "timestamp": "2026-02-18T10:00:00Z"
+      },
+      {
+        "skill": "DSA",
+        "month": "Mar",
+        "score": 63,
+        "event": "Faculty Intervention: Peer Mentoring Lab",
+        "source": "Academician Intervention",
+        "timestamp": "2026-03-22T15:00:00Z"
+      },
+      {
+        "skill": "DSA",
+        "month": "Apr",
+        "score": 78,
+        "event": "Barclays Hiring Assessment Section Completed",
+        "source": "Recruiter Assessment",
+        "timestamp": "2026-04-05T14:00:00Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-16T11:38:02Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-16T11:42:22Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-16T12:03:05Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-16T12:22:04Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-16T12:24:08Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-16T12:27:19Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-16T12:34:26Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-16T12:39:33Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-16T12:41:09Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-16T13:53:12Z"
+      }
+    ]
+  }
+}

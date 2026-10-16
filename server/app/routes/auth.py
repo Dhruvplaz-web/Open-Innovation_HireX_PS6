@@ -47,7 +47,7 @@ DEMO_ACCOUNTS = [
     {
         "role": "admin",
         "name": "Admin Controller",
-        "email": "admin@skillbridge.edu.in",
+        "email": "admin@hirex.edu.in",
         "title": "National Platform Lead",
         "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
         "id": "adm_1"

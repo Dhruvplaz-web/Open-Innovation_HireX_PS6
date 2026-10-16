@@ -26,6 +26,9 @@ from app.ml.job_matcher import matcher
 from app.ml.demand_predictor import trend_predictor
 from app.ml.skill_extractor import skill_extractor
 from app.ml.skill_intelligence import skill_intelligence, normalize_skill_name
+from app.ml.aadhaar_verifier import verify_aadhaar, generate_verhoeff_sample
+from app.ml.id_card_auditor import id_card_auditor
+from app.db.canonical_store import canonical_store
 from app.models.linkedin import validate_linkedin_url, LINKEDIN_CONNECTIONS
 from app.services.opportunity_lifecycle import validate_can_apply, evaluate_opportunity_lifecycle, filter_active_opportunities
 from app.services.jd_skill_analysis import analyze_student_for_opportunity
@@ -105,6 +108,17 @@ class VerifyAadhaarDemoRequest(BaseModel):
     aadhaar_last4: str = "1234"
     desired_status: str = "VERIFIED"
 
+class VerifyAadhaarRequest(BaseModel):
+    student_id: str = "std_1"
+    aadhaar_number: str = "456789011230"
+
+class VerifyCollegeIdRequest(BaseModel):
+    student_id: str = "std_1"
+    college_id_text: Optional[str] = ""
+    college_name: Optional[str] = "JSPM RSCOE, Pune"
+    file_name: Optional[str] = "college_id_card.png"
+    image_b64: Optional[str] = None
+
 class StudentProfileUpdateRequest(BaseModel):
     id: Optional[str] = "std_1"
     name: Optional[str] = None
@@ -119,7 +133,7 @@ class StudentProfileUpdateRequest(BaseModel):
 
 @router.get("/dashboard")
 def get_student_dashboard(student_id: str = Query("std_1")):
-    student = next((s for s in STUDENTS if s["id"] == student_id), STUDENTS[0])
+    student = next((s for s in STUDENTS if s["id"] == student_id), None) or canonical_store.get_student(student_id) or STUDENTS[0]
     
     # 1. Match opportunities using ML Model 2 (Pillar 2: Strictly active non-expired drives)
     matched_opps = matcher.rank_opportunities_for_student(student, OPPORTUNITIES, include_expired=False)
@@ -304,6 +318,14 @@ def submit_student_registration(req: StudentRegistrationRequest):
         }
         STUDENTS.append(new_std)
 
+    # Persist atomically in Canonical Store
+    try:
+        canonical_store.save_student_registration(reg_record)
+        target_student = existing if existing else new_std
+        canonical_store.save_student_profile(target_student, actor_id=std_id)
+    except Exception:
+        pass
+
     return {
         "status": "success",
         "message": "Student registration profile successfully saved.",
@@ -318,8 +340,8 @@ def get_profile_completion(student_id: str = Query("std_1")):
     """
     Evaluates profile completion status against mandatory and recommended fields.
     """
-    reg = STUDENT_REGISTRATIONS.get(student_id)
-    student = next((s for s in STUDENTS if s["id"] == student_id), STUDENTS[0])
+    reg = STUDENT_REGISTRATIONS.get(student_id) or canonical_store.get_student_registration(student_id)
+    student = next((s for s in STUDENTS if s["id"] == student_id), None) or canonical_store.get_student(student_id) or STUDENTS[0]
 
     conn = LINKEDIN_CONNECTIONS.get(student_id)
     is_li_connected = bool(conn and conn.get("connection_status") == "CONNECTED")
@@ -362,10 +384,14 @@ def verify_aadhaar_demo(req: VerifyAadhaarDemoRequest):
     Demo / Sandbox Aadhaar verification.
     Clearly labeled as Sandbox Demo without claiming live UIDAI access.
     """
-    reg = STUDENT_REGISTRATIONS.get(req.student_id, {})
+    reg = STUDENT_REGISTRATIONS.setdefault(req.student_id, {})
     reg["aadhaar_status"] = req.desired_status
     reg["aadhaar_masked"] = f"XXXX-XXXX-{req.aadhaar_last4}"
     STUDENT_REGISTRATIONS[req.student_id] = reg
+    try:
+        canonical_store.save_student_registration(reg)
+    except Exception:
+        pass
 
     return {
         "status": "success",
@@ -374,6 +400,49 @@ def verify_aadhaar_demo(req: VerifyAadhaarDemoRequest):
         "masked_aadhaar": f"XXXX-XXXX-{req.aadhaar_last4}",
         "timestamp": int(time.time())
     }
+
+@router.post("/verify-aadhaar")
+def verify_aadhaar_endpoint(req: VerifyAadhaarRequest):
+    """
+    Real UIDAI Aadhaar verification with Verhoeff algorithmic check digit validation.
+    Enforces privacy by storing and displaying only masked digits (XXXX-XXXX-1234).
+    """
+    result = verify_aadhaar(req.aadhaar_number)
+    reg = STUDENT_REGISTRATIONS.setdefault(req.student_id, {})
+    reg["aadhaar_status"] = result["status"]
+    reg["aadhaar_masked"] = result.get("masked_aadhaar", "XXXX-XXXX-****")
+    reg["aadhaar_tx_id"] = result.get("transaction_id")
+    STUDENT_REGISTRATIONS[req.student_id] = reg
+    try:
+        canonical_store.save_student_registration(reg)
+    except Exception:
+        pass
+    return result
+
+@router.post("/verify-college-id")
+def verify_college_id_endpoint(req: VerifyCollegeIdRequest):
+    """
+    Institutional College ID card verification.
+    Determines whether student College ID card is AUTHENTIC/REAL or FAKE/TAMPERED using
+    document forensics and Gemini Vision AI.
+    """
+    result = id_card_auditor.audit_college_id(
+        student_id=req.student_id,
+        college_name=req.college_name or "JSPM RSCOE, Pune",
+        id_text=req.college_id_text or "",
+        filename=req.file_name or "college_id_card.png",
+        image_b64=req.image_b64
+    )
+    reg = STUDENT_REGISTRATIONS.setdefault(req.student_id, {})
+    reg["college_id_status"] = result.get("verdict", "PENDING")
+    reg["college_id_text"] = req.college_id_text
+    reg["college_id_badge"] = result.get("verification_badge")
+    STUDENT_REGISTRATIONS[req.student_id] = reg
+    try:
+        canonical_store.save_student_registration(reg)
+    except Exception:
+        pass
+    return result
 
 @router.post("/extract-skills")
 def extract_skills_endpoint(req: SkillExtractRequest):
