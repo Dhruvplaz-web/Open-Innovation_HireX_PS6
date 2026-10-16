@@ -1,0 +1,11 @@
+{
+  "name": "algorithmic-code-lab-frontend",
+  "version": "2.0.0",
+  "description": "Algorithmic Code Lab & AST Auditor Frontend Module",
+  "main": "CodeLabView.tsx",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "lucide-react": "^0.344.0"
+  }
+}

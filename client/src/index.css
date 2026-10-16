@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-canvas: #f3f4f8;
+    --card-surface: #ffffff;
+    --text-primary: #111827;
+    --text-secondary: #64748b;
+    --border-subtle: #e2e8f0;
+  }
+
+  .dark {
+    --bg-canvas: #0b0d14;
+    --card-surface: #151823;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --border-subtle: #242938;
+  }
+
+  body {
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+/* Glassmorphism & Elevation Utilities */
+.glass-pill {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .glass-pill {
+  background: rgba(26, 29, 39, 0.85);
+}
+
+.card-clay {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 4px 16px -2px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.dark .card-clay {
+  background: #141724;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 8px 24px -4px rgba(0, 0, 0, 0.25);
+}
+
+.card-clay:hover {
+  border-color: rgba(203, 213, 225, 0.9);
+  box-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.05);
+}
+
+.dark .card-clay:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 28px -4px rgba(0, 0, 0, 0.45);
+}
+
+/* Subtle Shimmer for Highlighting */
+@keyframes softPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-soft-pulse {
+  animation: softPulse 2.5s infinite ease-in-out;
+}

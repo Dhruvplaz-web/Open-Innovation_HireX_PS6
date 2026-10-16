@@ -1,0 +1,677 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  User, 
+  ShieldCheck, 
+  Award, 
+  GraduationCap, 
+  CheckCircle2, 
+  Code2, 
+  BookOpen, 
+  Github, 
+  ExternalLink, 
+  Briefcase, 
+  MapPin, 
+  Mail, 
+  Phone, 
+  Calendar, 
+  FileText, 
+  Download, 
+  Edit3, 
+  Sparkles, 
+  Check, 
+  Flame, 
+  Globe,
+  Linkedin,
+  RefreshCw,
+  AlertCircle
+} from 'lucide-react';
+import { StudentProfile, LinkedInConnectionProfile } from '../types';
+import { useAuth } from '../context/AuthContext';
+import { apiService } from '../services/api';
+import { TalentVisibilityCard } from '../components/profile/TalentVisibilityCard';
+
+interface ProfileViewProps {
+  student: StudentProfile;
+  initialTab?: 'dossier' | 'incognito' | 'collaboration';
+  onOpenAssessment?: () => void;
+  onNavigateTab?: (tab: string) => void;
+}
+
+export const ProfileView: React.FC<ProfileViewProps> = ({
+  student,
+  initialTab = 'dossier',
+  onOpenAssessment,
+  onNavigateTab
+}) => {
+  const { userProfile, saveOnboardingProfile } = useAuth();
+  const [profileTab, setProfileTab] = useState<'dossier' | 'incognito' | 'collaboration'>(initialTab);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [name, setName] = useState<string>(student.name || userProfile?.displayName || "Dhruv Patil");
+  const [college, setCollege] = useState<string>(student.college || userProfile?.college || "JSPM RSCOE, Pune");
+  const [department, setDepartment] = useState<string>(student.department || userProfile?.department || "Computer Engineering");
+  const [targetRole, setTargetRole] = useState<string>(student.target_role || userProfile?.targetRole || "Full-Stack AI Developer");
+  const [bio, setBio] = useState<string>(
+    student.bio || userProfile?.bio ||
+    "Final year Computer Engineering student building autonomous agentic systems and high-throughput microservices in Python & TypeScript. Aiming for Tier-1 Product, R&D, and High-Frequency Tech roles across India."
+  );
+  const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await saveOnboardingProfile({
+        displayName: name,
+        college,
+        department,
+        targetRole,
+        bio
+      });
+      setIsEditing(false);
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 3500);
+    } catch (e) {
+      console.warn("Could not save profile:", e);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // LinkedIn OAuth 2.0 / OpenID Connect Integration State
+  const studentId = student.id || 'std_1';
+  const [isLinkedInConnected, setIsLinkedInConnected] = useState<boolean>(false);
+  const [linkedInProfile, setLinkedInProfile] = useState<LinkedInConnectionProfile | null>(null);
+  const [linkedInLastSync, setLinkedInLastSync] = useState<string | null>(null);
+  const [isConnectingLinkedIn, setIsConnectingLinkedIn] = useState<boolean>(false);
+  const [linkedInNotice, setLinkedInNotice] = useState<string | null>(null);
+  const [linkedInError, setLinkedInError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchLinkedInStatus = async () => {
+      try {
+        const res = await apiService.getLinkedInStatus(studentId);
+        if (res.connected && res.connection) {
+          setIsLinkedInConnected(true);
+          setLinkedInProfile(res.connection);
+          setLinkedInLastSync(res.last_synchronized || null);
+        }
+      } catch (err) {
+        console.warn('Error fetching LinkedIn status on profile:', err);
+      }
+    };
+    fetchLinkedInStatus();
+
+    // Check for callback parameters from OAuth redirect
+    const params = new URLSearchParams(window.location.search);
+    const liStatus = params.get('linkedin_status');
+    const errMsg = params.get('error_message');
+
+    if (liStatus === 'success') {
+      setIsLinkedInConnected(true);
+      setLinkedInNotice('✓ LinkedIn Connected! Basic profile information imported.');
+      setLinkedInError(null);
+      fetchLinkedInStatus();
+      const cleanPath = window.location.pathname;
+      window.history.replaceState({}, '', cleanPath);
+      setTimeout(() => setLinkedInNotice(null), 6000);
+    } else if (liStatus === 'error') {
+      setIsLinkedInConnected(false);
+      setLinkedInError(errMsg ? decodeURIComponent(errMsg) : 'LinkedIn connection failed. Please try again.');
+      setLinkedInNotice(null);
+      const cleanPath = window.location.pathname;
+      window.history.replaceState({}, '', cleanPath);
+    }
+  }, [studentId]);
+
+  const handleConnectLinkedIn = async () => {
+    setIsConnectingLinkedIn(true);
+    setLinkedInError(null);
+    try {
+      const res = await apiService.getLinkedInAuthorizeUrl(studentId, 'profile');
+      if (res.is_client_id_configured && res.authorization_url) {
+        window.location.href = res.authorization_url;
+      } else {
+        // Sandbox simulation mode for local testing
+        const sim = await apiService.simulateLinkedInConnect({
+          student_id: studentId,
+          linkedin_name: student.name || 'Dhruv Patil',
+          linkedin_email: student.email || 'dhruv.patil@rscoe.edu.in'
+        });
+        if (sim.status === 'success') {
+          setIsLinkedInConnected(true);
+          setLinkedInProfile(sim.connection);
+          setLinkedInLastSync(new Date().toUTCString());
+          setLinkedInNotice('✓ LinkedIn Connected! Basic profile information imported.');
+          setTimeout(() => setLinkedInNotice(null), 6000);
+        } else {
+          setLinkedInError('LinkedIn connection failed. Please try again.');
+        }
+      }
+    } catch (err: any) {
+      setLinkedInError(err.message || 'LinkedIn connection failed. Please try again.');
+    } finally {
+      setIsConnectingLinkedIn(false);
+    }
+  };
+
+  const handleDisconnectLinkedIn = async () => {
+    try {
+      await apiService.disconnectLinkedIn(studentId);
+      setIsLinkedInConnected(false);
+      setLinkedInProfile(null);
+      setLinkedInLastSync(null);
+      setLinkedInNotice('LinkedIn account disconnected.');
+      setTimeout(() => setLinkedInNotice(null), 4000);
+    } catch (err: any) {
+      console.warn('Disconnect LinkedIn error:', err);
+    }
+  };
+
+
+
+  return (
+    <div className="space-y-6 max-w-7xl mx-auto pb-16 animate-in fade-in duration-200">
+      {/* 1. Profile Hero Banner Card */}
+      <div className="p-6 md:p-8 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+            <div className="relative">
+              <img
+                src={student.avatar}
+                alt={student.name}
+                className="w-24 h-24 rounded-2xl bg-slate-100 dark:bg-slate-800 object-cover border-2 border-slate-200/80 dark:border-slate-700 shadow-sm"
+              />
+              <span className="absolute -bottom-1.5 -right-1.5 p-1 rounded-md bg-emerald-500 text-white shadow-xs" title="Cryptographically Verified Profile">
+                <ShieldCheck className="w-3.5 h-3.5" />
+              </span>
+            </div>
+
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                  {student.name}
+                </h1>
+                <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                  Top 4% RSCOE
+                </span>
+                <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60">
+                  TPO Approved
+                </span>
+              </div>
+
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mt-1 flex items-center gap-1.5">
+                <Briefcase className="w-4 h-4 text-slate-400" />
+                <span>{targetRole}</span>
+              </p>
+
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex flex-wrap items-center gap-3">
+                <span className="flex items-center gap-1">
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  <span>{student.college}</span>
+                </span>
+                <span>•</span>
+                <span>{student.department}</span>
+                <span>•</span>
+                <span className="font-mono font-semibold">PRN: 72148291B</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-2.5 self-stretch sm:self-auto">
+            <button
+              onClick={() => setIsEditing(!isEditing)}
+              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1.5"
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+              <span>{isEditing ? "Cancel" : "Edit Profile"}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                alert("Downloading verified PDF resume with cryptographic AICTE/APAAR verification tokens...");
+              }}
+              className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5"
+            >
+              <Download className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Download ATS Resume (PDF)</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Bio Edit Section */}
+        {isEditing ? (
+          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Full Name</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">College / Institution</label>
+                <input
+                  type="text"
+                  value={college}
+                  onChange={(e) => setCollege(e.target.value)}
+                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Department / Branch</label>
+                <input
+                  type="text"
+                  value={department}
+                  onChange={(e) => setDepartment(e.target.value)}
+                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Target Role Title</label>
+              <input
+                type="text"
+                value={targetRole}
+                onChange={(e) => setTargetRole(e.target.value)}
+                className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Professional Bio & Career Objective</label>
+              <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                rows={3}
+                className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none"
+              />
+            </div>
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition disabled:opacity-50 flex items-center gap-1.5"
+            >
+              <Check className="w-3.5 h-3.5" />
+              <span>{isSaving ? "Syncing Across Database & Registry..." : "Save Profile Changes"}</span>
+            </button>
+          </div>
+        ) : (
+
+          <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed max-w-4xl">
+              {bio}
+            </p>
+          </div>
+        )}
+
+        {savedSuccess && (
+          <div className="mt-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center gap-1.5 animate-in fade-in">
+            <Check className="w-4 h-4" />
+            <span>Profile successfully updated and synced across HireX verified registry!</span>
+          </div>
+        )}
+      </div>
+
+      {/* Sub-Navigation Tabs */}
+      <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-xs overflow-x-auto">
+        <button
+          onClick={() => setProfileTab('dossier')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 whitespace-nowrap ${
+            profileTab === 'dossier'
+              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+          }`}
+        >
+          <User className="w-4 h-4" />
+          <span>Verified Student Dossier</span>
+        </button>
+
+        <button
+          onClick={() => setProfileTab('incognito')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 whitespace-nowrap ${
+            profileTab === 'incognito'
+              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+          }`}
+        >
+          <ShieldCheck className="w-4 h-4 text-indigo-500" />
+          <span>Talent Visibility & Incognito Matching</span>
+        </button>
+
+        {onNavigateTab && (
+          <button
+            onClick={() => onNavigateTab('collaboration')}
+            className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition flex items-center gap-2 whitespace-nowrap"
+          >
+            <Sparkles className="w-4 h-4 text-purple-500" />
+            <span>Collaboration & Research Hub →</span>
+          </button>
+        )}
+      </div>
+
+      {profileTab === 'incognito' ? (
+        <TalentVisibilityCard studentId={student.id} onNavigateTab={onNavigateTab} />
+      ) : (
+        <>
+          {/* 2. Academic & TPO Gatekeeper Dossier (The Core Metrics) */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/80 dark:border-slate-800 shadow-sm text-center">
+              <span className="text-2xl font-black text-indigo-600 dark:text-indigo-400 block">{student.verified_score}</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">Skill Index</span>
+              <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">Top 4% RSCOE</span>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/80 dark:border-slate-800 shadow-sm text-center">
+              <span className="text-2xl font-black text-slate-900 dark:text-white block">{student.cgpa}</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">SPPU CGPA</span>
+              <span className="text-[10px] text-slate-500 mt-1 block">Computer Dept</span>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/80 dark:border-slate-800 shadow-sm text-center">
+              <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400 block">0</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">Active Backlogs</span>
+              <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">All Sems Clear</span>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/80 dark:border-slate-800 shadow-sm text-center">
+              <span className="text-2xl font-black text-slate-900 dark:text-white block">86.4%</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">Attendance</span>
+              <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">Min 75% Met</span>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/80 dark:border-slate-800 shadow-sm text-center">
+              <span className="text-2xl font-black text-purple-600 dark:text-purple-400 block">18.5</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">NCrF Credits</span>
+              <span className="text-[10px] text-slate-500 mt-1 block">Out of 20 Target</span>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/80 dark:border-slate-800 shadow-sm text-center">
+              <span className="text-2xl font-black text-amber-500 block">#{student.rank_in_college}</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">Batch Rank</span>
+              <span className="text-[10px] text-slate-500 mt-1 block">Of 420 Students</span>
+            </div>
+          </div>
+
+      {/* 3. Verified Skills & Technical Competencies Matrix */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left 8 Cols: Verified Competencies */}
+        <div className="lg:col-span-8 space-y-6">
+          <div className="p-6 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  Objective Verified Competencies
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Evaluated through Python AST compiler checks, LeetCode algorithms, and NPTEL examinations.
+                </p>
+              </div>
+
+              {onOpenAssessment && (
+                <button
+                  onClick={onOpenAssessment}
+                  className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-pink-400" />
+                  <span>Verify New Skill / QR</span>
+                </button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {Object.entries(student.skills).map(([skill, val]) => (
+                <div
+                  key={skill}
+                  className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700 flex flex-col justify-between gap-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                      <span className="font-bold text-xs text-slate-900 dark:text-white">{skill}</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-300 bg-slate-200/70 dark:bg-slate-700 px-2 py-0.5 rounded-md font-mono">
+                      {val.level}
+                    </span>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-[11px] font-mono text-slate-500 mb-1">
+                      <span>Proficiency:</span>
+                      <span className="font-bold text-slate-800 dark:text-slate-200">{val.score}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-sm overflow-hidden">
+                      <div
+                        className="h-full bg-slate-900 dark:bg-slate-100 rounded-sm"
+                        style={{ width: `${val.score}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <span className="text-[9px] font-mono text-slate-400 truncate">
+                    Proof: AST Unit Testsuite Certified
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Cryptographic Badges & National Credentials */}
+          <div className="p-6 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <Award className="w-4 h-4 text-amber-500" />
+                <span>Cryptographic Credential Ledger</span>
+              </h3>
+              <span className="text-[10px] font-mono text-slate-400">SHA-256 Public Key Registry</span>
+            </div>
+
+            <div className="space-y-2.5">
+              <div className="p-3.5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/70 dark:border-indigo-800/40 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-slate-900 dark:text-white">NPTEL Elite Certificate — Cloud Computing & Distributed Systems</span>
+                    <span className="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                      Score: 84%
+                    </span>
+                  </div>
+                  <p className="font-mono text-[10px] text-slate-500 mt-0.5 truncate max-w-lg">
+                    SHA-256: a4f89d31b9e28f110c7e2b74051a96da438fbcd58269e8b15a6b0c20188941cf
+                  </p>
+                </div>
+                <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 shrink-0">
+                  +3 NCrF Credits Added
+                </span>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/70 dark:border-indigo-800/40 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-slate-900 dark:text-white">HireX Certified Algorithmic Engineer — AST Linear O(N)</span>
+                    <span className="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                      8 Labs Passed
+                    </span>
+                  </div>
+                  <p className="font-mono text-[10px] text-slate-500 mt-0.5 truncate max-w-lg">
+                    SHA-256: 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
+                  </p>
+                </div>
+                <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 shrink-0">
+                  +2 NCrF Credits Added
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right 4 Cols: Career Preferences & Verified Handles */}
+        <div className="lg:col-span-4 space-y-6">
+          {/* Target Job Preferences */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-3.5">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white pb-2 border-b border-slate-100 dark:border-slate-800">
+              Campus Placement Preferences
+            </h3>
+
+            <div className="space-y-3 text-xs">
+              <div>
+                <span className="text-slate-400 block text-[10px] font-bold uppercase">Target Role</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200">{targetRole}</span>
+              </div>
+
+              <div>
+                <span className="text-slate-400 block text-[10px] font-bold uppercase">Expected Package (CTC)</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200">₹12.0 - ₹16.0 LPA</span>
+              </div>
+
+              <div>
+                <span className="text-slate-400 block text-[10px] font-bold uppercase">Preferred IT Locations</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200">Bengaluru • Hyderabad • Pune • Delhi-NCR • Remote</span>
+              </div>
+
+              <div>
+                <span className="text-slate-400 block text-[10px] font-bold uppercase">Internship Availability</span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">Immediate 6-Month Semester VI Waiver</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Professional Profiles & External Handles */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-3.5">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                Professional Profiles
+              </h3>
+              <span className="text-[10px] text-slate-400 font-mono">External Identity Verification</span>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              {/* GitHub Connected Profile */}
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700">
+                <div className="flex items-center gap-2 font-semibold text-slate-800 dark:text-slate-200">
+                  <Github className="w-4 h-4 text-slate-900 dark:text-slate-100" />
+                  <span>GitHub</span>
+                  <span className="text-slate-400 font-normal">({student.name ? student.name.toLowerCase().replace(/\s+/g, '-') : 'dhruv-patil'})</span>
+                </div>
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800/60">
+                  <Check className="w-3 h-3" />
+                  <span>✓ Connected</span>
+                </span>
+              </div>
+
+              {/* LinkedIn Connected Profile */}
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 font-semibold text-slate-800 dark:text-slate-200">
+                    <Linkedin className="w-4 h-4 text-[#0077b5]" />
+                    <span>LinkedIn</span>
+                  </div>
+
+                  {isLinkedInConnected ? (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800/60">
+                      <Check className="w-3 h-3" />
+                      <span>✓ Connected</span>
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700/60 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-600">
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                      <span>○ Not connected</span>
+                    </span>
+                  )}
+                </div>
+
+                {isLinkedInConnected ? (
+                  <div className="space-y-2 pt-1 border-t border-slate-200/60 dark:border-slate-700">
+                    <div className="text-[11px] text-slate-600 dark:text-slate-300 space-y-0.5">
+                      {linkedInProfile?.linkedin_name && (
+                        <p><strong>Member:</strong> {linkedInProfile.linkedin_name}</p>
+                      )}
+                      {linkedInProfile?.linkedin_email && (
+                        <p><strong>Email:</strong> {linkedInProfile.linkedin_email} {linkedInProfile.linkedin_email_verified ? '✓' : ''}</p>
+                      )}
+                      {linkedInLastSync && (
+                        <p className="text-[10px] text-slate-400 font-mono">Last synchronized: {linkedInLastSync}</p>
+                      )}
+                    </div>
+
+                    <div className="p-2 rounded bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-800/40 text-[10px] text-amber-800 dark:text-amber-300">
+                      <strong>Permission Notice:</strong> Basic OIDC profile imported. Skills, Experience, Education & Certifications: <em>Not available through current LinkedIn permissions</em>.
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={handleConnectLinkedIn}
+                        disabled={isConnectingLinkedIn}
+                        className="px-2.5 py-1.5 rounded-lg bg-slate-200/80 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1"
+                      >
+                        <RefreshCw className={`w-3 h-3 ${isConnectingLinkedIn ? 'animate-spin' : ''}`} />
+                        <span>Reconnect LinkedIn</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleDisconnectLinkedIn}
+                        className="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-xs font-bold border border-rose-200 dark:border-rose-900/50 transition"
+                      >
+                        Disconnect LinkedIn
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      onClick={handleConnectLinkedIn}
+                      disabled={isConnectingLinkedIn}
+                      className="w-full py-2 rounded-lg bg-[#0077b5] hover:bg-[#006097] text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-xs disabled:opacity-60"
+                    >
+                      <Linkedin className="w-3.5 h-3.5 fill-current" />
+                      <span>{isConnectingLinkedIn ? 'Connecting...' : 'Connect LinkedIn'}</span>
+                    </button>
+                  </div>
+                )}
+
+                {linkedInNotice && (
+                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                    {linkedInNotice}
+                  </p>
+                )}
+                {linkedInError && (
+                  <p className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">
+                    {linkedInError}
+                  </p>
+                )}
+              </div>
+
+              {/* Other Handles */}
+              <a
+                href="https://leetcode.com"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+              >
+                <div className="flex items-center gap-2 font-semibold">
+                  <Code2 className="w-4 h-4" />
+                  <span>LeetCode: 280+ Solved</span>
+                </div>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+              </a>
+
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800">
+                <div className="flex items-center gap-2 font-semibold">
+                  <Globe className="w-4 h-4" />
+                  <span>APAAR ID: 9823-4412-8871</span>
+                </div>
+                <span className="text-[10px] text-emerald-600 font-bold">✓ Synced</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        </>
+      )}
+    </div>
+  );
+};
