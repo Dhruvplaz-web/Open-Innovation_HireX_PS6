@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Bell, LogOut } from 'lucide-react';
+import { Search, Bell, LogOut, ChevronDown } from 'lucide-react';
 import { Role } from '../../types';
 
 interface TopNavBarProps {
@@ -52,7 +52,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
       case 'journey':
         return 'Skill Verification & Proctored Assessment';
       default:
-        return 'Portal Workspace';
+        return 'Placement Command Center';
     }
   };
 
@@ -69,10 +69,10 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
       {/* Brand Title with Live Status */}
       <div 
         onClick={() => setActiveTab('dashboard')}
-        className="flex items-center gap-3 cursor-pointer group select-none"
+        className="flex items-center gap-3 cursor-pointer group select-none shrink-0"
       >
         <span className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
           HireX
         </span>
         <span className="hidden sm:inline-block text-xs font-semibold text-slate-500 dark:text-slate-400 border-l border-slate-300 dark:border-slate-700 pl-3">
@@ -88,25 +88,35 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search drives, AST algorithms, NCrF credits, companies..."
+            placeholder="Search students, skills, jobs, opportunities..."
             className="w-full bg-transparent text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none"
           />
           <kbd className="hidden lg:inline-block text-[10px] font-mono font-medium text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700">
-            Ctrl+K
+            ctrl K
           </kbd>
         </div>
       </div>
 
-      {/* Right Controls: Notifications, Sign Out & Profile */}
+      {/* Right Controls: Role Badge, Notifications, Sign Out & Profile */}
       <div className="flex items-center gap-2 md:gap-3">
-        {/* Notification Bell */}
+        {/* Role Indicator Capsule */}
+        <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-xs text-xs font-bold text-slate-700 dark:text-slate-200">
+          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span className="text-[10px] text-slate-400 font-mono">ROLE:</span>
+          <span className="capitalize">{currentRole}</span>
+          <ChevronDown className="w-3.5 h-3.5 text-slate-400 ml-0.5" />
+        </div>
+
+        {/* Notification Bell with 9+ badge */}
         <button
           onClick={() => setActiveTab('opportunities')}
           title="Notifications"
           className="relative w-9 h-9 rounded-xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-xs flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-slate-700 transition-all"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-white dark:ring-slate-900" />
+          <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-amber-500 text-white shadow-xs">
+            9+
+          </span>
         </button>
 
         {/* Sign Out Icon */}
@@ -142,7 +152,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
               {userName.split(' ')[0]}
             </span>
             <span className={`text-[10px] leading-tight ${activeTab === 'profile' ? 'opacity-80' : 'text-slate-400'}`}>
-              JSPM RSCOE
+              JSPM RSCOE, Pune
             </span>
           </div>
         </div>
