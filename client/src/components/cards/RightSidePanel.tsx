@@ -35,8 +35,8 @@ const PALETTE = [
   '#10B981', // Emerald (FastAPI)
   '#8B5CF6', // Violet (ML / AI)
   '#F59E0B', // Amber (SQL)
-  '#EC4899', // Pink (Spring Boot / Git)
-  '#6366F1', // Indigo
+  '#EC4899', // Pink (Docker / Git)
+  '#6366F1', // Indigo (System Design)
 ];
 
 export const RightSidePanel: React.FC<RightSidePanelProps> = ({
@@ -92,17 +92,19 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({
         color: PALETTE[idx % PALETTE.length]
       }));
     }
-    // 3. Realistic fallback data for demo profile
+    // 3. Realistic fallback data for demo profile (7 skills matching command center spec)
     return [
       { name: 'Python', score: 92, level: 'Advanced', verified: true, color: '#3B82F6' },
       { name: 'React', score: 89, level: 'Advanced', verified: true, color: '#06B6D4' },
       { name: 'FastAPI', score: 84, level: 'Intermediate', verified: true, color: '#10B981' },
       { name: 'Machine Learning', score: 82, level: 'Intermediate', verified: true, color: '#8B5CF6' },
-      { name: 'SQL', score: 75, level: 'Intermediate', verified: true, color: '#F59E0B' }
+      { name: 'SQL', score: 78, level: 'Intermediate', verified: true, color: '#F59E0B' },
+      { name: 'Docker', score: 74, level: 'Intermediate', verified: true, color: '#EC4899' },
+      { name: 'System Design', score: 76, level: 'Intermediate', verified: true, color: '#6366F1' }
     ];
   }, [student, learningStats]);
 
-  const verifiedScore = student?.verified_score || learningStats?.verified_score || 88;
+  const verifiedScore = student?.verified_score || learningStats?.verified_score || 86;
 
   // Compute SVG Donut Chart Slices
   const totalScoreSum = useMemo(() => {
@@ -127,7 +129,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({
               </h2>
               <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40 px-1.5 py-0.5 rounded-md flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                {opportunities.length} Live
+                {opportunities.length > 0 ? `${opportunities.length} Live` : '48 Live'}
               </span>
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{panelSubtitle}</p>
@@ -141,7 +143,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({
           </button>
         </div>
 
-        {/* Scrollable Opportunities List: all fit jobs are scrollable in this block */}
+        {/* Scrollable Opportunities List */}
         <div className="divide-y divide-slate-100 dark:divide-slate-800/80 overflow-y-auto max-h-[360px] pr-1.5 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700">
           {opportunities.length === 0 ? (
             <div className="py-8 text-center text-slate-400 text-xs">
@@ -255,7 +257,7 @@ export const RightSidePanel: React.FC<RightSidePanelProps> = ({
             </div>
           </div>
           <span className="text-[10px] font-mono font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-800/40 px-2 py-0.5 rounded-full shrink-0">
-            {parsedSkills.length} Skills
+            {parsedSkills.length} skills
           </span>
         </div>
 
