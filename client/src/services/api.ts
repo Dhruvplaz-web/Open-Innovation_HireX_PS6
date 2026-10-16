@@ -18,9 +18,15 @@ import {
 import { analyzeStudentForOpportunity } from './jdSkillAnalysis';
 import { PROCTORING_CONFIG } from '../config/proctoring';
 
-const envApiBase = import.meta.env.VITE_API_BASE_URL as string | undefined;
-export const API_BASE = envApiBase
-  ? (envApiBase.endsWith('/api') ? envApiBase : `${envApiBase.replace(/\/$/, '')}/api`)
+const rawEnvApi = import.meta.env.VITE_API_BASE_URL as string | undefined;
+const normalizedEnvApi = rawEnvApi
+  ? (rawEnvApi.startsWith('http://') || rawEnvApi.startsWith('https://')
+      ? rawEnvApi.trim()
+      : `https://${rawEnvApi.trim()}`)
+  : undefined;
+
+export const API_BASE = normalizedEnvApi
+  ? (normalizedEnvApi.endsWith('/api') ? normalizedEnvApi : `${normalizedEnvApi.replace(/\/$/, '')}/api`)
   : '/api';
 
 // Fallback high-fidelity seed data if backend is offline or restarting
