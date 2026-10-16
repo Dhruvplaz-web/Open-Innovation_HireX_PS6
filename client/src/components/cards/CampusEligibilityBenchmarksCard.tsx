@@ -1,24 +1,28 @@
 import React from 'react';
-import { StudentProfile } from '../../types';
+import { StudentProfile, CampusBenchmarkCompany } from '../../types';
 
 interface CampusEligibilityBenchmarksCardProps {
   student?: StudentProfile;
+  benchmarks?: CampusBenchmarkCompany[];
   onNavigateTab?: (tab: string) => void;
 }
 
 export const CampusEligibilityBenchmarksCard: React.FC<CampusEligibilityBenchmarksCardProps> = ({
-  student
+  student,
+  benchmarks,
+  onNavigateTab
 }) => {
-  const verifiedScore = student?.verified_score || 86;
+  const verifiedScore = student?.verified_score || 88;
 
-  const companies = [
+  const defaultCompanies: CampusBenchmarkCompany[] = [
     {
       id: 'barclays',
       name: 'Barclays',
       industry: 'Global FinTech',
       cutoff: 80,
       package: '₹12.5 - 14.0 LPA',
-      rounds: '4 Rounds'
+      rounds: '4 Rounds',
+      is_cleared: verifiedScore >= 80
     },
     {
       id: 'persistent',
@@ -26,7 +30,8 @@ export const CampusEligibilityBenchmarksCard: React.FC<CampusEligibilityBenchmar
       industry: 'Digital Engineering',
       cutoff: 75,
       package: '₹9.0 - 11.5 LPA',
-      rounds: '3 Rounds'
+      rounds: '3 Rounds',
+      is_cleared: verifiedScore >= 75
     },
     {
       id: 'tatatech',
@@ -34,7 +39,8 @@ export const CampusEligibilityBenchmarksCard: React.FC<CampusEligibilityBenchmar
       industry: 'Mobility Tech',
       cutoff: 70,
       package: '₹7.5 - 9.0 LPA',
-      rounds: '3 Rounds'
+      rounds: '3 Rounds',
+      is_cleared: verifiedScore >= 70
     },
     {
       id: 'nvidia',
@@ -42,9 +48,12 @@ export const CampusEligibilityBenchmarksCard: React.FC<CampusEligibilityBenchmar
       industry: 'Accelerated Compute',
       cutoff: 95,
       package: '₹22.0 - 28.0 LPA',
-      rounds: '5 Rounds'
+      rounds: '5 Rounds',
+      is_cleared: verifiedScore >= 95
     }
   ];
+
+  const companies = benchmarks && benchmarks.length > 0 ? benchmarks : defaultCompanies;
 
   return (
     <div className="card-clay p-6 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-soft transition-all">
@@ -66,7 +75,9 @@ export const CampusEligibilityBenchmarksCard: React.FC<CampusEligibilityBenchmar
           return (
             <div
               key={c.id}
-              className="p-4 transition-all flex flex-col justify-between hover:bg-slate-100/60 dark:hover:bg-slate-800/40"
+              onClick={() => onNavigateTab ? onNavigateTab('opportunities') : null}
+              className="p-4 transition-all flex flex-col justify-between hover:bg-slate-100/60 dark:hover:bg-slate-800/40 cursor-pointer group"
+              title={`View ${c.name} campus drive details & eligible openings`}
             >
               <div>
                 <div className="flex items-center justify-between text-xs">

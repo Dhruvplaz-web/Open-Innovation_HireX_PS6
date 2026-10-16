@@ -177,13 +177,174 @@ def get_student_dashboard(student_id: str = Query("std_1")):
     # 5. Active student applications
     student_apps = [a for a in APPLICATIONS if a.get("student_id") == student_id or a.get("student_email") == student.get("email")]
     
+    # 6. Placement Readiness (5 Weighted Pillars & Next Best Action)
+    skills_dict = student.get("skills", {})
+    tech_scores = [v["score"] for v in skills_dict.values() if isinstance(v, dict) and "score" in v]
+    tech_score = round(sum(tech_scores) / max(1, len(tech_scores))) if tech_scores else 86
+    
+    dsa_score = skills_dict.get("Data Structures", {}).get("score", 85) if isinstance(skills_dict.get("Data Structures"), dict) else 85
+    apt_score = round(min(100, dsa_score * 0.95 + student.get("assessments_completed", 14) * 0.5))
+    
+    proj_score = min(100, int(student.get("projects_count", 6) * 16.5))
+    
+    cgpa = student.get("cgpa", 8.92)
+    cred_score = round(min(100, (cgpa / 10.0) * 100 + 5))
+    
+    interview_score = 74
+    overall_readiness = round(tech_score * 0.35 + apt_score * 0.25 + proj_score * 0.20 + cred_score * 0.10 + interview_score * 0.10)
+    
+    rank_in_college = student.get("rank_in_college", 4)
+    college_name = student.get("college", "RSCOE")
+    short_college = "RSCOE" if "RSCOE" in college_name else college_name[:8]
+    percentile_rank = f"Top {rank_in_college}% {short_college}"
+
+    pillars = [
+        {
+            "id": "technical",
+            "name": "Technical Skills",
+            "weight": "35% weight",
+            "weight_numeric": 0.35,
+            "score": tech_score,
+            "status": "Ready" if tech_score >= 80 else "Focus Gap",
+            "colorClass": "bg-cyan-500 dark:bg-cyan-400",
+            "badgeClass": "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400" if tech_score >= 80 else "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
+        },
+        {
+            "id": "aptitude",
+            "name": "Aptitude & Logic",
+            "weight": "25% weight",
+            "weight_numeric": 0.25,
+            "score": apt_score,
+            "status": "Ready" if apt_score >= 80 else "Focus Gap",
+            "colorClass": "bg-emerald-500 dark:bg-emerald-400",
+            "badgeClass": "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400" if apt_score >= 80 else "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
+        },
+        {
+            "id": "projects",
+            "name": "Projects & Experience",
+            "weight": "20% weight",
+            "weight_numeric": 0.20,
+            "score": proj_score,
+            "status": "Ready" if proj_score >= 80 else "Focus Gap",
+            "colorClass": "bg-blue-600 dark:bg-blue-500",
+            "badgeClass": "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400" if proj_score >= 80 else "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
+        },
+        {
+            "id": "credentials",
+            "name": "Profile & Credentials",
+            "weight": "10% weight",
+            "weight_numeric": 0.10,
+            "score": cred_score,
+            "status": "Ready" if cred_score >= 80 else "Focus Gap",
+            "colorClass": "bg-teal-500 dark:bg-teal-400",
+            "badgeClass": "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400" if cred_score >= 80 else "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
+        },
+        {
+            "id": "interview",
+            "name": "Interview & Communication",
+            "weight": "10% weight",
+            "weight_numeric": 0.10,
+            "score": interview_score,
+            "status": "Ready" if interview_score >= 80 else "Focus Gap",
+            "colorClass": "bg-amber-500 dark:bg-amber-400",
+            "badgeClass": "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400" if interview_score >= 80 else "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
+        }
+    ]
+
+    lowest_pillar = min(pillars, key=lambda x: x["score"])
+    if lowest_pillar["id"] == "interview":
+        next_action = {
+            "title": "Strengthen Technical Interview Articulation",
+            "description": f"Communication is your biggest current readiness gap ({interview_score}/100). Articulating architectural choices will increase your clearance odds for Tier-1 corporate drives.",
+            "target_tab": "codelab",
+            "target_score": 85
+        }
+    elif lowest_pillar["id"] == "technical":
+        next_action = {
+            "title": "Verify Missing Stacks in Code Lab",
+            "description": f"Technical mastery is currently at {tech_score}/100. Completing a 15-minute verification sprint will raise your composite score.",
+            "target_tab": "codelab",
+            "target_score": 90
+        }
+    elif lowest_pillar["id"] == "aptitude":
+        next_action = {
+            "title": "Complete Cognitive Aptitude Sprint",
+            "description": f"Aptitude & Logic is at {apt_score}/100. Practice high-speed quantitative sprints to clear screening cutoffs.",
+            "target_tab": "aptitude",
+            "target_score": 88
+        }
+    else:
+        next_action = {
+            "title": "Add Verified Production Projects",
+            "description": f"Deploy projects with GitHub AST audits to maximize your placement index.",
+            "target_tab": "collaboration",
+            "target_score": 95
+        }
+
+    placement_readiness = {
+        "overall_score": overall_readiness,
+        "verified_score": student.get("verified_score", overall_readiness),
+        "percentile_rank": percentile_rank,
+        "target_role": student.get("target_role", "Full-Stack AI Engineer"),
+        "available_roles": [
+            "Cloud & DevOps Engineer",
+            "Full-Stack AI Developer",
+            "Autonomous AI Agent Engineer",
+            "Distributed Systems Architect"
+        ],
+        "pillars": pillars,
+        "next_best_action": next_action
+    }
+
+    verified_val = student.get("verified_score", overall_readiness)
+    campus_benchmarks = [
+        {
+            "id": "barclays",
+            "name": "Barclays",
+            "industry": "Global FinTech",
+            "cutoff": 80,
+            "package": "₹12.5 - 14.0 LPA",
+            "rounds": "4 Rounds",
+            "is_cleared": verified_val >= 80
+        },
+        {
+            "id": "persistent",
+            "name": "Persistent",
+            "industry": "Digital Engineering",
+            "cutoff": 75,
+            "package": "₹9.0 - 11.5 LPA",
+            "rounds": "3 Rounds",
+            "is_cleared": verified_val >= 75
+        },
+        {
+            "id": "tatatech",
+            "name": "Tata Tech",
+            "industry": "Mobility Tech",
+            "cutoff": 70,
+            "package": "₹7.5 - 9.0 LPA",
+            "rounds": "3 Rounds",
+            "is_cleared": verified_val >= 70
+        },
+        {
+            "id": "nvidia",
+            "name": "NVIDIA Tier-1",
+            "industry": "Accelerated Compute",
+            "cutoff": 95,
+            "package": "₹22.0 - 28.0 LPA",
+            "rounds": "5 Rounds",
+            "is_cleared": verified_val >= 95
+        }
+    ]
+    
     return {
         "student": student,
         "matched_opportunities": matched_opps,
         "chart_data": chart_data,
         "peer_scores": peer_scores,
         "learning_stats": learning_stats,
-        "applications": student_apps
+        "applications": student_apps,
+        "placement_readiness": placement_readiness,
+        "campus_benchmarks": campus_benchmarks
     }
 
 @router.get("/opportunities")

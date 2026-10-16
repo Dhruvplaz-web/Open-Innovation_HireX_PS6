@@ -51,8 +51,8 @@ import { TermsOfServiceView } from './views/TermsOfServiceView';
 import { CookiePolicyView } from './views/CookiePolicyView';
 import { AccessibilityView } from './views/AccessibilityView';
 
-import { Role, StudentProfile, MatchedOpportunity, TrendChartData, PeerScore } from './types';
-import { apiService, FALLBACK_STUDENT, FALLBACK_OPPORTUNITIES, FALLBACK_CHART, FALLBACK_PEERS } from './services/api';
+import { Role, StudentProfile, MatchedOpportunity, TrendChartData, PeerScore, PlacementReadinessData, CampusBenchmarkCompany } from './types';
+import { apiService, FALLBACK_STUDENT, FALLBACK_OPPORTUNITIES, FALLBACK_CHART, FALLBACK_PEERS, FALLBACK_READINESS, FALLBACK_BENCHMARKS } from './services/api';
 import { useAuth } from './context/AuthContext';
 import { useAssessment } from './context/AssessmentContext';
 
@@ -216,6 +216,8 @@ export const App: React.FC = () => {
   const [opportunities, setOpportunities] = useState<MatchedOpportunity[]>(FALLBACK_OPPORTUNITIES);
   const [chartData, setChartData] = useState<TrendChartData>(FALLBACK_CHART);
   const [peers, setPeers] = useState<PeerScore[]>(FALLBACK_PEERS);
+  const [placementReadiness, setPlacementReadiness] = useState<PlacementReadinessData>(FALLBACK_READINESS);
+  const [campusBenchmarks, setCampusBenchmarks] = useState<CampusBenchmarkCompany[]>(FALLBACK_BENCHMARKS);
   const [learningStats, setLearningStats] = useState<any>({
     verified_score: 88,
     finished_lessons: 65,
@@ -245,6 +247,24 @@ export const App: React.FC = () => {
         [skillName]: { level: "Advanced", score: newScore, verified: true }
       }
     }));
+
+    setPlacementReadiness((prev) => ({
+      ...prev,
+      verified_score: newScore,
+      overall_score: newScore,
+      pillars: prev.pillars.map(p => 
+        p.id === 'technical' 
+          ? { ...p, score: Math.min(100, Math.round(newScore * 0.98)), status: newScore >= 80 ? 'Ready' : 'Focus Gap' } 
+          : p
+      )
+    }));
+
+    setCampusBenchmarks((prev) => 
+      prev.map(c => ({
+        ...c,
+        is_cleared: newScore >= c.cutoff
+      }))
+    );
 
     setLearningStats((prev: any) => ({
       ...prev,
@@ -289,6 +309,8 @@ export const App: React.FC = () => {
         if (data.chart_data) setChartData(data.chart_data);
         if (data.peer_scores) setPeers(data.peer_scores);
         if (data.learning_stats) setLearningStats(data.learning_stats);
+        if (data.placement_readiness) setPlacementReadiness(data.placement_readiness);
+        if (data.campus_benchmarks) setCampusBenchmarks(data.campus_benchmarks);
       } else if (currentRole === 'recruiter') {
 
         const data = await apiService.getRecruiterDashboard();
@@ -484,6 +506,8 @@ export const App: React.FC = () => {
               peers={peers}
               opportunities={opportunities}
               learningStats={learningStats}
+              placementReadiness={placementReadiness}
+              campusBenchmarks={campusBenchmarks}
               onNavigateTab={handleNavigateTab}
               onOpenAssessment={() => setActiveModal('assessment')}
               onSelectOpportunity={(opp) => {

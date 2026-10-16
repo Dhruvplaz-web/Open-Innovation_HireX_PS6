@@ -3,7 +3,7 @@ import { PlacementReadinessCard } from '../components/cards/PlacementReadinessCa
 import { CampusEligibilityBenchmarksCard } from '../components/cards/CampusEligibilityBenchmarksCard';
 import { RightSidePanel } from '../components/cards/RightSidePanel';
 import { SEOHead } from '../components/common/SEOHead';
-import { StudentProfile, TrendChartData, PeerScore, MatchedOpportunity } from '../types';
+import { StudentProfile, TrendChartData, PeerScore, MatchedOpportunity, PlacementReadinessData, CampusBenchmarkCompany } from '../types';
 
 interface DashboardViewProps {
   student: StudentProfile;
@@ -11,6 +11,8 @@ interface DashboardViewProps {
   peers: PeerScore[];
   opportunities: MatchedOpportunity[];
   learningStats: any;
+  placementReadiness?: PlacementReadinessData;
+  campusBenchmarks?: CampusBenchmarkCompany[];
   onNavigateTab: (tab: string) => void;
   onOpenAssessment: () => void;
   onSelectOpportunity?: (opp: MatchedOpportunity) => void;
@@ -21,6 +23,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   student,
   opportunities,
   learningStats,
+  placementReadiness,
+  campusBenchmarks,
   onNavigateTab,
   onOpenAssessment,
   onSelectOpportunity,
@@ -40,12 +44,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className="lg:col-span-2 flex flex-col gap-6">
           <PlacementReadinessCard
             student={student}
+            placementReadiness={placementReadiness}
             onNavigateTab={onNavigateTab}
             onOpenAssessment={onOpenAssessment}
           />
 
           <CampusEligibilityBenchmarksCard
             student={student}
+            benchmarks={campusBenchmarks}
             onNavigateTab={onNavigateTab}
           />
         </div>

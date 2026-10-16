@@ -18,10 +18,19 @@ import {
 import { analyzeStudentForOpportunity } from './jdSkillAnalysis';
 import { PROCTORING_CONFIG } from '../config/proctoring';
 
-const envApiBase = import.meta.env.VITE_API_BASE_URL as string | undefined;
-export const API_BASE = envApiBase
-  ? (envApiBase.endsWith('/api') ? envApiBase : `${envApiBase.replace(/\/$/, '')}/api`)
-  : '/api';
+const resolveApiBase = (): string => {
+  const envApiBase = import.meta.env.VITE_API_BASE_URL as string | undefined;
+  if (envApiBase && envApiBase.trim() !== '') {
+    const clean = envApiBase.trim().replace(/\/+$/, '');
+    return clean.endsWith('/api') ? clean : `${clean}/api`;
+  }
+  if (typeof window !== 'undefined' && window.location.hostname.includes('onrender.com')) {
+    return 'https://hirex-backend-r6by.onrender.com/api';
+  }
+  return '/api';
+};
+
+export const API_BASE = resolveApiBase();
 
 // Fallback high-fidelity seed data if backend is offline or restarting
 export const FALLBACK_STUDENT: StudentProfile = {
@@ -127,6 +136,116 @@ export const FALLBACK_PEERS: PeerScore[] = [
   { name: "Charlotte Anderson", score: 79, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Charlotte", role: "Data Analyst" }
 ];
 
+export const FALLBACK_READINESS = {
+  overall_score: 88,
+  verified_score: 88,
+  percentile_rank: "Top 4% RSCOE",
+  target_role: "Full-Stack AI Developer",
+  available_roles: [
+    "Cloud & DevOps Engineer",
+    "Full-Stack AI Developer",
+    "Autonomous AI Agent Engineer",
+    "Distributed Systems Architect"
+  ],
+  pillars: [
+    {
+      id: "technical",
+      name: "Technical Skills",
+      weight: "35% weight",
+      weight_numeric: 0.35,
+      score: 86,
+      status: "Ready" as const,
+      colorClass: "bg-cyan-500 dark:bg-cyan-400",
+      badgeClass: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
+    },
+    {
+      id: "aptitude",
+      name: "Aptitude & Logic",
+      weight: "25% weight",
+      weight_numeric: 0.25,
+      score: 87,
+      status: "Ready" as const,
+      colorClass: "bg-emerald-500 dark:bg-emerald-400",
+      badgeClass: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
+    },
+    {
+      id: "projects",
+      name: "Projects & Experience",
+      weight: "20% weight",
+      weight_numeric: 0.20,
+      score: 100,
+      status: "Ready" as const,
+      colorClass: "bg-blue-600 dark:bg-blue-500",
+      badgeClass: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
+    },
+    {
+      id: "credentials",
+      name: "Profile & Credentials",
+      weight: "10% weight",
+      weight_numeric: 0.10,
+      score: 94,
+      status: "Ready" as const,
+      colorClass: "bg-teal-500 dark:bg-teal-400",
+      badgeClass: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
+    },
+    {
+      id: "interview",
+      name: "Interview & Communication",
+      weight: "10% weight",
+      weight_numeric: 0.10,
+      score: 74,
+      status: "Focus Gap" as const,
+      colorClass: "bg-amber-500 dark:bg-amber-400",
+      badgeClass: "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
+    }
+  ],
+  next_best_action: {
+    title: "Strengthen Technical Interview Articulation",
+    description: "Communication is your biggest current readiness gap (74/100). Articulating architectural choices will increase your clearance odds for Tier-1 corporate drives.",
+    target_tab: "codelab",
+    target_score: 85
+  }
+};
+
+export const FALLBACK_BENCHMARKS = [
+  {
+    id: "barclays",
+    name: "Barclays",
+    industry: "Global FinTech",
+    cutoff: 80,
+    package: "₹12.5 - 14.0 LPA",
+    rounds: "4 Rounds",
+    is_cleared: true
+  },
+  {
+    id: "persistent",
+    name: "Persistent",
+    industry: "Digital Engineering",
+    cutoff: 75,
+    package: "₹9.0 - 11.5 LPA",
+    rounds: "3 Rounds",
+    is_cleared: true
+  },
+  {
+    id: "tatatech",
+    name: "Tata Tech",
+    industry: "Mobility Tech",
+    cutoff: 70,
+    package: "₹7.5 - 9.0 LPA",
+    rounds: "3 Rounds",
+    is_cleared: true
+  },
+  {
+    id: "nvidia",
+    name: "NVIDIA Tier-1",
+    industry: "Accelerated Compute",
+    cutoff: 95,
+    package: "₹22.0 - 28.0 LPA",
+    rounds: "5 Rounds",
+    is_cleared: false
+  }
+];
+
 export const apiService = {
   async getStudentDashboard(studentId: string = "std_1") {
     try {
@@ -139,6 +258,8 @@ export const apiService = {
         matched_opportunities: FALLBACK_OPPORTUNITIES,
         chart_data: FALLBACK_CHART,
         peer_scores: FALLBACK_PEERS,
+        placement_readiness: FALLBACK_READINESS,
+        campus_benchmarks: FALLBACK_BENCHMARKS,
         learning_stats: {
           verified_score: 88,
           finished_lessons: 65,

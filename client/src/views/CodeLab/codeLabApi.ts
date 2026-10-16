@@ -13,13 +13,22 @@ import {
   CodeLabOverview
 } from './codeLab.types';
 
-const envApi = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_BASE_URL) ||
-               (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_BASE) ||
-               (typeof process !== 'undefined' && process.env?.REACT_APP_API_BASE);
+const resolveCodeLabApiBase = (): string => {
+  const envApi = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_BASE_URL) ||
+                 (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_BASE) ||
+                 (typeof process !== 'undefined' && process.env?.REACT_APP_API_BASE);
 
-const API_BASE = envApi
-  ? (envApi.endsWith('/api/code-lab') ? envApi : `${envApi.replace(/\/$/, '')}/api/code-lab`)
-  : '/api/code-lab';
+  if (envApi && typeof envApi === 'string' && envApi.trim() !== '') {
+    const clean = envApi.trim().replace(/\/+$/, '');
+    return clean.endsWith('/api/code-lab') ? clean : `${clean.replace(/\/api$/, '')}/api/code-lab`;
+  }
+  if (typeof window !== 'undefined' && window.location.hostname.includes('onrender.com')) {
+    return 'https://hirex-backend-r6by.onrender.com/api/code-lab';
+  }
+  return '/api/code-lab';
+};
+
+const API_BASE = resolveCodeLabApiBase();
 
 async function request(endpoint: string, options: RequestInit = {}) {
   const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;

@@ -26,6 +26,42 @@ export interface StudentProfile {
   bio: string;
 }
 
+export interface ReadinessPillar {
+  id: string;
+  name: string;
+  weight: string;
+  weight_numeric: number;
+  score: number;
+  status: 'Ready' | 'Focus Gap';
+  colorClass: string;
+  badgeClass: string;
+}
+
+export interface PlacementReadinessData {
+  overall_score: number;
+  verified_score: number;
+  percentile_rank: string;
+  target_role: string;
+  available_roles: string[];
+  pillars: ReadinessPillar[];
+  next_best_action: {
+    title: string;
+    description: string;
+    target_tab: string;
+    target_score?: number;
+  };
+}
+
+export interface CampusBenchmarkCompany {
+  id: string;
+  name: string;
+  industry: string;
+  cutoff: number;
+  package: string;
+  rounds: string;
+  is_cleared?: boolean;
+}
+
 export interface MatchedOpportunity {
   id?: string;
   opportunity_id: string;
