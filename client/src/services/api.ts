@@ -25,7 +25,7 @@ const resolveApiBase = (): string => {
     return clean.endsWith('/api') ? clean : `${clean}/api`;
   }
   if (typeof window !== 'undefined' && window.location.hostname.includes('onrender.com')) {
-    return 'https://hirex-backend-r6by.onrender.com/api';
+    return 'https://hirex-backend-1p4a.onrender.com/api';
   }
   return '/api';
 };
