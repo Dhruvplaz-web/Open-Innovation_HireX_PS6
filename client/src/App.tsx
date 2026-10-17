@@ -36,6 +36,7 @@ import { PortfolioTranscriptView } from './views/PortfolioTranscriptView';
 import { ProfileView } from './views/ProfileView';
 import { SkillVerificationView } from './views/SkillVerificationView';
 import { VerifiedSkillPassport } from './components/passport/VerifiedSkillPassport';
+import { InterviewSimulatorView } from './views/InterviewSimulatorView';
 
 // Dedicated Role-Specific Connected Ecosystem Portals
 import { AcademicianPortalView } from './views/AcademicianPortalView';
@@ -752,17 +753,26 @@ export const App: React.FC = () => {
           );
         case 'opportunities':
         case 'applications':
-        case 'interviews':
           return (
             <OpportunitiesView
               opportunities={opportunities}
               student={student}
-              initialSubTab={activeTab === 'applications' || activeTab === 'interviews' ? 'funnel' : 'drives'}
+              initialSubTab={activeTab === 'applications' ? 'funnel' : 'drives'}
               onOpenOpportunityDetail={(opp) => {
                 setSelectedOpportunity(opp);
                 setActiveModal('opportunity_detail');
               }}
               onOpenCoPilot={handleOpenCoPilot}
+            />
+          );
+        case 'mock-interview':
+        case 'interview':
+        case 'interviews':
+        case 'ai-interview':
+          return (
+            <InterviewSimulatorView
+              student={student}
+              onNavigateTab={handleNavigateTab}
             />
           );
         case 'codelab':

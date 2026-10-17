@@ -343,7 +343,6 @@ def register(req: RegisterRequest):
         }
         STUDENTS.append(student_entry)
         try:
-            from app.db.canonical_store import canonical_store
             canonical_store.save_student_profile(student_entry, actor_id=user_id)
             canonical_store.users[user_id] = new_user
         except Exception:

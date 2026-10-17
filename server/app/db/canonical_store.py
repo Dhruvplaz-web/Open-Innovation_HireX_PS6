@@ -15,6 +15,7 @@ import json
 import time
 import uuid
 import threading
+import copy
 from typing import Dict, Any, List, Optional, Tuple, Set
 from fastapi import HTTPException
 
@@ -95,6 +96,7 @@ class CanonicalStore:
         self.teacher_alumni_endorsements: Dict[str, dict] = {}
         self.invitations: Dict[str, dict] = {}
         self.proctor_events: List[dict] = []
+        self.interview_sessions: Dict[str, dict] = {}
 
         self._load_or_bootstrap()
 
@@ -145,6 +147,7 @@ class CanonicalStore:
                     self.teacher_alumni_endorsements = data.get("teacher_alumni_endorsements", {})
                     self.invitations = data.get("invitations", {})
                     self.proctor_events = data.get("proctor_events", [])
+                    self.interview_sessions = data.get("interview_sessions", {})
 
                     if not self.curriculum_mappings or not self.academic_assignments or not self.academic_interventions:
                         self._bootstrap_intelligence_entities()
@@ -1062,7 +1065,8 @@ class CanonicalStore:
             "alumni_masterclasses": self.alumni_masterclasses,
             "teacher_alumni_endorsements": self.teacher_alumni_endorsements,
             "invitations": self.invitations,
-            "proctor_events": self.proctor_events[-500:]
+            "proctor_events": self.proctor_events[-500:],
+            "interview_sessions": self.interview_sessions
         }
         with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
@@ -3291,6 +3295,33 @@ class CanonicalStore:
 
             self._save_to_disk()
             return {"status": "success", "applicant": applicant, "referral": ref}
+
+    # -------------------------------------------------------------
+    # AI Mock Interview Persistence
+    # -------------------------------------------------------------
+    def save_interview_session(self, session: dict) -> dict:
+        """Saves or updates an AI Mock Interview session."""
+        with self._lock:
+            sid = session.get("id")
+            if not sid:
+                raise ValueError("Interview session must contain 'id'")
+            self.interview_sessions[sid] = copy.deepcopy(session)
+            self._save_to_disk()
+            return copy.deepcopy(session)
+
+    def get_interview_session(self, session_id: str) -> Optional[dict]:
+        """Retrieves an AI Mock Interview session by ID."""
+        with self._lock:
+            sess = self.interview_sessions.get(session_id)
+            return copy.deepcopy(sess) if sess else None
+
+    def get_student_interview_sessions(self, student_id: str) -> List[dict]:
+        """Returns all completed and in-progress mock interviews for a student."""
+        with self._lock:
+            sessions = list(self.interview_sessions.values())
+            res = [s for s in sessions if s.get("student_id") == student_id]
+            res.sort(key=lambda x: x.get("created_at", 0), reverse=True)
+            return copy.deepcopy(res)
 
 
 # Global singleton canonical store

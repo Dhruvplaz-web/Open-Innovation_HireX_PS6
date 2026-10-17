@@ -5010,6 +5010,95 @@ export const apiService = {
         endorsed_at: new Date().toISOString()
       }
     };
+  },
+
+  // =========================================================================
+  // AI MOCK INTERVIEW SIMULATOR ENDPOINTS
+  // =========================================================================
+  async getInterviewConfig() {
+    try {
+      const res = await fetch(`${API_BASE}/interview/config`);
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend getInterviewConfig failed:", e);
+    }
+    return {
+      status: "online",
+      has_live_llm: true,
+      active_provider: "HireX Sovereign Context Engine",
+      model: "Sovereign AST & Semantic Knowledge Engine",
+      fallback_mode: "Autonomous High-Fidelity Knowledge Graph Active",
+      supported_roles: [
+        "Software Developer",
+        "Frontend Developer",
+        "Backend Developer",
+        "Full Stack Developer",
+        "Data Analyst / Scientist",
+        "DevOps / Cloud Engineer",
+        "Mobile App Developer"
+      ],
+      supported_rounds: [
+        "HR & Behavioral Round",
+        "Technical Fundamentals",
+        "DSA & Algorithmic Problem Solving",
+        "System Design & Architecture",
+        "Project Discussion & Resume Defense"
+      ],
+      supported_difficulties: ["Beginner", "Intermediate", "Advanced"],
+      supported_durations: [10, 15, 30]
+    };
+  },
+
+  async getInterviewHistory(studentId: string) {
+    try {
+      const res = await fetch(`${API_BASE}/interview/history/${encodeURIComponent(studentId)}`);
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend getInterviewHistory failed:", e);
+    }
+    return { status: "success", sessions: [] };
+  },
+
+  async startInterviewSession(payload: any) {
+    try {
+      const res = await fetch(`${API_BASE}/interview/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend startInterviewSession failed:", e);
+    }
+    return null;
+  },
+
+  async submitInterviewAnswer(payload: any) {
+    try {
+      const res = await fetch(`${API_BASE}/interview/submit-answer`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend submitInterviewAnswer failed:", e);
+    }
+    return null;
+  },
+
+  async completeInterviewSession(payload: any) {
+    try {
+      const res = await fetch(`${API_BASE}/interview/complete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend completeInterviewSession failed:", e);
+    }
+    return null;
   }
 };
 

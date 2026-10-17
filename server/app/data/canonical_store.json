@@ -1,7 +1,47 @@
 {
   "version": 2,
-  "saved_at": 1792232992.5016463,
-  "users": {},
+  "saved_at": 1792240375.0974238,
+  "users": {
+    "stu_9178d240": {
+      "id": "stu_9178d240",
+      "email": "aarav.sharma@abccollege.edu.in",
+      "name": "Aarav Sharma",
+      "role": "student",
+      "title": "Computer Science, ABC College of Engineering",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Aarav Sharma",
+      "password_hash": "653d3f362b27f025fdef6683c947f98f9932036222bc700fab8144a5426af265",
+      "salt": "d2cb79032701e061",
+      "mobile": "",
+      "is_email_verified": true,
+      "status": "APPROVED"
+    },
+    "stu_30e71b44": {
+      "id": "stu_30e71b44",
+      "email": "aarav.sharma@abccollege.edu.in",
+      "name": "Aarav Sharma",
+      "role": "student",
+      "title": "Computer Science, ABC College of Engineering",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Aarav Sharma",
+      "password_hash": "285c2286b6be63990f981136f4f6bbfda08343b0387cadd7cbd7cc73cf43b7c5",
+      "salt": "e5b6713ef9333952",
+      "mobile": "",
+      "is_email_verified": true,
+      "status": "APPROVED"
+    },
+    "stu_3fdeefe8": {
+      "id": "stu_3fdeefe8",
+      "email": "aarav.sharma@abccollege.edu.in",
+      "name": "Aarav Sharma",
+      "role": "student",
+      "title": "Computer Science, ABC College of Engineering",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Aarav Sharma",
+      "password_hash": "e9e99a5849b04117b352bdd58ecd258c94754a97cdbe4af11691d502e73ace60",
+      "salt": "87b03752c872a980",
+      "mobile": "",
+      "is_email_verified": true,
+      "status": "APPROVED"
+    }
+  },
   "students": {
     "std_1": {
       "id": "std_1",
@@ -14,23 +54,13 @@
       "year": "2026",
       "cgpa": 8.92,
       "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
-      "verified_score": 84.6,
+      "verified_score": 84,
       "skills": {
         "Python": {
-          "skill_name": "Python",
           "level": "Advanced",
-          "score": 96.0,
-          "confidence": 0.85,
-          "verification_status": "DEMONSTRATED",
-          "verified": false,
-          "source": "Code Lab: Two Sum (Target Array Indices)",
-          "evidence_type": "code_lab",
-          "evidence_id": "proof_8df76d10c4cd",
-          "verified_by": null,
-          "verified_at": null,
-          "last_assessed_at": null,
-          "updated_at": "2026-10-17T09:25:43Z",
-          "version": 3
+          "score": 92,
+          "verified": true,
+          "project_verified": true
         },
         "React": {
           "level": "Advanced",
@@ -95,15 +125,15 @@
       "rank_in_college": 4,
       "target_role": "Full-Stack AI Engineer",
       "bio": "Phase 1 Persistence Verified",
-      "version": 79,
+      "version": 89,
       "created_at": 1792149868.2778537,
-      "updated_at": 1792229143.8891864,
+      "updated_at": 1792240173.133316,
       "deleted_at": null,
       "profile_completion": 60,
       "linkedin_connected": false,
       "linkedin_url": "https://www.linkedin.com/in/li_sub_dhruv_9821",
       "achievements": [
-        "NPTEL — Cloud Computing and Distributed Systems (Elite + Silver)"
+        "NPTEL — Cloud Computing and Distributed Systems with a consolidated (Elite + Silver)"
       ]
     },
     "std_2": {
@@ -590,13 +620,473 @@
       "updated_at": 1792232992.4791596,
       "deleted_at": null,
       "profile_completion": 0
+    },
+    "stu_9178d240": {
+      "id": "stu_9178d240",
+      "name": "Aarav Sharma",
+      "email": "aarav.sharma@abccollege.edu.in",
+      "college": "ABC College of Engineering",
+      "institution_id": "inst_abccolle",
+      "department": "Computer Science",
+      "department_id": "dept_comput_abcc",
+      "year": "3rd Year",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Aarav Sharma",
+      "verified_score": 59,
+      "placement_readiness_score": 0,
+      "skills": {
+        "Java": {
+          "score": 67,
+          "level": "Advanced",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "Python": {
+          "score": 67,
+          "level": "Advanced",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "SQL": {
+          "score": 67,
+          "level": "Advanced",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "Machine Learning": {
+          "score": 67,
+          "level": "Advanced",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "Git": {
+          "score": 0,
+          "level": "Beginner",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "Spring Boot": {
+          "score": 85,
+          "level": "Advanced",
+          "verified": true,
+          "verification_state": "ASSESSMENT VERIFIED"
+        }
+      },
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 2,
+      "rank_in_college": 0,
+      "target_role": "Software Engineer",
+      "bio": "Engineering student at ABC College of Engineering (Computer Science).",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792235711.835625,
+      "updated_at": 1792235711.835625,
+      "deleted_at": null,
+      "profile_completion": 15
+    },
+    "test_sync_std_c0609a": {
+      "id": "test_sync_std_c0609a",
+      "name": "New Student",
+      "email": "",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "batch": "2026",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=test_sync_std_c0609a",
+      "verified_score": 0,
+      "placement_readiness_score": 0,
+      "skills": {},
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 0,
+      "rank_in_college": 0,
+      "target_role": "Full-Stack AI Developer",
+      "bio": "New member setting up verified skill passport.",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792235716.2173197,
+      "updated_at": 1792235716.2173197,
+      "deleted_at": null,
+      "profile_completion": 0
+    },
+    "t9YeMLe3t8UiDSlVJWCEqArBDp72": {
+      "id": "t9YeMLe3t8UiDSlVJWCEqArBDp72",
+      "name": "New Student",
+      "email": "",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "batch": "2026",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=t9YeMLe3t8UiDSlVJWCEqArBDp72",
+      "verified_score": 0,
+      "placement_readiness_score": 0,
+      "skills": {},
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 0,
+      "rank_in_college": 0,
+      "target_role": "Full-Stack AI Developer",
+      "bio": "New member setting up verified skill passport.",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792239362.6736395,
+      "updated_at": 1792239362.6736395,
+      "deleted_at": null,
+      "profile_completion": 0
+    },
+    "stu_30e71b44": {
+      "id": "stu_30e71b44",
+      "name": "Aarav Sharma",
+      "email": "aarav.sharma@abccollege.edu.in",
+      "college": "ABC College of Engineering",
+      "institution_id": "inst_abccolle",
+      "department": "Computer Science",
+      "department_id": "dept_comput_abcc",
+      "year": "3rd Year",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Aarav Sharma",
+      "verified_score": 59,
+      "placement_readiness_score": 0,
+      "skills": {
+        "Java": {
+          "score": 67,
+          "level": "Advanced",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "Python": {
+          "score": 67,
+          "level": "Advanced",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "SQL": {
+          "score": 67,
+          "level": "Advanced",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "Machine Learning": {
+          "score": 67,
+          "level": "Advanced",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "Git": {
+          "score": 0,
+          "level": "Beginner",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "Spring Boot": {
+          "score": 85,
+          "level": "Advanced",
+          "verified": true,
+          "verification_state": "ASSESSMENT VERIFIED"
+        }
+      },
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 2,
+      "rank_in_college": 0,
+      "target_role": "Software Engineer",
+      "bio": "Engineering student at ABC College of Engineering (Computer Science).",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792239491.647313,
+      "updated_at": 1792239491.647313,
+      "deleted_at": null,
+      "profile_completion": 15
+    },
+    "test_sync_std_eff12c": {
+      "id": "test_sync_std_eff12c",
+      "name": "New Student",
+      "email": "",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "batch": "2026",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=test_sync_std_eff12c",
+      "verified_score": 0,
+      "placement_readiness_score": 0,
+      "skills": {},
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 0,
+      "rank_in_college": 0,
+      "target_role": "Full-Stack AI Developer",
+      "bio": "New member setting up verified skill passport.",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792239496.6352699,
+      "updated_at": 1792239496.6352699,
+      "deleted_at": null,
+      "profile_completion": 0
+    },
+    "std_integrity_result": {
+      "id": "std_integrity_result",
+      "name": "New Student",
+      "email": "",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "batch": "2026",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=std_integrity_result",
+      "verified_score": 17,
+      "placement_readiness_score": 0,
+      "skills": {
+        "Python": {
+          "score": 33,
+          "level": "Intermediate",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "SQL": {
+          "score": 0,
+          "level": "Beginner",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        }
+      },
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 1,
+      "rank_in_college": 0,
+      "target_role": "Full-Stack AI Developer",
+      "bio": "New member setting up verified skill passport.",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792240165.7794244,
+      "updated_at": 1792240165.7794244,
+      "deleted_at": null,
+      "profile_completion": 0
+    },
+    "stu_3fdeefe8": {
+      "id": "stu_3fdeefe8",
+      "name": "Aarav Sharma",
+      "email": "aarav.sharma@abccollege.edu.in",
+      "college": "ABC College of Engineering",
+      "institution_id": "inst_abccolle",
+      "department": "Computer Science",
+      "department_id": "dept_comput_abcc",
+      "year": "3rd Year",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Aarav Sharma",
+      "verified_score": 59,
+      "placement_readiness_score": 0,
+      "skills": {
+        "Java": {
+          "score": 67,
+          "level": "Advanced",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "Python": {
+          "score": 67,
+          "level": "Advanced",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "SQL": {
+          "score": 67,
+          "level": "Advanced",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "Machine Learning": {
+          "score": 67,
+          "level": "Advanced",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "Git": {
+          "score": 0,
+          "level": "Beginner",
+          "verified": false,
+          "verification_state": "NEEDS_IMPROVEMENT"
+        },
+        "Spring Boot": {
+          "score": 85,
+          "level": "Advanced",
+          "verified": true,
+          "verification_state": "ASSESSMENT VERIFIED"
+        }
+      },
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 2,
+      "rank_in_college": 0,
+      "target_role": "Software Engineer",
+      "bio": "Engineering student at ABC College of Engineering (Computer Science).",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792240170.7046735,
+      "updated_at": 1792240170.7046735,
+      "deleted_at": null,
+      "profile_completion": 15
+    },
+    "test_sync_std_5ea509": {
+      "id": "test_sync_std_5ea509",
+      "name": "New Student",
+      "email": "",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "batch": "2026",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=test_sync_std_5ea509",
+      "verified_score": 0,
+      "placement_readiness_score": 0,
+      "skills": {},
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 0,
+      "rank_in_college": 0,
+      "target_role": "Full-Stack AI Developer",
+      "bio": "New member setting up verified skill passport.",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792240174.0215733,
+      "updated_at": 1792240174.0215733,
+      "deleted_at": null,
+      "profile_completion": 0
+    },
+    "test_sync_std_285f6b": {
+      "id": "test_sync_std_285f6b",
+      "name": "New Student",
+      "email": "",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "batch": "2026",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=test_sync_std_285f6b",
+      "verified_score": 0,
+      "placement_readiness_score": 0,
+      "skills": {},
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 0,
+      "rank_in_college": 0,
+      "target_role": "Full-Stack AI Developer",
+      "bio": "New member setting up verified skill passport.",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792240260.240124,
+      "updated_at": 1792240260.240124,
+      "deleted_at": null,
+      "profile_completion": 0
+    },
+    "test_sync_std_cc7454": {
+      "id": "test_sync_std_cc7454",
+      "name": "New Student",
+      "email": "",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "batch": "2026",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=test_sync_std_cc7454",
+      "verified_score": 0,
+      "placement_readiness_score": 0,
+      "skills": {},
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 0,
+      "rank_in_college": 0,
+      "target_role": "Full-Stack AI Developer",
+      "bio": "New member setting up verified skill passport.",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792240374.8751986,
+      "updated_at": 1792240374.8751986,
+      "deleted_at": null,
+      "profile_completion": 0
     }
   },
   "student_registrations": {
     "std_1": {
-      "aadhaar_status": "VERIFIED",
+      "student_id": "std_1",
+      "full_name": "Dhruv Patil",
+      "mobile_number": "9876543210",
+      "email": "dhruv.patil@rscoe.edu.in",
+      "college_name": "JSPM RSCOE, Pune",
+      "graduating_year": "2026",
+      "stream_branch": "Computer Engineering",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "country": "India",
       "aadhaar_masked": "XXXX-XXXX-1230",
-      "aadhaar_tx_id": "UIDAI-AUTH-49FBF06A23A2",
+      "aadhaar_status": "VERIFIED",
       "college_id_card_url": "",
       "college_id_card_filename": "",
       "resume_text": "",
@@ -605,7 +1095,8 @@
       "linkedin_url": "https://www.linkedin.com/in/dhruv-patil",
       "linkedin_connected": false,
       "projects": [],
-      "updated_at": 1792229143,
+      "updated_at": 1792240173,
+      "aadhaar_tx_id": "UIDAI-AUTH-42EE39BB14E3",
       "college_id_status": "REAL",
       "college_id_text": "JSPM RSCOE Computer Engineering PRN: 72153921K Valid Till: 2026",
       "college_id_badge": "Official College ID Verified ✓"
@@ -1128,8 +1619,8 @@
       "version": 1,
       "created_at": "2026-10-17T07:14:07Z"
     },
-    "opp_alumni_ref_alm_345ffc": {
-      "opportunity_id": "opp_alumni_ref_alm_345ffc",
+    "opp_alumni_ref_alm_9578fd": {
+      "opportunity_id": "opp_alumni_ref_alm_9578fd",
       "title": "Cloud Infrastructure Engineer",
       "company": "Google",
       "location": "Pune / Bengaluru",
@@ -1145,12 +1636,12 @@
       "color_theme": "emerald",
       "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
       "source_type": "ALUMNI_REFERRAL",
-      "alumni_referral_id": "ref_alm_345ffc",
+      "alumni_referral_id": "ref_alm_9578fd",
       "version": 1,
-      "created_at": "2026-10-17T07:48:33Z"
+      "created_at": "2026-10-17T11:15:07Z"
     },
-    "opp_alumni_ref_alm_ec4b15": {
-      "opportunity_id": "opp_alumni_ref_alm_ec4b15",
+    "opp_alumni_ref_alm_fd31b5": {
+      "opportunity_id": "opp_alumni_ref_alm_fd31b5",
       "title": "Cloud Infrastructure Engineer",
       "company": "Google",
       "location": "Pune / Bengaluru",
@@ -1166,12 +1657,12 @@
       "color_theme": "emerald",
       "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
       "source_type": "ALUMNI_REFERRAL",
-      "alumni_referral_id": "ref_alm_ec4b15",
+      "alumni_referral_id": "ref_alm_fd31b5",
       "version": 1,
-      "created_at": "2026-10-17T07:52:04Z"
+      "created_at": "2026-10-17T11:17:39Z"
     },
-    "opp_alumni_ref_alm_ce0490": {
-      "opportunity_id": "opp_alumni_ref_alm_ce0490",
+    "opp_alumni_ref_alm_d9ea99": {
+      "opportunity_id": "opp_alumni_ref_alm_d9ea99",
       "title": "Cloud Infrastructure Engineer",
       "company": "Google",
       "location": "Pune / Bengaluru",
@@ -1187,12 +1678,12 @@
       "color_theme": "emerald",
       "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
       "source_type": "ALUMNI_REFERRAL",
-      "alumni_referral_id": "ref_alm_ce0490",
+      "alumni_referral_id": "ref_alm_d9ea99",
       "version": 1,
-      "created_at": "2026-10-17T07:52:29Z"
+      "created_at": "2026-10-17T12:18:09Z"
     },
-    "opp_alumni_ref_alm_ee16e3": {
-      "opportunity_id": "opp_alumni_ref_alm_ee16e3",
+    "opp_alumni_ref_alm_3148e2": {
+      "opportunity_id": "opp_alumni_ref_alm_3148e2",
       "title": "Cloud Infrastructure Engineer",
       "company": "Google",
       "location": "Pune / Bengaluru",
@@ -1208,72 +1699,9 @@
       "color_theme": "emerald",
       "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
       "source_type": "ALUMNI_REFERRAL",
-      "alumni_referral_id": "ref_alm_ee16e3",
+      "alumni_referral_id": "ref_alm_3148e2",
       "version": 1,
-      "created_at": "2026-10-17T07:52:40Z"
-    },
-    "opp_alumni_ref_alm_e37795": {
-      "opportunity_id": "opp_alumni_ref_alm_e37795",
-      "title": "Cloud Infrastructure Engineer",
-      "company": "Google",
-      "location": "Pune / Bengaluru",
-      "duration": "Full-Time",
-      "stipend": "Industry Competitive",
-      "deadline": "2026-12-31",
-      "matched_skills": [
-        "Python",
-        "Algorithms",
-        "System Design"
-      ],
-      "match_percentage": 90,
-      "color_theme": "emerald",
-      "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
-      "source_type": "ALUMNI_REFERRAL",
-      "alumni_referral_id": "ref_alm_e37795",
-      "version": 1,
-      "created_at": "2026-10-17T08:00:22Z"
-    },
-    "opp_alumni_ref_alm_44d720": {
-      "opportunity_id": "opp_alumni_ref_alm_44d720",
-      "title": "Cloud Infrastructure Engineer",
-      "company": "Google",
-      "location": "Pune / Bengaluru",
-      "duration": "Full-Time",
-      "stipend": "Industry Competitive",
-      "deadline": "2026-12-31",
-      "matched_skills": [
-        "Python",
-        "Algorithms",
-        "System Design"
-      ],
-      "match_percentage": 90,
-      "color_theme": "emerald",
-      "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
-      "source_type": "ALUMNI_REFERRAL",
-      "alumni_referral_id": "ref_alm_44d720",
-      "version": 1,
-      "created_at": "2026-10-17T08:19:53Z"
-    },
-    "opp_alumni_ref_alm_32e4cf": {
-      "opportunity_id": "opp_alumni_ref_alm_32e4cf",
-      "title": "Cloud Infrastructure Engineer",
-      "company": "Google",
-      "location": "Pune / Bengaluru",
-      "duration": "Full-Time",
-      "stipend": "Industry Competitive",
-      "deadline": "2026-12-31",
-      "matched_skills": [
-        "Python",
-        "Algorithms",
-        "System Design"
-      ],
-      "match_percentage": 90,
-      "color_theme": "emerald",
-      "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
-      "source_type": "ALUMNI_REFERRAL",
-      "alumni_referral_id": "ref_alm_32e4cf",
-      "version": 1,
-      "created_at": "2026-10-17T08:28:49Z"
+      "created_at": "2026-10-17T12:29:28Z"
     }
   },
   "applications": {
@@ -1555,6 +1983,384 @@
         {
           "status": "Applied",
           "updated_at": "2026-10-17T09:25:43Z",
+          "note": "Application submitted"
+        }
+      ]
+    },
+    "app_d25d7aab": {
+      "id": "app_d25d7aab",
+      "student_id": "p9p1rVa1ZZNCTgYhcLLXcbf7IIS2",
+      "student_name": "New Student",
+      "student_email": "",
+      "student_college": "JSPM RSCOE, Pune",
+      "opportunity_id": "opp_1",
+      "company": "Barclays India Innovation Centre",
+      "title": "Full-Stack AI Developer Intern",
+      "match_percentage": 25,
+      "matched_skills": [],
+      "status": "Applied",
+      "applied_at": "2026-10-17T11:00:52Z",
+      "jdFitScore": 0,
+      "jdFitVerdict": "NEEDS_WORK",
+      "jdFitSummary": {
+        "mustHaveCoverage": 0.0,
+        "niceToHaveCoverage": 0.0,
+        "topGaps": [
+          "Python",
+          "React",
+          "FastAPI"
+        ],
+        "metCount": 0,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-17T11:00:52Z",
+      "version": 1,
+      "created_at": 1792234852.6696367,
+      "updated_at": 1792234852.6696367,
+      "deleted_at": null,
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-17T11:00:52Z",
+          "note": "Application submitted"
+        }
+      ]
+    },
+    "app_86bc9084": {
+      "id": "app_86bc9084",
+      "student_id": "stu_9178d240",
+      "student_name": "Aarav Sharma",
+      "student_email": "aarav.sharma@abccollege.edu.in",
+      "student_college": "ABC College of Engineering",
+      "opportunity_id": "opp_b59f70",
+      "company": "Barclays India Innovation Centre",
+      "title": "Java Developer Intern",
+      "match_percentage": 46,
+      "matched_skills": [
+        "Java",
+        "SQL",
+        "Git"
+      ],
+      "status": "Shortlisted",
+      "applied_at": "2026-10-17T11:15:12Z",
+      "jdFitScore": 0,
+      "jdFitVerdict": "NEEDS_WORK",
+      "jdFitSummary": {
+        "mustHaveCoverage": 0.0,
+        "niceToHaveCoverage": 0.0,
+        "topGaps": [
+          "Spring Boot",
+          "Docker",
+          "Rest Api"
+        ],
+        "metCount": 0,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-17T11:15:12Z",
+      "version": 2,
+      "created_at": 1792235712.164305,
+      "updated_at": 1792235712.2352314,
+      "deleted_at": null,
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-17T11:15:12Z",
+          "note": "Application submitted"
+        },
+        {
+          "status": "Shortlisted",
+          "updated_at": "2026-10-17T11:15:12Z",
+          "note": "Candidate exhibits strong core Java fundamentals."
+        }
+      ]
+    },
+    "app_3b33d235": {
+      "id": "app_3b33d235",
+      "student_id": "test_sync_std_c0609a",
+      "student_name": "New Student",
+      "student_email": "",
+      "student_college": "JSPM RSCOE, Pune",
+      "opportunity_id": "opp_1",
+      "company": "Barclays India Innovation Centre",
+      "title": "Full-Stack AI Developer Intern",
+      "match_percentage": 25,
+      "matched_skills": [],
+      "status": "Applied",
+      "applied_at": "2026-10-17T11:15:16Z",
+      "jdFitScore": 0,
+      "jdFitVerdict": "NEEDS_WORK",
+      "jdFitSummary": {
+        "mustHaveCoverage": 0.0,
+        "niceToHaveCoverage": 0.0,
+        "topGaps": [
+          "Python",
+          "React",
+          "FastAPI"
+        ],
+        "metCount": 0,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-17T11:15:16Z",
+      "version": 1,
+      "created_at": 1792235716.451093,
+      "updated_at": 1792235716.451093,
+      "deleted_at": null,
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-17T11:15:16Z",
+          "note": "Application submitted"
+        }
+      ]
+    },
+    "app_bcf2d007": {
+      "id": "app_bcf2d007",
+      "student_id": "stu_30e71b44",
+      "student_name": "Aarav Sharma",
+      "student_email": "aarav.sharma@abccollege.edu.in",
+      "student_college": "ABC College of Engineering",
+      "opportunity_id": "opp_828b7a",
+      "company": "Barclays India Innovation Centre",
+      "title": "Java Developer Intern",
+      "match_percentage": 46,
+      "matched_skills": [
+        "Java",
+        "SQL",
+        "Git"
+      ],
+      "status": "Shortlisted",
+      "applied_at": "2026-10-17T12:18:12Z",
+      "jdFitScore": 0,
+      "jdFitVerdict": "NEEDS_WORK",
+      "jdFitSummary": {
+        "mustHaveCoverage": 0.0,
+        "niceToHaveCoverage": 0.0,
+        "topGaps": [
+          "Spring Boot",
+          "Docker",
+          "Rest Api"
+        ],
+        "metCount": 0,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-17T12:18:12Z",
+      "version": 2,
+      "created_at": 1792239492.0300374,
+      "updated_at": 1792239492.1345754,
+      "deleted_at": null,
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-17T12:18:12Z",
+          "note": "Application submitted"
+        },
+        {
+          "status": "Shortlisted",
+          "updated_at": "2026-10-17T12:18:12Z",
+          "note": "Candidate exhibits strong core Java fundamentals."
+        }
+      ]
+    },
+    "app_33cff887": {
+      "id": "app_33cff887",
+      "student_id": "test_sync_std_eff12c",
+      "student_name": "New Student",
+      "student_email": "",
+      "student_college": "JSPM RSCOE, Pune",
+      "opportunity_id": "opp_1",
+      "company": "Barclays India Innovation Centre",
+      "title": "Full-Stack AI Developer Intern",
+      "match_percentage": 25,
+      "matched_skills": [],
+      "status": "Applied",
+      "applied_at": "2026-10-17T12:18:16Z",
+      "jdFitScore": 0,
+      "jdFitVerdict": "NEEDS_WORK",
+      "jdFitSummary": {
+        "mustHaveCoverage": 0.0,
+        "niceToHaveCoverage": 0.0,
+        "topGaps": [
+          "Python",
+          "React",
+          "FastAPI"
+        ],
+        "metCount": 0,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-17T12:18:16Z",
+      "version": 1,
+      "created_at": 1792239496.721519,
+      "updated_at": 1792239496.721519,
+      "deleted_at": null,
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-17T12:18:16Z",
+          "note": "Application submitted"
+        }
+      ]
+    },
+    "app_05eb312c": {
+      "id": "app_05eb312c",
+      "student_id": "stu_3fdeefe8",
+      "student_name": "Aarav Sharma",
+      "student_email": "aarav.sharma@abccollege.edu.in",
+      "student_college": "ABC College of Engineering",
+      "opportunity_id": "opp_05bc7f",
+      "company": "Barclays India Innovation Centre",
+      "title": "Java Developer Intern",
+      "match_percentage": 46,
+      "matched_skills": [
+        "Java",
+        "SQL",
+        "Git"
+      ],
+      "status": "Shortlisted",
+      "applied_at": "2026-10-17T12:29:30Z",
+      "jdFitScore": 0,
+      "jdFitVerdict": "NEEDS_WORK",
+      "jdFitSummary": {
+        "mustHaveCoverage": 0.0,
+        "niceToHaveCoverage": 0.0,
+        "topGaps": [
+          "Spring Boot",
+          "Docker",
+          "Rest Api"
+        ],
+        "metCount": 0,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-17T12:29:30Z",
+      "version": 2,
+      "created_at": 1792240170.8902404,
+      "updated_at": 1792240170.9197795,
+      "deleted_at": null,
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-17T12:29:30Z",
+          "note": "Application submitted"
+        },
+        {
+          "status": "Shortlisted",
+          "updated_at": "2026-10-17T12:29:30Z",
+          "note": "Candidate exhibits strong core Java fundamentals."
+        }
+      ]
+    },
+    "app_a1306440": {
+      "id": "app_a1306440",
+      "student_id": "test_sync_std_5ea509",
+      "student_name": "New Student",
+      "student_email": "",
+      "student_college": "JSPM RSCOE, Pune",
+      "opportunity_id": "opp_1",
+      "company": "Barclays India Innovation Centre",
+      "title": "Full-Stack AI Developer Intern",
+      "match_percentage": 25,
+      "matched_skills": [],
+      "status": "Applied",
+      "applied_at": "2026-10-17T12:29:34Z",
+      "jdFitScore": 0,
+      "jdFitVerdict": "NEEDS_WORK",
+      "jdFitSummary": {
+        "mustHaveCoverage": 0.0,
+        "niceToHaveCoverage": 0.0,
+        "topGaps": [
+          "Python",
+          "React",
+          "FastAPI"
+        ],
+        "metCount": 0,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-17T12:29:34Z",
+      "version": 1,
+      "created_at": 1792240174.0825753,
+      "updated_at": 1792240174.0825753,
+      "deleted_at": null,
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-17T12:29:34Z",
+          "note": "Application submitted"
+        }
+      ]
+    },
+    "app_9e698bf0": {
+      "id": "app_9e698bf0",
+      "student_id": "test_sync_std_285f6b",
+      "student_name": "New Student",
+      "student_email": "",
+      "student_college": "JSPM RSCOE, Pune",
+      "opportunity_id": "opp_1",
+      "company": "Barclays India Innovation Centre",
+      "title": "Full-Stack AI Developer Intern",
+      "match_percentage": 25,
+      "matched_skills": [],
+      "status": "Applied",
+      "applied_at": "2026-10-17T12:31:00Z",
+      "jdFitScore": 0,
+      "jdFitVerdict": "NEEDS_WORK",
+      "jdFitSummary": {
+        "mustHaveCoverage": 0.0,
+        "niceToHaveCoverage": 0.0,
+        "topGaps": [
+          "Python",
+          "React",
+          "FastAPI"
+        ],
+        "metCount": 0,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-17T12:31:00Z",
+      "version": 1,
+      "created_at": 1792240260.319502,
+      "updated_at": 1792240260.319502,
+      "deleted_at": null,
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-17T12:31:00Z",
+          "note": "Application submitted"
+        }
+      ]
+    },
+    "app_e62498f2": {
+      "id": "app_e62498f2",
+      "student_id": "test_sync_std_cc7454",
+      "student_name": "New Student",
+      "student_email": "",
+      "student_college": "JSPM RSCOE, Pune",
+      "opportunity_id": "opp_1",
+      "company": "Barclays India Innovation Centre",
+      "title": "Full-Stack AI Developer Intern",
+      "match_percentage": 25,
+      "matched_skills": [],
+      "status": "Applied",
+      "applied_at": "2026-10-17T12:32:54Z",
+      "jdFitScore": 0,
+      "jdFitVerdict": "NEEDS_WORK",
+      "jdFitSummary": {
+        "mustHaveCoverage": 0.0,
+        "niceToHaveCoverage": 0.0,
+        "topGaps": [
+          "Python",
+          "React",
+          "FastAPI"
+        ],
+        "metCount": 0,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-17T12:32:54Z",
+      "version": 1,
+      "created_at": 1792240374.9021962,
+      "updated_at": 1792240374.9021962,
+      "deleted_at": null,
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-17T12:32:54Z",
           "note": "Application submitted"
         }
       ]
@@ -2139,6 +2945,276 @@
         "score": 96.0
       },
       "event_id": null
+    },
+    {
+      "log_id": "aud_1792234852670_c2c8",
+      "timestamp": 1792234852.670641,
+      "iso_time": "2026-10-17T11:00:52Z",
+      "actor_id": "p9p1rVa1ZZNCTgYhcLLXcbf7IIS2",
+      "action": "APPLICATION_CREATED",
+      "entity_type": "application",
+      "entity_id": "app_d25d7aab",
+      "from_value": null,
+      "to_value": {
+        "status": "Applied",
+        "opportunity_id": "opp_1",
+        "student_id": "p9p1rVa1ZZNCTgYhcLLXcbf7IIS2"
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792235710302_afa1",
+      "timestamp": 1792235710.3028345,
+      "iso_time": "2026-10-17T11:15:10Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792235712164_94fc",
+      "timestamp": 1792235712.164305,
+      "iso_time": "2026-10-17T11:15:12Z",
+      "actor_id": "stu_9178d240",
+      "action": "APPLICATION_CREATED",
+      "entity_type": "application",
+      "entity_id": "app_86bc9084",
+      "from_value": null,
+      "to_value": {
+        "status": "Applied",
+        "opportunity_id": "opp_b59f70",
+        "student_id": "stu_9178d240"
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792235712235_0e49",
+      "timestamp": 1792235712.2352314,
+      "iso_time": "2026-10-17T11:15:12Z",
+      "actor_id": "recruiter",
+      "action": "APPLICATION_STATUS_CHANGED",
+      "entity_type": "application",
+      "entity_id": "app_86bc9084",
+      "from_value": {
+        "status": "Applied",
+        "version": 1
+      },
+      "to_value": {
+        "status": "Shortlisted",
+        "version": 2
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792235716451_90c2",
+      "timestamp": 1792235716.451093,
+      "iso_time": "2026-10-17T11:15:16Z",
+      "actor_id": "test_sync_std_c0609a",
+      "action": "APPLICATION_CREATED",
+      "entity_type": "application",
+      "entity_id": "app_3b33d235",
+      "from_value": null,
+      "to_value": {
+        "status": "Applied",
+        "opportunity_id": "opp_1",
+        "student_id": "test_sync_std_c0609a"
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792239490627_f5bf",
+      "timestamp": 1792239490.6277156,
+      "iso_time": "2026-10-17T12:18:10Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792239492030_dc01",
+      "timestamp": 1792239492.0300374,
+      "iso_time": "2026-10-17T12:18:12Z",
+      "actor_id": "stu_30e71b44",
+      "action": "APPLICATION_CREATED",
+      "entity_type": "application",
+      "entity_id": "app_bcf2d007",
+      "from_value": null,
+      "to_value": {
+        "status": "Applied",
+        "opportunity_id": "opp_828b7a",
+        "student_id": "stu_30e71b44"
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792239492134_4ba3",
+      "timestamp": 1792239492.1345754,
+      "iso_time": "2026-10-17T12:18:12Z",
+      "actor_id": "recruiter",
+      "action": "APPLICATION_STATUS_CHANGED",
+      "entity_type": "application",
+      "entity_id": "app_bcf2d007",
+      "from_value": {
+        "status": "Applied",
+        "version": 1
+      },
+      "to_value": {
+        "status": "Shortlisted",
+        "version": 2
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792239496721_6133",
+      "timestamp": 1792239496.721519,
+      "iso_time": "2026-10-17T12:18:16Z",
+      "actor_id": "test_sync_std_eff12c",
+      "action": "APPLICATION_CREATED",
+      "entity_type": "application",
+      "entity_id": "app_33cff887",
+      "from_value": null,
+      "to_value": {
+        "status": "Applied",
+        "opportunity_id": "opp_1",
+        "student_id": "test_sync_std_eff12c"
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792240161076_77cb",
+      "timestamp": 1792240161.0764205,
+      "iso_time": "2026-10-17T12:29:21Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792240169224_3c94",
+      "timestamp": 1792240169.2247643,
+      "iso_time": "2026-10-17T12:29:29Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792240170890_2b3f",
+      "timestamp": 1792240170.8902404,
+      "iso_time": "2026-10-17T12:29:30Z",
+      "actor_id": "stu_3fdeefe8",
+      "action": "APPLICATION_CREATED",
+      "entity_type": "application",
+      "entity_id": "app_05eb312c",
+      "from_value": null,
+      "to_value": {
+        "status": "Applied",
+        "opportunity_id": "opp_05bc7f",
+        "student_id": "stu_3fdeefe8"
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792240170919_3692",
+      "timestamp": 1792240170.9197795,
+      "iso_time": "2026-10-17T12:29:30Z",
+      "actor_id": "recruiter",
+      "action": "APPLICATION_STATUS_CHANGED",
+      "entity_type": "application",
+      "entity_id": "app_05eb312c",
+      "from_value": {
+        "status": "Applied",
+        "version": 1
+      },
+      "to_value": {
+        "status": "Shortlisted",
+        "version": 2
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792240174082_6e12",
+      "timestamp": 1792240174.0825753,
+      "iso_time": "2026-10-17T12:29:34Z",
+      "actor_id": "test_sync_std_5ea509",
+      "action": "APPLICATION_CREATED",
+      "entity_type": "application",
+      "entity_id": "app_a1306440",
+      "from_value": null,
+      "to_value": {
+        "status": "Applied",
+        "opportunity_id": "opp_1",
+        "student_id": "test_sync_std_5ea509"
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792240260319_1b11",
+      "timestamp": 1792240260.319502,
+      "iso_time": "2026-10-17T12:31:00Z",
+      "actor_id": "test_sync_std_285f6b",
+      "action": "APPLICATION_CREATED",
+      "entity_type": "application",
+      "entity_id": "app_9e698bf0",
+      "from_value": null,
+      "to_value": {
+        "status": "Applied",
+        "opportunity_id": "opp_1",
+        "student_id": "test_sync_std_285f6b"
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792240374902_fd50",
+      "timestamp": 1792240374.9021962,
+      "iso_time": "2026-10-17T12:32:54Z",
+      "actor_id": "test_sync_std_cc7454",
+      "action": "APPLICATION_CREATED",
+      "entity_type": "application",
+      "entity_id": "app_e62498f2",
+      "from_value": null,
+      "to_value": {
+        "status": "Applied",
+        "opportunity_id": "opp_1",
+        "student_id": "test_sync_std_cc7454"
+      },
+      "event_id": null
     }
   ],
   "notifications": [
@@ -2189,6 +3265,150 @@
       "read_at": null,
       "created_at": 1792229143.6468818,
       "formatted_time": "14:55:43"
+    },
+    {
+      "notification_id": "notif_1792234852671_332c",
+      "recipient_id": "recruiter_general",
+      "type": "NEW_APPLICANT",
+      "title": "New Candidate Applied for Full-Stack AI Developer Intern",
+      "message": "Student New Student applied with match score 25%.",
+      "entity_type": "application",
+      "entity_id": "app_d25d7aab",
+      "read_at": null,
+      "created_at": 1792234852.671638,
+      "formatted_time": "16:30:52"
+    },
+    {
+      "notification_id": "notif_1792235712164_2b09",
+      "recipient_id": "recruiter_general",
+      "type": "NEW_APPLICANT",
+      "title": "New Candidate Applied for Role",
+      "message": "Student Aarav Sharma applied with match score 46%.",
+      "entity_type": "application",
+      "entity_id": "app_86bc9084",
+      "read_at": null,
+      "created_at": 1792235712.164305,
+      "formatted_time": "16:45:12"
+    },
+    {
+      "notification_id": "notif_1792235712235_8081",
+      "recipient_id": "stu_9178d240",
+      "type": "APPLICATION_STATUS_UPDATE",
+      "title": "Application Status: Shortlisted",
+      "message": "Your application for Java Developer Intern at Barclays India Innovation Centre is now Shortlisted.",
+      "entity_type": "application",
+      "entity_id": "app_86bc9084",
+      "read_at": null,
+      "created_at": 1792235712.2352314,
+      "formatted_time": "16:45:12"
+    },
+    {
+      "notification_id": "notif_1792235716451_12ed",
+      "recipient_id": "recruiter_general",
+      "type": "NEW_APPLICANT",
+      "title": "New Candidate Applied for Full-Stack AI Developer Intern",
+      "message": "Student New Student applied with match score 25%.",
+      "entity_type": "application",
+      "entity_id": "app_3b33d235",
+      "read_at": null,
+      "created_at": 1792235716.451093,
+      "formatted_time": "16:45:16"
+    },
+    {
+      "notification_id": "notif_1792239492030_0d5f",
+      "recipient_id": "recruiter_general",
+      "type": "NEW_APPLICANT",
+      "title": "New Candidate Applied for Role",
+      "message": "Student Aarav Sharma applied with match score 46%.",
+      "entity_type": "application",
+      "entity_id": "app_bcf2d007",
+      "read_at": null,
+      "created_at": 1792239492.0300374,
+      "formatted_time": "17:48:12"
+    },
+    {
+      "notification_id": "notif_1792239492134_e713",
+      "recipient_id": "stu_30e71b44",
+      "type": "APPLICATION_STATUS_UPDATE",
+      "title": "Application Status: Shortlisted",
+      "message": "Your application for Java Developer Intern at Barclays India Innovation Centre is now Shortlisted.",
+      "entity_type": "application",
+      "entity_id": "app_bcf2d007",
+      "read_at": null,
+      "created_at": 1792239492.1345754,
+      "formatted_time": "17:48:12"
+    },
+    {
+      "notification_id": "notif_1792239496721_ab64",
+      "recipient_id": "recruiter_general",
+      "type": "NEW_APPLICANT",
+      "title": "New Candidate Applied for Full-Stack AI Developer Intern",
+      "message": "Student New Student applied with match score 25%.",
+      "entity_type": "application",
+      "entity_id": "app_33cff887",
+      "read_at": null,
+      "created_at": 1792239496.721519,
+      "formatted_time": "17:48:16"
+    },
+    {
+      "notification_id": "notif_1792240170890_38d7",
+      "recipient_id": "recruiter_general",
+      "type": "NEW_APPLICANT",
+      "title": "New Candidate Applied for Role",
+      "message": "Student Aarav Sharma applied with match score 46%.",
+      "entity_type": "application",
+      "entity_id": "app_05eb312c",
+      "read_at": null,
+      "created_at": 1792240170.8902404,
+      "formatted_time": "17:59:30"
+    },
+    {
+      "notification_id": "notif_1792240170919_fb3d",
+      "recipient_id": "stu_3fdeefe8",
+      "type": "APPLICATION_STATUS_UPDATE",
+      "title": "Application Status: Shortlisted",
+      "message": "Your application for Java Developer Intern at Barclays India Innovation Centre is now Shortlisted.",
+      "entity_type": "application",
+      "entity_id": "app_05eb312c",
+      "read_at": null,
+      "created_at": 1792240170.9197795,
+      "formatted_time": "17:59:30"
+    },
+    {
+      "notification_id": "notif_1792240174082_1daf",
+      "recipient_id": "recruiter_general",
+      "type": "NEW_APPLICANT",
+      "title": "New Candidate Applied for Full-Stack AI Developer Intern",
+      "message": "Student New Student applied with match score 25%.",
+      "entity_type": "application",
+      "entity_id": "app_a1306440",
+      "read_at": null,
+      "created_at": 1792240174.0825753,
+      "formatted_time": "17:59:34"
+    },
+    {
+      "notification_id": "notif_1792240260319_cb95",
+      "recipient_id": "recruiter_general",
+      "type": "NEW_APPLICANT",
+      "title": "New Candidate Applied for Full-Stack AI Developer Intern",
+      "message": "Student New Student applied with match score 25%.",
+      "entity_type": "application",
+      "entity_id": "app_9e698bf0",
+      "read_at": null,
+      "created_at": 1792240260.319502,
+      "formatted_time": "18:01:00"
+    },
+    {
+      "notification_id": "notif_1792240374902_a80a",
+      "recipient_id": "recruiter_general",
+      "type": "NEW_APPLICANT",
+      "title": "New Candidate Applied for Full-Stack AI Developer Intern",
+      "message": "Student New Student applied with match score 25%.",
+      "entity_type": "application",
+      "entity_id": "app_e62498f2",
+      "read_at": null,
+      "created_at": 1792240374.9021962,
+      "formatted_time": "18:02:54"
     }
   ],
   "match_cache": {},
@@ -2898,6 +4118,38 @@
         "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
         "source": "Code Lab Engine",
         "timestamp": "2026-10-17T09:25:43Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-17T11:15:10Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-17T12:18:10Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-17T12:29:21Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-17T12:29:29Z"
       }
     ]
   },
@@ -3090,7 +4342,7 @@
         "saved_at": 1792221248.3798983
       },
       {
-        "id": "ev_user_1792223314_695d69",
+        "id": "ev_user_1792235712_695d69",
         "title": "Kubernetes Microservices Deployment Capstone",
         "type": "PROJECT",
         "description": "Deployed 5 microservices with ingress controller, HPA and helm charts",
@@ -3103,10 +4355,10 @@
           "Helm",
           "Docker"
         ],
-        "saved_at": 1792223314.919918
+        "saved_at": 1792235712.4021356
       },
       {
-        "id": "ev_user_1792223314_affc56",
+        "id": "ev_user_1792235712_affc56",
         "title": "PostgreSQL Index Optimization Project",
         "type": "PROJECT",
         "description": "Implemented B-Tree and GIN indexes, improving query throughput by 4x",
@@ -3118,10 +4370,10 @@
           "PostgreSQL",
           "SQL"
         ],
-        "saved_at": 1792223314.9722927
+        "saved_at": 1792235712.4974666
       },
       {
-        "id": "ev_user_1792223561_695d69",
+        "id": "ev_user_1792239492_695d69",
         "title": "Kubernetes Microservices Deployment Capstone",
         "type": "PROJECT",
         "description": "Deployed 5 microservices with ingress controller, HPA and helm charts",
@@ -3134,10 +4386,10 @@
           "Helm",
           "Docker"
         ],
-        "saved_at": 1792223561.471306
+        "saved_at": 1792239492.3493757
       },
       {
-        "id": "ev_user_1792223561_affc56",
+        "id": "ev_user_1792239492_affc56",
         "title": "PostgreSQL Index Optimization Project",
         "type": "PROJECT",
         "description": "Implemented B-Tree and GIN indexes, improving query throughput by 4x",
@@ -3149,13 +4401,44 @@
           "PostgreSQL",
           "SQL"
         ],
-        "saved_at": 1792223561.5162761
+        "saved_at": 1792239492.5041077
+      },
+      {
+        "id": "ev_user_1792240170_695d69",
+        "title": "Kubernetes Microservices Deployment Capstone",
+        "type": "PROJECT",
+        "description": "Deployed 5 microservices with ingress controller, HPA and helm charts",
+        "url_or_repo": "https://github.com/dhruvpatil/k8s-microservices",
+        "strength": 0.85,
+        "created_at": "2026-10-17",
+        "age_months": 0,
+        "extracted_skills": [
+          "Kubernetes",
+          "Helm",
+          "Docker"
+        ],
+        "saved_at": 1792240170.982632
+      },
+      {
+        "id": "ev_user_1792240171_affc56",
+        "title": "PostgreSQL Index Optimization Project",
+        "type": "PROJECT",
+        "description": "Implemented B-Tree and GIN indexes, improving query throughput by 4x",
+        "url_or_repo": "https://github.com/dhruvpatil/pg-optimization",
+        "strength": 0.85,
+        "created_at": "2026-10-17",
+        "age_months": 0,
+        "extracted_skills": [
+          "PostgreSQL",
+          "SQL"
+        ],
+        "saved_at": 1792240171.0377924
       }
     ]
   },
   "human_review_disputes": [
     {
-      "dispute_id": "disp_1792223561_1",
+      "dispute_id": "disp_1792240171_1",
       "student_id": "std_1",
       "student_name": "Dhruv Patil",
       "opportunity_id": "opp_1",
@@ -3163,12 +4446,12 @@
       "student_argument": "I completed a Redis pub-sub caching project in my capstone repository.",
       "supporting_evidence_url": "https://github.com/dhruvpatil/capstone-cache",
       "status": "PENDING_FACULTY_REVIEW",
-      "created_at": "2026-10-17T07:52:41Z",
+      "created_at": "2026-10-17T12:29:31Z",
       "assigned_reviewer": "Prof. S. R. Deshmukh (TPO Faculty Incharge)",
-      "id": "disp_982dce32"
+      "id": "disp_7dca8b20"
     },
     {
-      "dispute_id": "disp_1792223314_1",
+      "dispute_id": "disp_1792239492_1",
       "student_id": "std_1",
       "student_name": "Dhruv Patil",
       "opportunity_id": "opp_1",
@@ -3176,9 +4459,22 @@
       "student_argument": "I completed a Redis pub-sub caching project in my capstone repository.",
       "supporting_evidence_url": "https://github.com/dhruvpatil/capstone-cache",
       "status": "PENDING_FACULTY_REVIEW",
-      "created_at": "2026-10-17T07:48:34Z",
+      "created_at": "2026-10-17T12:18:12Z",
       "assigned_reviewer": "Prof. S. R. Deshmukh (TPO Faculty Incharge)",
-      "id": "disp_7f76b769"
+      "id": "disp_79ed280f"
+    },
+    {
+      "dispute_id": "disp_1792235712_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "opportunity_id": "opp_1",
+      "disputed_skill": "Redis",
+      "student_argument": "I completed a Redis pub-sub caching project in my capstone repository.",
+      "supporting_evidence_url": "https://github.com/dhruvpatil/capstone-cache",
+      "status": "PENDING_FACULTY_REVIEW",
+      "created_at": "2026-10-17T11:15:12Z",
+      "assigned_reviewer": "Prof. S. R. Deshmukh (TPO Faculty Incharge)",
+      "id": "disp_fe2debce"
     },
     {
       "dispute_id": "disp_1792221248_1",
@@ -3290,13 +4586,13 @@
         "allow_referral_requests": true,
         "allow_mentorship": true
       },
-      "impact_score": 2730,
+      "impact_score": 2645,
       "mentees_count": 14,
-      "referrals_count": 20,
+      "referrals_count": 17,
       "sessions_delivered": 18,
-      "version": 15,
+      "version": 12,
       "created_at": "2026-10-16T21:54:03Z",
-      "updated_at": "2026-10-17T08:28:49Z"
+      "updated_at": "2026-10-17T12:29:27Z"
     },
     "alm_2": {
       "id": "alm_2",
@@ -3375,8 +4671,8 @@
       "created_at": "2026-10-16T21:54:03Z",
       "updated_at": "2026-10-16T21:54:03Z"
     },
-    "alu_1ba6951c": {
-      "id": "alu_1ba6951c",
+    "alu_b5707343": {
+      "id": "alu_b5707343",
       "name": "Nimisha Joshi",
       "email": "nimisha.alumni.test@microsoft.com",
       "college": "JSPM RSCOE, Pune",
@@ -3409,11 +4705,11 @@
       "referrals_count": 0,
       "sessions_delivered": 0,
       "version": 1,
-      "created_at": "2026-10-17T07:52:04Z",
-      "updated_at": "2026-10-17T07:52:04Z"
+      "created_at": "2026-10-17T11:17:39Z",
+      "updated_at": "2026-10-17T11:17:39Z"
     },
-    "alu_dedfd9c4": {
-      "id": "alu_dedfd9c4",
+    "alu_ee6388e0": {
+      "id": "alu_ee6388e0",
       "name": "Nimisha Joshi",
       "email": "nimisha.alumni.test@microsoft.com",
       "college": "JSPM RSCOE, Pune",
@@ -3446,11 +4742,11 @@
       "referrals_count": 0,
       "sessions_delivered": 0,
       "version": 1,
-      "created_at": "2026-10-17T07:52:29Z",
-      "updated_at": "2026-10-17T07:52:29Z"
+      "created_at": "2026-10-17T12:18:09Z",
+      "updated_at": "2026-10-17T12:18:09Z"
     },
-    "alu_d729f03b": {
-      "id": "alu_d729f03b",
+    "alu_2d85a7e2": {
+      "id": "alu_2d85a7e2",
       "name": "Nimisha Joshi",
       "email": "nimisha.alumni.test@microsoft.com",
       "college": "JSPM RSCOE, Pune",
@@ -3483,124 +4779,32 @@
       "referrals_count": 0,
       "sessions_delivered": 0,
       "version": 1,
-      "created_at": "2026-10-17T07:52:40Z",
-      "updated_at": "2026-10-17T07:52:40Z"
-    },
-    "alu_42473ea8": {
-      "id": "alu_42473ea8",
-      "name": "Nimisha Joshi",
-      "email": "nimisha.alumni.test@microsoft.com",
-      "college": "JSPM RSCOE, Pune",
-      "department": "Computer Engineering",
-      "batch": "2020",
-      "passing_year": 2020,
-      "current_company": "Microsoft",
-      "designation": "Senior AI Architect",
-      "city": "Bengaluru / Pune",
-      "linkedin_url": "",
-      "github_url": "",
-      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Nimisha Joshi",
-      "bio": "JSPM RSCOE, Pune (Computer Engineering) alumnus. Mentoring juniors and sharing referral opportunities.",
-      "skills": [
-        "Software Engineering",
-        "System Design",
-        "Cloud Architecture"
-      ],
-      "is_verified_alumni": true,
-      "verification_status": "APPROVED",
-      "privacy_settings": {
-        "show_company": true,
-        "show_email_to_mentees": true,
-        "show_phone": false,
-        "allow_referral_requests": true,
-        "allow_mentorship": true
-      },
-      "impact_score": 100,
-      "mentees_count": 0,
-      "referrals_count": 0,
-      "sessions_delivered": 0,
-      "version": 1,
-      "created_at": "2026-10-17T08:00:22Z",
-      "updated_at": "2026-10-17T08:00:22Z"
-    },
-    "alu_626f9ee3": {
-      "id": "alu_626f9ee3",
-      "name": "Nimisha Joshi",
-      "email": "nimisha.alumni.test@microsoft.com",
-      "college": "JSPM RSCOE, Pune",
-      "department": "Computer Engineering",
-      "batch": "2020",
-      "passing_year": 2020,
-      "current_company": "Microsoft",
-      "designation": "Senior AI Architect",
-      "city": "Bengaluru / Pune",
-      "linkedin_url": "",
-      "github_url": "",
-      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Nimisha Joshi",
-      "bio": "JSPM RSCOE, Pune (Computer Engineering) alumnus. Mentoring juniors and sharing referral opportunities.",
-      "skills": [
-        "Software Engineering",
-        "System Design",
-        "Cloud Architecture"
-      ],
-      "is_verified_alumni": true,
-      "verification_status": "APPROVED",
-      "privacy_settings": {
-        "show_company": true,
-        "show_email_to_mentees": true,
-        "show_phone": false,
-        "allow_referral_requests": true,
-        "allow_mentorship": true
-      },
-      "impact_score": 100,
-      "mentees_count": 0,
-      "referrals_count": 0,
-      "sessions_delivered": 0,
-      "version": 1,
-      "created_at": "2026-10-17T08:19:53Z",
-      "updated_at": "2026-10-17T08:19:53Z"
-    },
-    "alu_895f98b2": {
-      "id": "alu_895f98b2",
-      "name": "Nimisha Joshi",
-      "email": "nimisha.alumni.test@microsoft.com",
-      "college": "JSPM RSCOE, Pune",
-      "department": "Computer Engineering",
-      "batch": "2020",
-      "passing_year": 2020,
-      "current_company": "Microsoft",
-      "designation": "Senior AI Architect",
-      "city": "Bengaluru / Pune",
-      "linkedin_url": "",
-      "github_url": "",
-      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Nimisha Joshi",
-      "bio": "JSPM RSCOE, Pune (Computer Engineering) alumnus. Mentoring juniors and sharing referral opportunities.",
-      "skills": [
-        "Software Engineering",
-        "System Design",
-        "Cloud Architecture"
-      ],
-      "is_verified_alumni": true,
-      "verification_status": "APPROVED",
-      "privacy_settings": {
-        "show_company": true,
-        "show_email_to_mentees": true,
-        "show_phone": false,
-        "allow_referral_requests": true,
-        "allow_mentorship": true
-      },
-      "impact_score": 100,
-      "mentees_count": 0,
-      "referrals_count": 0,
-      "sessions_delivered": 0,
-      "version": 1,
-      "created_at": "2026-10-17T08:28:49Z",
-      "updated_at": "2026-10-17T08:28:49Z"
+      "created_at": "2026-10-17T12:29:28Z",
+      "updated_at": "2026-10-17T12:29:28Z"
     }
   },
   "alumni_mentorship_requests": [
     {
-      "id": "req_alm_2007eb",
+      "id": "req_alm_435e65",
+      "alumni_id": "alm_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "student_avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
+      "verified_score": 84.6,
+      "teacher_endorsed": true,
+      "teacher_endorsement_note": "Exceptional coding craftsmanship and mathematical rigor in CS.",
+      "teacher_endorser_name": "Dr. Rajesh Kulkarni",
+      "target_role": "AI Architect",
+      "topic": "LLM Inference Infrastructure",
+      "message": "Seeking advice on production serving for generative AI agents.",
+      "status": "ACCEPTED",
+      "scheduled_time": "2026-10-25 18:00 IST",
+      "meeting_link": "https://meet.google.com/test-session-link",
+      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
+      "created_at": "2026-10-17T12:29:28Z"
+    },
+    {
+      "id": "req_alm_e2a7df",
       "alumni_id": "alm_1",
       "student_id": "std_1",
       "student_name": "Dhruv Patil",
@@ -3616,15 +4820,34 @@
       "scheduled_time": "2026-10-25 18:00 IST",
       "meeting_link": "https://meet.google.com/test-session-link",
       "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
-      "created_at": "2026-10-17T08:28:49Z"
+      "created_at": "2026-10-17T12:18:09Z"
     },
     {
-      "id": "req_alm_58dbd2",
+      "id": "req_alm_ab2ef2",
       "alumni_id": "alm_1",
       "student_id": "std_1",
       "student_name": "Dhruv Patil",
       "student_avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
       "verified_score": 84,
+      "teacher_endorsed": true,
+      "teacher_endorsement_note": "Exceptional coding craftsmanship and mathematical rigor in CS.",
+      "teacher_endorser_name": "Dr. Rajesh Kulkarni",
+      "target_role": "AI Architect",
+      "topic": "LLM Inference Infrastructure",
+      "message": "Seeking advice on production serving for generative AI agents.",
+      "status": "ACCEPTED",
+      "scheduled_time": "2026-10-25 18:00 IST",
+      "meeting_link": "https://meet.google.com/test-session-link",
+      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
+      "created_at": "2026-10-17T11:17:39Z"
+    },
+    {
+      "id": "req_alm_bec9f6",
+      "alumni_id": "alm_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "student_avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
+      "verified_score": 84.6,
       "teacher_endorsed": true,
       "teacher_endorsement_note": "Consistently demonstrates stellar algorithmic rigor, autonomous software design, and verifiable project integrity in Code Lab. Strongly recommended for product engineering referrals.",
       "teacher_endorser_name": "Dr. Rajesh Kulkarni",
@@ -3635,82 +4858,7 @@
       "scheduled_time": "2026-10-25 18:00 IST",
       "meeting_link": "https://meet.google.com/test-session-link",
       "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
-      "created_at": "2026-10-17T08:19:52Z"
-    },
-    {
-      "id": "req_alm_846ca0",
-      "alumni_id": "alm_1",
-      "student_id": "std_1",
-      "student_name": "Dhruv Patil",
-      "student_avatar": null,
-      "target_role": "AI Architect",
-      "topic": "LLM Inference Infrastructure",
-      "message": "Seeking advice on production serving for generative AI agents.",
-      "status": "ACCEPTED",
-      "scheduled_time": "2026-10-25 18:00 IST",
-      "meeting_link": "https://meet.google.com/test-session-link",
-      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
-      "created_at": "2026-10-17T08:00:22Z"
-    },
-    {
-      "id": "req_alm_8bd3d2",
-      "alumni_id": "alm_1",
-      "student_id": "std_1",
-      "student_name": "Dhruv Patil",
-      "student_avatar": null,
-      "target_role": "AI Architect",
-      "topic": "LLM Inference Infrastructure",
-      "message": "Seeking advice on production serving for generative AI agents.",
-      "status": "ACCEPTED",
-      "scheduled_time": "2026-10-25 18:00 IST",
-      "meeting_link": "https://meet.google.com/test-session-link",
-      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
-      "created_at": "2026-10-17T07:52:40Z"
-    },
-    {
-      "id": "req_alm_fbc0e3",
-      "alumni_id": "alm_1",
-      "student_id": "std_1",
-      "student_name": "Dhruv Patil",
-      "student_avatar": null,
-      "target_role": "AI Architect",
-      "topic": "LLM Inference Infrastructure",
-      "message": "Seeking advice on production serving for generative AI agents.",
-      "status": "ACCEPTED",
-      "scheduled_time": "2026-10-25 18:00 IST",
-      "meeting_link": "https://meet.google.com/test-session-link",
-      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
-      "created_at": "2026-10-17T07:52:29Z"
-    },
-    {
-      "id": "req_alm_9e3a5b",
-      "alumni_id": "alm_1",
-      "student_id": "std_1",
-      "student_name": "Dhruv Patil",
-      "student_avatar": null,
-      "target_role": "AI Architect",
-      "topic": "LLM Inference Infrastructure",
-      "message": "Seeking advice on production serving for generative AI agents.",
-      "status": "ACCEPTED",
-      "scheduled_time": "2026-10-25 18:00 IST",
-      "meeting_link": "https://meet.google.com/test-session-link",
-      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
-      "created_at": "2026-10-17T07:52:04Z"
-    },
-    {
-      "id": "req_alm_8c0aaa",
-      "alumni_id": "alm_1",
-      "student_id": "std_1",
-      "student_name": "Dhruv Patil",
-      "student_avatar": null,
-      "target_role": "AI Architect",
-      "topic": "LLM Inference Infrastructure",
-      "message": "Seeking advice on production serving for generative AI agents.",
-      "status": "ACCEPTED",
-      "scheduled_time": "2026-10-25 18:00 IST",
-      "meeting_link": "https://meet.google.com/test-session-link",
-      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
-      "created_at": "2026-10-17T07:48:33Z"
+      "created_at": "2026-10-17T11:15:07Z"
     },
     {
       "id": "req_alm_97f8f9",
@@ -3826,9 +4974,9 @@
       "target_role": "Full-Stack AI Engineer",
       "topic": "Google Cloud Infrastructure & High-Performance Microservices",
       "message": "Hi Vikram Sir, I am building autonomous multi-signal placement verification systems. Would love your guidance on high-throughput microservices architecture and Google L3/L4 interview prep.",
-      "status": "ACCEPTED",
-      "scheduled_time": "2026-10-25 18:30 IST",
-      "meeting_link": "https://meet.google.com/hxr-mentorship-live",
+      "status": "PENDING",
+      "scheduled_time": "2026-10-24 18:30 IST",
+      "meeting_link": "https://meet.google.com/hxr-alumni-guidance",
       "feedback_notes": "",
       "created_at": "2026-10-16T21:54:03Z"
     },
@@ -3850,7 +4998,7 @@
   ],
   "alumni_referrals": [
     {
-      "id": "ref_alm_32e4cf",
+      "id": "ref_alm_3148e2",
       "alumni_id": "alm_1",
       "company": "Google",
       "role": "Cloud Infrastructure Engineer",
@@ -3858,7 +5006,32 @@
       "location": "Pune / Bengaluru",
       "experience_required": "0-1 Years",
       "status": "OPEN",
-      "created_at": "2026-10-17T08:28:49Z",
+      "created_at": "2026-10-17T12:29:28Z",
+      "student_referrals": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "student_avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
+          "verified_score": 84.6,
+          "teacher_endorsed": true,
+          "teacher_endorser_name": "Dr. Rajesh Kulkarni",
+          "teacher_endorsement_note": "Exceptional coding craftsmanship and mathematical rigor in CS.",
+          "status": "SHORTLISTED",
+          "applied_at": "2026-10-17T12:29:28Z",
+          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
+        }
+      ]
+    },
+    {
+      "id": "ref_alm_d9ea99",
+      "alumni_id": "alm_1",
+      "company": "Google",
+      "role": "Cloud Infrastructure Engineer",
+      "job_url": "https://careers.google.com/jobs/results/99912",
+      "location": "Pune / Bengaluru",
+      "experience_required": "0-1 Years",
+      "status": "OPEN",
+      "created_at": "2026-10-17T12:18:09Z",
       "student_referrals": [
         {
           "student_id": "std_1",
@@ -3869,13 +5042,13 @@
           "teacher_endorser_name": "Dr. Rajesh Kulkarni",
           "teacher_endorsement_note": "Exceptional coding craftsmanship and mathematical rigor in CS.",
           "status": "SHORTLISTED",
-          "applied_at": "2026-10-17T08:28:49Z",
+          "applied_at": "2026-10-17T12:18:09Z",
           "endorsement_note": "Verified 88% skill score with AST complexity certifications."
         }
       ]
     },
     {
-      "id": "ref_alm_44d720",
+      "id": "ref_alm_fd31b5",
       "alumni_id": "alm_1",
       "company": "Google",
       "role": "Cloud Infrastructure Engineer",
@@ -3883,7 +5056,7 @@
       "location": "Pune / Bengaluru",
       "experience_required": "0-1 Years",
       "status": "OPEN",
-      "created_at": "2026-10-17T08:19:53Z",
+      "created_at": "2026-10-17T11:17:39Z",
       "student_referrals": [
         {
           "student_id": "std_1",
@@ -3892,109 +5065,34 @@
           "verified_score": 84,
           "teacher_endorsed": true,
           "teacher_endorser_name": "Dr. Rajesh Kulkarni",
+          "teacher_endorsement_note": "Exceptional coding craftsmanship and mathematical rigor in CS.",
+          "status": "SHORTLISTED",
+          "applied_at": "2026-10-17T11:17:39Z",
+          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
+        }
+      ]
+    },
+    {
+      "id": "ref_alm_9578fd",
+      "alumni_id": "alm_1",
+      "company": "Google",
+      "role": "Cloud Infrastructure Engineer",
+      "job_url": "https://careers.google.com/jobs/results/99912",
+      "location": "Pune / Bengaluru",
+      "experience_required": "0-1 Years",
+      "status": "OPEN",
+      "created_at": "2026-10-17T11:15:07Z",
+      "student_referrals": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "student_avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
+          "verified_score": 84.6,
+          "teacher_endorsed": true,
+          "teacher_endorser_name": "Dr. Rajesh Kulkarni",
           "teacher_endorsement_note": "Consistently demonstrates stellar algorithmic rigor, autonomous software design, and verifiable project integrity in Code Lab. Strongly recommended for product engineering referrals.",
           "status": "SHORTLISTED",
-          "applied_at": "2026-10-17T08:19:53Z",
-          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
-        }
-      ]
-    },
-    {
-      "id": "ref_alm_e37795",
-      "alumni_id": "alm_1",
-      "company": "Google",
-      "role": "Cloud Infrastructure Engineer",
-      "job_url": "https://careers.google.com/jobs/results/99912",
-      "location": "Pune / Bengaluru",
-      "experience_required": "0-1 Years",
-      "status": "OPEN",
-      "created_at": "2026-10-17T08:00:22Z",
-      "student_referrals": [
-        {
-          "student_id": "std_1",
-          "student_name": "Dhruv Patil",
-          "status": "SHORTLISTED",
-          "applied_at": "2026-10-17T08:00:22Z",
-          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
-        }
-      ]
-    },
-    {
-      "id": "ref_alm_ee16e3",
-      "alumni_id": "alm_1",
-      "company": "Google",
-      "role": "Cloud Infrastructure Engineer",
-      "job_url": "https://careers.google.com/jobs/results/99912",
-      "location": "Pune / Bengaluru",
-      "experience_required": "0-1 Years",
-      "status": "OPEN",
-      "created_at": "2026-10-17T07:52:40Z",
-      "student_referrals": [
-        {
-          "student_id": "std_1",
-          "student_name": "Dhruv Patil",
-          "status": "SHORTLISTED",
-          "applied_at": "2026-10-17T07:52:40Z",
-          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
-        }
-      ]
-    },
-    {
-      "id": "ref_alm_ce0490",
-      "alumni_id": "alm_1",
-      "company": "Google",
-      "role": "Cloud Infrastructure Engineer",
-      "job_url": "https://careers.google.com/jobs/results/99912",
-      "location": "Pune / Bengaluru",
-      "experience_required": "0-1 Years",
-      "status": "OPEN",
-      "created_at": "2026-10-17T07:52:29Z",
-      "student_referrals": [
-        {
-          "student_id": "std_1",
-          "student_name": "Dhruv Patil",
-          "status": "SHORTLISTED",
-          "applied_at": "2026-10-17T07:52:29Z",
-          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
-        }
-      ]
-    },
-    {
-      "id": "ref_alm_ec4b15",
-      "alumni_id": "alm_1",
-      "company": "Google",
-      "role": "Cloud Infrastructure Engineer",
-      "job_url": "https://careers.google.com/jobs/results/99912",
-      "location": "Pune / Bengaluru",
-      "experience_required": "0-1 Years",
-      "status": "OPEN",
-      "created_at": "2026-10-17T07:52:04Z",
-      "student_referrals": [
-        {
-          "student_id": "std_1",
-          "student_name": "Dhruv Patil",
-          "status": "SHORTLISTED",
-          "applied_at": "2026-10-17T07:52:04Z",
-          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
-        }
-      ]
-    },
-    {
-      "id": "ref_alm_345ffc",
-      "alumni_id": "alm_1",
-      "company": "Google",
-      "role": "Cloud Infrastructure Engineer",
-      "job_url": "https://careers.google.com/jobs/results/99912",
-      "location": "Pune / Bengaluru",
-      "experience_required": "0-1 Years",
-      "status": "OPEN",
-      "created_at": "2026-10-17T07:48:33Z",
-      "student_referrals": [
-        {
-          "student_id": "std_1",
-          "student_name": "Dhruv Patil",
-          "status": "SHORTLISTED",
-          "applied_at": "2026-10-17T07:48:33Z",
+          "applied_at": "2026-10-17T11:15:07Z",
           "endorsement_note": "Verified 88% skill score with AST complexity certifications."
         }
       ]
@@ -4175,7 +5273,7 @@
   ],
   "alumni_insights": [
     {
-      "id": "ins_alm_aecb23",
+      "id": "ins_alm_7f0520",
       "alumni_id": "alm_1",
       "alumni_name": "Vikram Aditya",
       "company": "Google",
@@ -4197,10 +5295,10 @@
       ],
       "tips_for_juniors": "Always test edge cases.",
       "upvotes": 0,
-      "created_at": "2026-10-17T08:28:49Z"
+      "created_at": "2026-10-17T12:29:28Z"
     },
     {
-      "id": "ins_alm_bdba23",
+      "id": "ins_alm_11b206",
       "alumni_id": "alm_1",
       "alumni_name": "Vikram Aditya",
       "company": "Google",
@@ -4222,10 +5320,10 @@
       ],
       "tips_for_juniors": "Always test edge cases.",
       "upvotes": 0,
-      "created_at": "2026-10-17T08:19:53Z"
+      "created_at": "2026-10-17T12:18:09Z"
     },
     {
-      "id": "ins_alm_fe228b",
+      "id": "ins_alm_9a05e8",
       "alumni_id": "alm_1",
       "alumni_name": "Vikram Aditya",
       "company": "Google",
@@ -4247,10 +5345,10 @@
       ],
       "tips_for_juniors": "Always test edge cases.",
       "upvotes": 0,
-      "created_at": "2026-10-17T08:00:22Z"
+      "created_at": "2026-10-17T11:17:39Z"
     },
     {
-      "id": "ins_alm_49eb88",
+      "id": "ins_alm_94571c",
       "alumni_id": "alm_1",
       "alumni_name": "Vikram Aditya",
       "company": "Google",
@@ -4272,82 +5370,7 @@
       ],
       "tips_for_juniors": "Always test edge cases.",
       "upvotes": 0,
-      "created_at": "2026-10-17T07:52:40Z"
-    },
-    {
-      "id": "ins_alm_91bc46",
-      "alumni_id": "alm_1",
-      "alumni_name": "Vikram Aditya",
-      "company": "Google",
-      "designation": "Staff SWE",
-      "role_interviewed": "SWE L4",
-      "rounds_breakdown": [
-        {
-          "round_name": "Round 1: DSA",
-          "focus": "Binary trees",
-          "sample_questions": [
-            "Invert binary tree under concurrency"
-          ],
-          "difficulty": "MEDIUM"
-        }
-      ],
-      "skills_we_actually_use": [
-        "Go",
-        "Kubernetes"
-      ],
-      "tips_for_juniors": "Always test edge cases.",
-      "upvotes": 0,
-      "created_at": "2026-10-17T07:52:29Z"
-    },
-    {
-      "id": "ins_alm_0804f5",
-      "alumni_id": "alm_1",
-      "alumni_name": "Vikram Aditya",
-      "company": "Google",
-      "designation": "Staff SWE",
-      "role_interviewed": "SWE L4",
-      "rounds_breakdown": [
-        {
-          "round_name": "Round 1: DSA",
-          "focus": "Binary trees",
-          "sample_questions": [
-            "Invert binary tree under concurrency"
-          ],
-          "difficulty": "MEDIUM"
-        }
-      ],
-      "skills_we_actually_use": [
-        "Go",
-        "Kubernetes"
-      ],
-      "tips_for_juniors": "Always test edge cases.",
-      "upvotes": 0,
-      "created_at": "2026-10-17T07:52:04Z"
-    },
-    {
-      "id": "ins_alm_13f165",
-      "alumni_id": "alm_1",
-      "alumni_name": "Vikram Aditya",
-      "company": "Google",
-      "designation": "Staff SWE",
-      "role_interviewed": "SWE L4",
-      "rounds_breakdown": [
-        {
-          "round_name": "Round 1: DSA",
-          "focus": "Binary trees",
-          "sample_questions": [
-            "Invert binary tree under concurrency"
-          ],
-          "difficulty": "MEDIUM"
-        }
-      ],
-      "skills_we_actually_use": [
-        "Go",
-        "Kubernetes"
-      ],
-      "tips_for_juniors": "Always test edge cases.",
-      "upvotes": 0,
-      "created_at": "2026-10-17T07:48:33Z"
+      "created_at": "2026-10-17T11:15:07Z"
     },
     {
       "id": "ins_alm_031c1e",
@@ -4583,7 +5606,7 @@
   ],
   "alumni_endorsements": [
     {
-      "id": "end_alm_e13654",
+      "id": "end_alm_1cea96",
       "alumni_id": "alm_1",
       "alumni_name": "Vikram Aditya",
       "student_id": "std_1",
@@ -4591,10 +5614,10 @@
       "skill": "Python",
       "weight": 1.25,
       "context": "Verified high-integrity AST code analysis engine.",
-      "created_at": "2026-10-17T08:28:49Z"
+      "created_at": "2026-10-17T12:29:28Z"
     },
     {
-      "id": "end_alm_0a14ac",
+      "id": "end_alm_1679ab",
       "alumni_id": "alm_1",
       "alumni_name": "Vikram Aditya",
       "student_id": "std_1",
@@ -4602,10 +5625,10 @@
       "skill": "Python",
       "weight": 1.25,
       "context": "Verified high-integrity AST code analysis engine.",
-      "created_at": "2026-10-17T08:19:53Z"
+      "created_at": "2026-10-17T12:18:09Z"
     },
     {
-      "id": "end_alm_27c031",
+      "id": "end_alm_d40597",
       "alumni_id": "alm_1",
       "alumni_name": "Vikram Aditya",
       "student_id": "std_1",
@@ -4613,10 +5636,10 @@
       "skill": "Python",
       "weight": 1.25,
       "context": "Verified high-integrity AST code analysis engine.",
-      "created_at": "2026-10-17T08:00:22Z"
+      "created_at": "2026-10-17T11:17:39Z"
     },
     {
-      "id": "end_alm_4f7a4d",
+      "id": "end_alm_25fc3a",
       "alumni_id": "alm_1",
       "alumni_name": "Vikram Aditya",
       "student_id": "std_1",
@@ -4624,40 +5647,7 @@
       "skill": "Python",
       "weight": 1.25,
       "context": "Verified high-integrity AST code analysis engine.",
-      "created_at": "2026-10-17T07:52:40Z"
-    },
-    {
-      "id": "end_alm_925ba8",
-      "alumni_id": "alm_1",
-      "alumni_name": "Vikram Aditya",
-      "student_id": "std_1",
-      "student_name": "Dhruv Patil",
-      "skill": "Python",
-      "weight": 1.25,
-      "context": "Verified high-integrity AST code analysis engine.",
-      "created_at": "2026-10-17T07:52:29Z"
-    },
-    {
-      "id": "end_alm_b0a6e2",
-      "alumni_id": "alm_1",
-      "alumni_name": "Vikram Aditya",
-      "student_id": "std_1",
-      "student_name": "Dhruv Patil",
-      "skill": "Python",
-      "weight": 1.25,
-      "context": "Verified high-integrity AST code analysis engine.",
-      "created_at": "2026-10-17T07:52:04Z"
-    },
-    {
-      "id": "end_alm_a65ae6",
-      "alumni_id": "alm_1",
-      "alumni_name": "Vikram Aditya",
-      "student_id": "std_1",
-      "student_name": "Dhruv Patil",
-      "skill": "Python",
-      "weight": 1.25,
-      "context": "Verified high-integrity AST code analysis engine.",
-      "created_at": "2026-10-17T07:48:34Z"
+      "created_at": "2026-10-17T11:15:07Z"
     },
     {
       "id": "end_alm_488545",
@@ -4750,7 +5740,7 @@
   ],
   "alumni_curriculum_feedback": [
     {
-      "id": "curr_fb_49e82c",
+      "id": "curr_fb_326f6e",
       "alumni_id": "alm_1",
       "alumni_name": "Vikram Aditya",
       "current_company": "Google",
@@ -4761,10 +5751,10 @@
       "suggested_modern_replacement": "gRPC & Protocol Buffers",
       "industry_priority": "CRITICAL",
       "notes": "Replace Java RMI with modern gRPC microservices.",
-      "created_at": "2026-10-17T08:28:49Z"
+      "created_at": "2026-10-17T12:29:28Z"
     },
     {
-      "id": "curr_fb_6883ba",
+      "id": "curr_fb_066bc6",
       "alumni_id": "alm_1",
       "alumni_name": "Vikram Aditya",
       "current_company": "Google",
@@ -4775,7 +5765,35 @@
       "suggested_modern_replacement": "gRPC & Protocol Buffers",
       "industry_priority": "CRITICAL",
       "notes": "Replace Java RMI with modern gRPC microservices.",
-      "created_at": "2026-10-17T08:19:53Z"
+      "created_at": "2026-10-17T12:18:09Z"
+    },
+    {
+      "id": "curr_fb_c1ecb1",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "current_company": "Google",
+      "department": "Computer Engineering",
+      "course_name": "Distributed Systems",
+      "syllabus_topic": "Corba & RMI",
+      "status_verdict": "OBSOLETE_DEPRECATE",
+      "suggested_modern_replacement": "gRPC & Protocol Buffers",
+      "industry_priority": "CRITICAL",
+      "notes": "Replace Java RMI with modern gRPC microservices.",
+      "created_at": "2026-10-17T11:17:39Z"
+    },
+    {
+      "id": "curr_fb_b5a51e",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "current_company": "Google",
+      "department": "Computer Engineering",
+      "course_name": "Distributed Systems",
+      "syllabus_topic": "Corba & RMI",
+      "status_verdict": "OBSOLETE_DEPRECATE",
+      "suggested_modern_replacement": "gRPC & Protocol Buffers",
+      "industry_priority": "CRITICAL",
+      "notes": "Replace Java RMI with modern gRPC microservices.",
+      "created_at": "2026-10-17T11:15:09Z"
     },
     {
       "id": "curr_fb_1",
@@ -4789,7 +5807,7 @@
       "suggested_modern_replacement": "RESTful Microservices, gRPC & Protocol Buffers",
       "industry_priority": "CRITICAL",
       "notes": "Internal high-throughput distributed systems at Google and top tech firms rely almost exclusively on gRPC and Protobuf for RPC communication. Students need hands-on gRPC experience.",
-      "created_at": "2026-10-17T08:19:39Z"
+      "created_at": "2026-10-17T11:07:38Z"
     },
     {
       "id": "curr_fb_2",
@@ -4803,7 +5821,7 @@
       "suggested_modern_replacement": "Linux Cgroups, Container Namespaces & Kubernetes Pod Architecture",
       "industry_priority": "HIGH",
       "notes": "Modern cloud engineers must understand how Linux containers, cgroups, and namespaces isolate microservices.",
-      "created_at": "2026-10-17T08:19:39Z"
+      "created_at": "2026-10-17T11:07:38Z"
     },
     {
       "id": "curr_fb_3",
@@ -4817,12 +5835,12 @@
       "suggested_modern_replacement": "Vector Databases (Milvus/Pinecone) & Distributed Caching (Redis)",
       "industry_priority": "CRITICAL",
       "notes": "GenAI workloads require vector indexing (HNSW, IVFFlat) and distributed caching alongside SQL relational knowledge.",
-      "created_at": "2026-10-17T08:19:39Z"
+      "created_at": "2026-10-17T11:07:38Z"
     }
   ],
   "alumni_masterclasses": [
     {
-      "id": "mst_ff4782",
+      "id": "mst_1e8af2",
       "title": "Autonomous AI Agents in Production",
       "speaker_id": "alm_1",
       "speaker_name": "Vikram Aditya",
@@ -4839,13 +5857,13 @@
         {
           "student_id": "std_1",
           "student_name": "Dhruv Patil",
-          "enrolled_at": "2026-10-17T08:28:49Z"
+          "enrolled_at": "2026-10-17T12:29:28Z"
         }
       ],
-      "created_at": "2026-10-17T08:28:49Z"
+      "created_at": "2026-10-17T12:29:28Z"
     },
     {
-      "id": "mst_b89752",
+      "id": "mst_4ef3ac",
       "title": "Autonomous AI Agents in Production",
       "speaker_id": "alm_1",
       "speaker_name": "Vikram Aditya",
@@ -4862,10 +5880,56 @@
         {
           "student_id": "std_1",
           "student_name": "Dhruv Patil",
-          "enrolled_at": "2026-10-17T08:19:53Z"
+          "enrolled_at": "2026-10-17T12:18:09Z"
         }
       ],
-      "created_at": "2026-10-17T08:19:53Z"
+      "created_at": "2026-10-17T12:18:09Z"
+    },
+    {
+      "id": "mst_11180e",
+      "title": "Autonomous AI Agents in Production",
+      "speaker_id": "alm_1",
+      "speaker_name": "Vikram Aditya",
+      "speaker_company": "Google",
+      "speaker_role": "Staff Software Engineer",
+      "department": "Computer Engineering",
+      "target_year": "3rd & 4th Year",
+      "date_time": "2026-11-12 18:00 IST",
+      "meeting_link": "https://meet.google.com/test-ai-agents",
+      "description": "Building tool-using ReAct agents with low latency.",
+      "status": "UPCOMING",
+      "capacity": 200,
+      "enrolled_students": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "enrolled_at": "2026-10-17T11:17:39Z"
+        }
+      ],
+      "created_at": "2026-10-17T11:17:39Z"
+    },
+    {
+      "id": "mst_4899e3",
+      "title": "Autonomous AI Agents in Production",
+      "speaker_id": "alm_1",
+      "speaker_name": "Vikram Aditya",
+      "speaker_company": "Google",
+      "speaker_role": "Staff Software Engineer",
+      "department": "Computer Engineering",
+      "target_year": "3rd & 4th Year",
+      "date_time": "2026-11-12 18:00 IST",
+      "meeting_link": "https://meet.google.com/test-ai-agents",
+      "description": "Building tool-using ReAct agents with low latency.",
+      "status": "UPCOMING",
+      "capacity": 200,
+      "enrolled_students": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "enrolled_at": "2026-10-17T11:15:09Z"
+        }
+      ],
+      "created_at": "2026-10-17T11:15:09Z"
     },
     {
       "id": "mst_1",
@@ -4885,10 +5949,10 @@
         {
           "student_id": "std_1",
           "student_name": "Dhruv Patil",
-          "enrolled_at": "2026-10-17T08:19:39Z"
+          "enrolled_at": "2026-10-17T11:07:38Z"
         }
       ],
-      "created_at": "2026-10-17T08:19:39Z"
+      "created_at": "2026-10-17T11:07:38Z"
     }
   ],
   "teacher_alumni_endorsements": {
@@ -4901,7 +5965,7 @@
       "academic_standing": "Top 5% Cohort",
       "endorsement_badge": "Faculty Seal of Excellence",
       "endorsement_note": "Exceptional coding craftsmanship and mathematical rigor in CS.",
-      "endorsed_at": "2026-10-17T08:28:49Z"
+      "endorsed_at": "2026-10-17T12:29:28Z"
     }
   },
   "invitations": {
@@ -4970,6 +6034,117 @@
       "status": "PENDING",
       "created_at": "2026-10-17T09:25:43Z",
       "responded_at": null
+    },
+    "inv_c158ea81": {
+      "id": "inv_c158ea81",
+      "talent_id": "SB-TALENT-10482",
+      "student_id": "std_1",
+      "recruiter_id": "rec_1",
+      "recruiter_name": "Priya Sharma",
+      "recruiter_email": "priya.sharma@barclays.com",
+      "company": "TechCorp Innovations",
+      "opportunity_id": "opp_2",
+      "opportunity_title": "Junior Machine Learning Engineer",
+      "match_percentage": 81,
+      "matched_skills": [
+        "Python",
+        "Machine Learning",
+        "FastAPI",
+        "Docker",
+        "Data Structures"
+      ],
+      "message": "Your verified Python and Computer Vision project evidence strongly matches our TechCorp ML track.",
+      "status": "ACCEPTED",
+      "created_at": "2026-10-17T11:15:11Z",
+      "responded_at": "2026-10-17T11:15:11Z"
+    },
+    "inv_155dc0ef": {
+      "id": "inv_155dc0ef",
+      "talent_id": "SB-TALENT-33914",
+      "student_id": "std_7",
+      "recruiter_id": "rec_1",
+      "recruiter_name": "Priya Sharma",
+      "recruiter_email": "priya.sharma@barclays.com",
+      "company": "Barclays India Innovation Centre",
+      "opportunity_id": "opp_1",
+      "opportunity_title": "Full-Stack AI Developer Intern",
+      "match_percentage": 25,
+      "matched_skills": [
+        "Docker"
+      ],
+      "message": "We invite you to interview for our opening.",
+      "status": "PENDING",
+      "created_at": "2026-10-17T11:15:17Z",
+      "responded_at": null
+    },
+    "inv_e1af1511": {
+      "id": "inv_e1af1511",
+      "talent_id": "SB-TALENT-10482",
+      "student_id": "std_1",
+      "recruiter_id": "rec_1",
+      "recruiter_name": "Priya Sharma",
+      "recruiter_email": "priya.sharma@barclays.com",
+      "company": "TechCorp Innovations",
+      "opportunity_id": "opp_2",
+      "opportunity_title": "Junior Machine Learning Engineer",
+      "match_percentage": 81,
+      "matched_skills": [
+        "Python",
+        "Machine Learning",
+        "FastAPI",
+        "Docker",
+        "Data Structures"
+      ],
+      "message": "Your verified Python and Computer Vision project evidence strongly matches our TechCorp ML track.",
+      "status": "ACCEPTED",
+      "created_at": "2026-10-17T12:18:11Z",
+      "responded_at": "2026-10-17T12:18:11Z"
+    },
+    "inv_df395ec0": {
+      "id": "inv_df395ec0",
+      "talent_id": "SB-TALENT-10482",
+      "student_id": "std_1",
+      "recruiter_id": "rec_1",
+      "recruiter_name": "Priya Sharma",
+      "recruiter_email": "priya.sharma@barclays.com",
+      "company": "TechCorp Innovations",
+      "opportunity_id": "opp_2",
+      "opportunity_title": "Junior Machine Learning Engineer",
+      "match_percentage": 81,
+      "matched_skills": [
+        "Python",
+        "Machine Learning",
+        "FastAPI",
+        "Docker",
+        "Data Structures"
+      ],
+      "message": "Your verified Python and Computer Vision project evidence strongly matches our TechCorp ML track.",
+      "status": "ACCEPTED",
+      "created_at": "2026-10-17T12:29:30Z",
+      "responded_at": "2026-10-17T12:29:30Z"
+    },
+    "inv_3327e594": {
+      "id": "inv_3327e594",
+      "talent_id": "SB-TALENT-10482",
+      "student_id": "std_1",
+      "recruiter_id": "rec_1",
+      "recruiter_name": "Priya Sharma",
+      "recruiter_email": "priya.sharma@barclays.com",
+      "company": "TechCorp Innovations",
+      "opportunity_id": "opp_2",
+      "opportunity_title": "Junior Machine Learning Engineer",
+      "match_percentage": 81,
+      "matched_skills": [
+        "Python",
+        "Machine Learning",
+        "FastAPI",
+        "Docker",
+        "Data Structures"
+      ],
+      "message": "We invite you to interview for our opening.",
+      "status": "PENDING",
+      "created_at": "2026-10-17T12:32:55Z",
+      "responded_at": null
     }
   },
   "proctor_events": [
@@ -5024,6 +6199,1164 @@
       "confidence": 0.92,
       "id": "pevt_6fe9cf9a",
       "timestamp": "2026-10-17T09:25:43Z"
+    },
+    {
+      "eventType": "MULTIPLE_FACES_DETECTED",
+      "event_type": "MULTIPLE_FACES_DETECTED",
+      "severity": "HIGH",
+      "details": "Second individual detected in camera frame",
+      "student_id": "std_1",
+      "studentId": "std_1",
+      "assessment_id": "asmt_phase4_audit_1792235717",
+      "assessmentAttemptId": "asmt_phase4_audit_1792235717",
+      "confidence": 0.92,
+      "id": "pevt_6e0a9ca0",
+      "timestamp": "2026-10-17T11:15:17Z"
+    },
+    {
+      "eventType": "MULTIPLE_FACES_DETECTED",
+      "event_type": "MULTIPLE_FACES_DETECTED",
+      "severity": "HIGH",
+      "details": "Second individual detected in camera frame",
+      "student_id": "std_1",
+      "studentId": "std_1",
+      "assessment_id": "asmt_phase4_audit_1792239499",
+      "assessmentAttemptId": "asmt_phase4_audit_1792239499",
+      "confidence": 0.92,
+      "id": "pevt_c13e39d8",
+      "timestamp": "2026-10-17T12:18:19Z"
+    },
+    {
+      "id": "evt_beb1b4d0",
+      "assessmentAttemptId": "asmt_630bd0bf7b",
+      "studentId": "std_integrity_dedupe",
+      "eventType": "WINDOW_BLUR",
+      "timestamp": 1792240165,
+      "severity": "WARNING",
+      "counted": true,
+      "metadata": {
+        "details": "Malpractice event: WINDOW_BLUR",
+        "section": null,
+        "question_id": null,
+        "category": "BLUR",
+        "telemetry_reason": null,
+        "violation_count_after": 1,
+        "tab_switches": 1,
+        "fullscreen_exits": 0
+      },
+      "actionTaken": "WARNING"
+    },
+    {
+      "id": "evt_6e6ae26f",
+      "assessmentAttemptId": "asmt_630bd0bf7b",
+      "studentId": "std_integrity_dedupe",
+      "eventType": "TAB_SWITCH",
+      "timestamp": 1792240165,
+      "severity": "NORMAL",
+      "counted": false,
+      "metadata": {
+        "details": "Malpractice event: TAB_SWITCH",
+        "section": null,
+        "question_id": null,
+        "category": "TAB",
+        "telemetry_reason": "duplicate_of_recent_focus_incident",
+        "violation_count_after": 1,
+        "tab_switches": 1,
+        "fullscreen_exits": 0
+      },
+      "actionTaken": "NONE"
+    },
+    {
+      "id": "evt_24a4e31b",
+      "assessmentAttemptId": "asmt_3a52e8a936",
+      "studentId": "std_integrity_second",
+      "eventType": "FULLSCREEN_EXIT",
+      "timestamp": 1792240165,
+      "severity": "WARNING",
+      "counted": true,
+      "metadata": {
+        "details": "Malpractice event: FULLSCREEN_EXIT",
+        "section": null,
+        "question_id": null,
+        "category": "FULLSCREEN",
+        "telemetry_reason": null,
+        "violation_count_after": 1,
+        "tab_switches": 0,
+        "fullscreen_exits": 1
+      },
+      "actionTaken": "WARNING"
+    },
+    {
+      "id": "evt_f5a0ab45",
+      "assessmentAttemptId": "asmt_3a52e8a936",
+      "studentId": "std_integrity_second",
+      "eventType": "TAB_SWITCH",
+      "timestamp": 1792240165,
+      "severity": "DISQUALIFICATION",
+      "counted": true,
+      "metadata": {
+        "details": "Malpractice event: TAB_SWITCH",
+        "section": null,
+        "question_id": null,
+        "category": "TAB",
+        "telemetry_reason": null,
+        "violation_count_after": 2,
+        "tab_switches": 1,
+        "fullscreen_exits": 1
+      },
+      "actionTaken": "DISQUALIFY"
+    },
+    {
+      "id": "evt_45a90819",
+      "assessmentAttemptId": "asmt_47143a8e4b",
+      "studentId": "std_integrity_cam_ok",
+      "eventType": "CAMERA_INTERRUPTED",
+      "timestamp": 1792240165,
+      "severity": "NORMAL",
+      "counted": false,
+      "metadata": {
+        "details": "Camera stream disconnected",
+        "section": null,
+        "question_id": null,
+        "category": "CAMERA",
+        "telemetry_reason": "interruption_within_grace_period",
+        "violation_count_after": 0,
+        "tab_switches": 0,
+        "fullscreen_exits": 0
+      },
+      "actionTaken": "NONE"
+    },
+    {
+      "id": "evt_e39fc971",
+      "assessmentAttemptId": "asmt_47143a8e4b",
+      "studentId": "std_integrity_cam_ok",
+      "eventType": "CAMERA_RESTORED",
+      "timestamp": 1792240165,
+      "severity": "NORMAL",
+      "counted": false,
+      "metadata": {
+        "details": "Malpractice event: CAMERA_RESTORED",
+        "section": null,
+        "question_id": null,
+        "category": "CAMERA",
+        "telemetry_reason": "informational_event",
+        "violation_count_after": 0,
+        "tab_switches": 0,
+        "fullscreen_exits": 0
+      },
+      "actionTaken": "NONE"
+    },
+    {
+      "id": "evt_7abe964b",
+      "assessmentAttemptId": "asmt_2b0f279166",
+      "studentId": "std_integrity_cam_bad",
+      "eventType": "CAMERA_INTERRUPTED",
+      "timestamp": 1792240165,
+      "severity": "DISQUALIFICATION",
+      "counted": true,
+      "metadata": {
+        "details": "Malpractice event: CAMERA_INTERRUPTED",
+        "section": null,
+        "question_id": null,
+        "category": "CAMERA",
+        "telemetry_reason": null,
+        "violation_count_after": 1,
+        "tab_switches": 0,
+        "fullscreen_exits": 0
+      },
+      "actionTaken": "DISQUALIFY"
+    },
+    {
+      "id": "evt_210fb427",
+      "assessmentAttemptId": "asmt_99b778cdda",
+      "studentId": "std_integrity_terminated",
+      "eventType": "ASSESSMENT_TERMINATED",
+      "timestamp": 1792240165,
+      "severity": "NORMAL",
+      "counted": false,
+      "metadata": {
+        "details": "Malpractice event: ASSESSMENT_TERMINATED",
+        "section": null,
+        "question_id": null,
+        "category": "OTHER",
+        "telemetry_reason": "informational_event",
+        "violation_count_after": 0,
+        "tab_switches": 0,
+        "fullscreen_exits": 0
+      },
+      "actionTaken": "NONE"
+    },
+    {
+      "eventType": "MULTIPLE_FACES_DETECTED",
+      "event_type": "MULTIPLE_FACES_DETECTED",
+      "severity": "HIGH",
+      "details": "Second individual detected in camera frame",
+      "student_id": "std_1",
+      "studentId": "std_1",
+      "assessment_id": "asmt_phase4_audit_1792240175",
+      "assessmentAttemptId": "asmt_phase4_audit_1792240175",
+      "confidence": 0.92,
+      "id": "pevt_c412880c",
+      "timestamp": "2026-10-17T12:29:35Z"
     }
-  ]
+  ],
+  "interview_sessions": {
+    "mock_4993a92fb1": {
+      "id": "mock_4993a92fb1",
+      "student_id": "std_unit_test",
+      "role": "Backend Developer",
+      "round": "System Design & Architecture",
+      "difficulty": "Advanced",
+      "experience_level": "Fresher / Student (0-1 yrs)",
+      "duration_minutes": 15,
+      "target_company": "Barclays",
+      "job_description": "",
+      "resume_text": "",
+      "status": "COMPLETED",
+      "current_question_index": 2,
+      "target_question_count": 5,
+      "questions": [
+        {
+          "index": 1,
+          "question": "Welcome! I am your AI Technical Interviewer at Barclays. Today we will focus on System Design & Architecture. Let's begin: Design an idempotent payment processing API endpoint. How do you prevent duplicate charges if a client network timeout triggers an automatic retry?",
+          "category": "API Architecture & Distributed Systems",
+          "hints": [
+            "Require client-generated UUID header",
+            "Lock the key, execute, cache the final response"
+          ],
+          "expected_concepts": [
+            "Idempotency Key",
+            "atomic reservation",
+            "Redis lock / SETNX",
+            "two-phase commit",
+            "state machine",
+            "transaction isolation"
+          ],
+          "model_answer": "To guarantee idempotency: 1) Client generates a unique Idempotency-Key (UUIDv4) in the HTTP header for each payment intent. 2) Upon receiving the request, the backend performs an atomic check-and-set in Redis (SET key 'PROCESSING' NX EX 120). If the key already exists and is 'PROCESSING', return HTTP 409 (Concurrent Request in Progress). 3) If the key is 'COMPLETED', return the cached payment response immediately with 200 OK without re-charging. 4) The payment is processed within a database transaction with a unique constraint on (idempotency_key). Upon success, the response payload is cached in Redis with a 24-hour TTL.",
+          "interviewer_note": "Generated by HireX Sovereign Context Engine",
+          "student_answer": "For idempotency, I use a unique Idempotency-Key UUID header with Redis SETNX atomic locks and a database unique constraint. If a duplicate request arrives, the cached response is returned without re-charging.",
+          "answered_at": 1792235654.799099,
+          "audio_duration_seconds": 0.0,
+          "evaluation": {
+            "technical_score": 5.7,
+            "problem_solving_score": 6.3,
+            "relevance_score": 7.5,
+            "communication_score": 8.5,
+            "practical_score": 5.1,
+            "overall_score": 6.5,
+            "strengths": [
+              "Correctly referenced key principles: Idempotency Key, atomic reservation, Redis lock / SETNX",
+              "Structured articulation with technical elaboration"
+            ],
+            "weaknesses": [
+              "Omitted critical trade-off concepts: two-phase commit, state machine"
+            ],
+            "feedback": "Good fundamental answer, but lacks architectural depth and real-world failure handling.",
+            "keywords_detected": [
+              "Idempotency Key",
+              "atomic reservation",
+              "Redis lock / SETNX"
+            ],
+            "concepts_missed": [
+              "two-phase commit",
+              "state machine",
+              "transaction isolation"
+            ],
+            "model_answer": "In production, an optimal answer explains both the implementation mechanism and the architectural trade-offs."
+          }
+        },
+        {
+          "index": 2,
+          "question": "In your previous explanation, you glossed over 'two-phase commit'. Before we proceed, how does that impact the solution? Specifically: Design an idempotent payment processing API endpoint. How do you prevent duplicate charges if a client network timeout triggers an automatic retry?",
+          "category": "API Architecture & Distributed Systems",
+          "hints": [
+            "Require client-generated UUID header",
+            "Lock the key, execute, cache the final response"
+          ],
+          "expected_concepts": [
+            "Idempotency Key",
+            "atomic reservation",
+            "Redis lock / SETNX",
+            "two-phase commit",
+            "state machine",
+            "transaction isolation"
+          ],
+          "model_answer": "To guarantee idempotency: 1) Client generates a unique Idempotency-Key (UUIDv4) in the HTTP header for each payment intent. 2) Upon receiving the request, the backend performs an atomic check-and-set in Redis (SET key 'PROCESSING' NX EX 120). If the key already exists and is 'PROCESSING', return HTTP 409 (Concurrent Request in Progress). 3) If the key is 'COMPLETED', return the cached payment response immediately with 200 OK without re-charging. 4) The payment is processed within a database transaction with a unique constraint on (idempotency_key). Upon success, the response payload is cached in Redis with a 24-hour TTL.",
+          "interviewer_note": "Contextualized by HireX Sovereign Context Engine"
+        }
+      ],
+      "overall_evaluation": {
+        "overall_score": 6.5,
+        "max_score": 10.0,
+        "verdict": "Developing Candidate (Gaps in Edge Cases & Trade-offs)",
+        "total_questions_answered": 1,
+        "category_scores": {
+          "technical_depth": 5.7,
+          "problem_solving": 6.3,
+          "relevance": 7.5,
+          "communication": 8.5,
+          "industry_knowledge": 5.1
+        },
+        "strengths": [
+          "Correctly referenced key principles: Idempotency Key, atomic reservation, Redis lock / SETNX",
+          "Structured articulation with technical elaboration"
+        ],
+        "areas_for_improvement": [
+          "Omitted critical trade-off concepts: two-phase commit, state machine"
+        ],
+        "recommended_topics": [
+          "Concurrency & Thread Safety Primitives",
+          "Database Indexing B-Trees & Transaction Isolation Levels",
+          "Asynchronous Event Loop & Non-Blocking I/O",
+          "Cache Invalidation & Thundering Herd Stampede Mitigations",
+          "Distributed Systems: Idempotency & Two-Phase Commit",
+          "API Design: Rate Limiting & REST/gRPC Trade-offs"
+        ],
+        "personalized_preparation_plan": [
+          {
+            "day": "Day 1-2",
+            "focus": "Core Language & OS Internals",
+            "action": "Deep dive into memory allocation (heap vs stack), context switching, and event loop mechanics."
+          },
+          {
+            "day": "Day 3-4",
+            "focus": "Database Transactions & Query Optimization",
+            "action": "Review PostgreSQL EXPLAIN ANALYZE, composite indexes, and isolation anomalies (dirty/phantom reads)."
+          },
+          {
+            "day": "Day 5-6",
+            "focus": "System Design Trade-offs",
+            "action": "Practice end-to-end architectures: Redis caching patterns, message queues (Kafka), and horizontal partition sharding."
+          },
+          {
+            "day": "Day 7",
+            "focus": "Full Mock Simulation",
+            "action": "Retake a 30-minute Advanced AI Mock Interview focusing on edge cases and failure mode recovery."
+          }
+        ],
+        "ai_engine_used": "HireX Sovereign Context Engine"
+      },
+      "created_at": 1792235654.7905598,
+      "updated_at": 1792235654.807839,
+      "ai_engine": "HireX Sovereign Context Engine"
+    },
+    "mock_857b208d07": {
+      "id": "mock_857b208d07",
+      "student_id": "std_unit_test",
+      "role": "Backend Developer",
+      "round": "System Design & Architecture",
+      "difficulty": "Advanced",
+      "experience_level": "Fresher / Student (0-1 yrs)",
+      "duration_minutes": 15,
+      "target_company": "Barclays",
+      "job_description": "",
+      "resume_text": "",
+      "status": "COMPLETED",
+      "current_question_index": 2,
+      "target_question_count": 5,
+      "questions": [
+        {
+          "index": 1,
+          "question": "Welcome! I am your AI Technical Interviewer at Barclays. Today we will focus on System Design & Architecture. Let's begin: Design an idempotent payment processing API endpoint. How do you prevent duplicate charges if a client network timeout triggers an automatic retry?",
+          "category": "API Architecture & Distributed Systems",
+          "hints": [
+            "Require client-generated UUID header",
+            "Lock the key, execute, cache the final response"
+          ],
+          "expected_concepts": [
+            "Idempotency Key",
+            "atomic reservation",
+            "Redis lock / SETNX",
+            "two-phase commit",
+            "state machine",
+            "transaction isolation"
+          ],
+          "model_answer": "To guarantee idempotency: 1) Client generates a unique Idempotency-Key (UUIDv4) in the HTTP header for each payment intent. 2) Upon receiving the request, the backend performs an atomic check-and-set in Redis (SET key 'PROCESSING' NX EX 120). If the key already exists and is 'PROCESSING', return HTTP 409 (Concurrent Request in Progress). 3) If the key is 'COMPLETED', return the cached payment response immediately with 200 OK without re-charging. 4) The payment is processed within a database transaction with a unique constraint on (idempotency_key). Upon success, the response payload is cached in Redis with a 24-hour TTL.",
+          "interviewer_note": "Generated by HireX Sovereign Context Engine",
+          "student_answer": "For idempotency, I use a unique Idempotency-Key UUID header with Redis SETNX atomic locks and a database unique constraint. If a duplicate request arrives, the cached response is returned without re-charging.",
+          "answered_at": 1792235712.750873,
+          "audio_duration_seconds": 0.0,
+          "evaluation": {
+            "technical_score": 5.7,
+            "problem_solving_score": 6.3,
+            "relevance_score": 7.5,
+            "communication_score": 8.5,
+            "practical_score": 5.1,
+            "overall_score": 6.5,
+            "strengths": [
+              "Correctly referenced key principles: Idempotency Key, atomic reservation, Redis lock / SETNX",
+              "Structured articulation with technical elaboration"
+            ],
+            "weaknesses": [
+              "Omitted critical trade-off concepts: two-phase commit, state machine"
+            ],
+            "feedback": "Good fundamental answer, but lacks architectural depth and real-world failure handling.",
+            "keywords_detected": [
+              "Idempotency Key",
+              "atomic reservation",
+              "Redis lock / SETNX"
+            ],
+            "concepts_missed": [
+              "two-phase commit",
+              "state machine",
+              "transaction isolation"
+            ],
+            "model_answer": "In production, an optimal answer explains both the implementation mechanism and the architectural trade-offs."
+          }
+        },
+        {
+          "index": 2,
+          "question": "In your previous explanation, you glossed over 'two-phase commit'. Before we proceed, how does that impact the solution? Specifically: Design an idempotent payment processing API endpoint. How do you prevent duplicate charges if a client network timeout triggers an automatic retry?",
+          "category": "API Architecture & Distributed Systems",
+          "hints": [
+            "Require client-generated UUID header",
+            "Lock the key, execute, cache the final response"
+          ],
+          "expected_concepts": [
+            "Idempotency Key",
+            "atomic reservation",
+            "Redis lock / SETNX",
+            "two-phase commit",
+            "state machine",
+            "transaction isolation"
+          ],
+          "model_answer": "To guarantee idempotency: 1) Client generates a unique Idempotency-Key (UUIDv4) in the HTTP header for each payment intent. 2) Upon receiving the request, the backend performs an atomic check-and-set in Redis (SET key 'PROCESSING' NX EX 120). If the key already exists and is 'PROCESSING', return HTTP 409 (Concurrent Request in Progress). 3) If the key is 'COMPLETED', return the cached payment response immediately with 200 OK without re-charging. 4) The payment is processed within a database transaction with a unique constraint on (idempotency_key). Upon success, the response payload is cached in Redis with a 24-hour TTL.",
+          "interviewer_note": "Contextualized by HireX Sovereign Context Engine"
+        }
+      ],
+      "overall_evaluation": {
+        "overall_score": 6.5,
+        "max_score": 10.0,
+        "verdict": "Developing Candidate (Gaps in Edge Cases & Trade-offs)",
+        "total_questions_answered": 1,
+        "category_scores": {
+          "technical_depth": 5.7,
+          "problem_solving": 6.3,
+          "relevance": 7.5,
+          "communication": 8.5,
+          "industry_knowledge": 5.1
+        },
+        "strengths": [
+          "Correctly referenced key principles: Idempotency Key, atomic reservation, Redis lock / SETNX",
+          "Structured articulation with technical elaboration"
+        ],
+        "areas_for_improvement": [
+          "Omitted critical trade-off concepts: two-phase commit, state machine"
+        ],
+        "recommended_topics": [
+          "Concurrency & Thread Safety Primitives",
+          "Database Indexing B-Trees & Transaction Isolation Levels",
+          "Asynchronous Event Loop & Non-Blocking I/O",
+          "Cache Invalidation & Thundering Herd Stampede Mitigations",
+          "Distributed Systems: Idempotency & Two-Phase Commit",
+          "API Design: Rate Limiting & REST/gRPC Trade-offs"
+        ],
+        "personalized_preparation_plan": [
+          {
+            "day": "Day 1-2",
+            "focus": "Core Language & OS Internals",
+            "action": "Deep dive into memory allocation (heap vs stack), context switching, and event loop mechanics."
+          },
+          {
+            "day": "Day 3-4",
+            "focus": "Database Transactions & Query Optimization",
+            "action": "Review PostgreSQL EXPLAIN ANALYZE, composite indexes, and isolation anomalies (dirty/phantom reads)."
+          },
+          {
+            "day": "Day 5-6",
+            "focus": "System Design Trade-offs",
+            "action": "Practice end-to-end architectures: Redis caching patterns, message queues (Kafka), and horizontal partition sharding."
+          },
+          {
+            "day": "Day 7",
+            "focus": "Full Mock Simulation",
+            "action": "Retake a 30-minute Advanced AI Mock Interview focusing on edge cases and failure mode recovery."
+          }
+        ],
+        "ai_engine_used": "HireX Sovereign Context Engine"
+      },
+      "created_at": 1792235712.7393222,
+      "updated_at": 1792235712.762571,
+      "ai_engine": "HireX Sovereign Context Engine"
+    },
+    "mock_03131a9c3c": {
+      "id": "mock_03131a9c3c",
+      "student_id": "std_unit_test",
+      "role": "Backend Developer",
+      "round": "System Design & Architecture",
+      "difficulty": "Advanced",
+      "experience_level": "Fresher / Student (0-1 yrs)",
+      "duration_minutes": 15,
+      "target_company": "Barclays",
+      "job_description": "",
+      "resume_text": "",
+      "status": "COMPLETED",
+      "current_question_index": 2,
+      "target_question_count": 5,
+      "questions": [
+        {
+          "index": 1,
+          "question": "Welcome! I am your AI Technical Interviewer at Barclays. Today we will focus on System Design & Architecture. Let's begin: Design an idempotent payment processing API endpoint. How do you prevent duplicate charges if a client network timeout triggers an automatic retry?",
+          "category": "API Architecture & Distributed Systems",
+          "hints": [
+            "Require client-generated UUID header",
+            "Lock the key, execute, cache the final response"
+          ],
+          "expected_concepts": [
+            "Idempotency Key",
+            "atomic reservation",
+            "Redis lock / SETNX",
+            "two-phase commit",
+            "state machine",
+            "transaction isolation"
+          ],
+          "model_answer": "To guarantee idempotency: 1) Client generates a unique Idempotency-Key (UUIDv4) in the HTTP header for each payment intent. 2) Upon receiving the request, the backend performs an atomic check-and-set in Redis (SET key 'PROCESSING' NX EX 120). If the key already exists and is 'PROCESSING', return HTTP 409 (Concurrent Request in Progress). 3) If the key is 'COMPLETED', return the cached payment response immediately with 200 OK without re-charging. 4) The payment is processed within a database transaction with a unique constraint on (idempotency_key). Upon success, the response payload is cached in Redis with a 24-hour TTL.",
+          "interviewer_note": "Generated by HireX Sovereign Context Engine",
+          "student_answer": "For idempotency, I use a unique Idempotency-Key UUID header with Redis SETNX atomic locks and a database unique constraint. If a duplicate request arrives, the cached response is returned without re-charging.",
+          "answered_at": 1792235859.9497917,
+          "audio_duration_seconds": 0.0,
+          "evaluation": {
+            "technical_score": 5.7,
+            "problem_solving_score": 6.3,
+            "relevance_score": 7.5,
+            "communication_score": 8.5,
+            "practical_score": 5.1,
+            "overall_score": 6.5,
+            "strengths": [
+              "Correctly referenced key principles: Idempotency Key, atomic reservation, Redis lock / SETNX",
+              "Structured articulation with technical elaboration"
+            ],
+            "weaknesses": [
+              "Omitted critical trade-off concepts: two-phase commit, state machine"
+            ],
+            "feedback": "Good fundamental answer, but lacks architectural depth and real-world failure handling.",
+            "keywords_detected": [
+              "Idempotency Key",
+              "atomic reservation",
+              "Redis lock / SETNX"
+            ],
+            "concepts_missed": [
+              "two-phase commit",
+              "state machine",
+              "transaction isolation"
+            ],
+            "model_answer": "In production, an optimal answer explains both the implementation mechanism and the architectural trade-offs."
+          }
+        },
+        {
+          "index": 2,
+          "question": "In your previous explanation, you glossed over 'two-phase commit'. Before we proceed, how does that impact the solution? Specifically: Design an idempotent payment processing API endpoint. How do you prevent duplicate charges if a client network timeout triggers an automatic retry?",
+          "category": "API Architecture & Distributed Systems",
+          "hints": [
+            "Require client-generated UUID header",
+            "Lock the key, execute, cache the final response"
+          ],
+          "expected_concepts": [
+            "Idempotency Key",
+            "atomic reservation",
+            "Redis lock / SETNX",
+            "two-phase commit",
+            "state machine",
+            "transaction isolation"
+          ],
+          "model_answer": "To guarantee idempotency: 1) Client generates a unique Idempotency-Key (UUIDv4) in the HTTP header for each payment intent. 2) Upon receiving the request, the backend performs an atomic check-and-set in Redis (SET key 'PROCESSING' NX EX 120). If the key already exists and is 'PROCESSING', return HTTP 409 (Concurrent Request in Progress). 3) If the key is 'COMPLETED', return the cached payment response immediately with 200 OK without re-charging. 4) The payment is processed within a database transaction with a unique constraint on (idempotency_key). Upon success, the response payload is cached in Redis with a 24-hour TTL.",
+          "interviewer_note": "Contextualized by HireX Sovereign Context Engine"
+        }
+      ],
+      "overall_evaluation": {
+        "overall_score": 6.5,
+        "max_score": 10.0,
+        "verdict": "Developing Candidate (Gaps in Edge Cases & Trade-offs)",
+        "total_questions_answered": 1,
+        "category_scores": {
+          "technical_depth": 5.7,
+          "problem_solving": 6.3,
+          "relevance": 7.5,
+          "communication": 8.5,
+          "industry_knowledge": 5.1
+        },
+        "strengths": [
+          "Correctly referenced key principles: Idempotency Key, atomic reservation, Redis lock / SETNX",
+          "Structured articulation with technical elaboration"
+        ],
+        "areas_for_improvement": [
+          "Omitted critical trade-off concepts: two-phase commit, state machine"
+        ],
+        "recommended_topics": [
+          "Concurrency & Thread Safety Primitives",
+          "Database Indexing B-Trees & Transaction Isolation Levels",
+          "Asynchronous Event Loop & Non-Blocking I/O",
+          "Cache Invalidation & Thundering Herd Stampede Mitigations",
+          "Distributed Systems: Idempotency & Two-Phase Commit",
+          "API Design: Rate Limiting & REST/gRPC Trade-offs"
+        ],
+        "personalized_preparation_plan": [
+          {
+            "day": "Day 1-2",
+            "focus": "Core Language & OS Internals",
+            "action": "Deep dive into memory allocation (heap vs stack), context switching, and event loop mechanics."
+          },
+          {
+            "day": "Day 3-4",
+            "focus": "Database Transactions & Query Optimization",
+            "action": "Review PostgreSQL EXPLAIN ANALYZE, composite indexes, and isolation anomalies (dirty/phantom reads)."
+          },
+          {
+            "day": "Day 5-6",
+            "focus": "System Design Trade-offs",
+            "action": "Practice end-to-end architectures: Redis caching patterns, message queues (Kafka), and horizontal partition sharding."
+          },
+          {
+            "day": "Day 7",
+            "focus": "Full Mock Simulation",
+            "action": "Retake a 30-minute Advanced AI Mock Interview focusing on edge cases and failure mode recovery."
+          }
+        ],
+        "ai_engine_used": "HireX Sovereign Context Engine"
+      },
+      "created_at": 1792235859.941276,
+      "updated_at": 1792235859.9588876,
+      "ai_engine": "HireX Sovereign Context Engine"
+    },
+    "mock_1ed2ca15f5": {
+      "id": "mock_1ed2ca15f5",
+      "student_id": "std_1",
+      "role": "Software Developer",
+      "round": "Technical Fundamentals",
+      "difficulty": "Intermediate",
+      "experience_level": "Fresher / Student (0-1 yrs)",
+      "duration_minutes": 15,
+      "target_company": "Barclays",
+      "job_description": "",
+      "resume_text": "",
+      "status": "IN_PROGRESS",
+      "current_question_index": 1,
+      "target_question_count": 5,
+      "questions": [
+        {
+          "index": 1,
+          "question": "Welcome! I am your AI Technical Interviewer at Barclays. Today we will focus on Technical Fundamentals. Let's begin: Can you explain the difference between a process and a thread, and how memory (heap vs stack) is shared between them in modern operating systems?",
+          "category": "Operating Systems & Concurrency",
+          "hints": [
+            "Think about isolated address space vs shared memory",
+            "Consider context-switching overhead"
+          ],
+          "expected_concepts": [
+            "address space",
+            "stack vs heap",
+            "context switching",
+            "IPC",
+            "thread safety",
+            "race conditions"
+          ],
+          "model_answer": "A process is an executing program instance with its own private address space, file descriptors, and OS resources. A thread is the smallest unit of execution within a process. Threads within the same process share the heap, global variables, and open files, but each thread maintains its own private stack and program counter. Inter-process communication (IPC) requires OS primitives (pipes, sockets, shared memory), while inter-thread communication is faster via shared memory, requiring synchronization primitives (mutexes, semaphores) to prevent race conditions.",
+          "interviewer_note": "Generated by HireX Sovereign Context Engine"
+        }
+      ],
+      "overall_evaluation": null,
+      "created_at": 1792236603.5053205,
+      "updated_at": 1792236603.5053205,
+      "ai_engine": "HireX Sovereign Context Engine"
+    },
+    "mock_7da69b0e6e": {
+      "id": "mock_7da69b0e6e",
+      "student_id": "std_1",
+      "role": "Software Developer",
+      "round": "Technical Fundamentals",
+      "difficulty": "Intermediate",
+      "experience_level": "Fresher / Student (0-1 yrs)",
+      "duration_minutes": 15,
+      "target_company": "Barclays",
+      "job_description": "",
+      "resume_text": "",
+      "status": "IN_PROGRESS",
+      "current_question_index": 1,
+      "target_question_count": 5,
+      "questions": [
+        {
+          "index": 1,
+          "question": "Welcome! I am your AI Technical Interviewer at Barclays. Today we will focus on Technical Fundamentals. Let's begin: Can you explain the difference between a process and a thread, and how memory (heap vs stack) is shared between them in modern operating systems?",
+          "category": "Operating Systems & Concurrency",
+          "hints": [
+            "Think about isolated address space vs shared memory",
+            "Consider context-switching overhead"
+          ],
+          "expected_concepts": [
+            "address space",
+            "stack vs heap",
+            "context switching",
+            "IPC",
+            "thread safety",
+            "race conditions"
+          ],
+          "model_answer": "A process is an executing program instance with its own private address space, file descriptors, and OS resources. A thread is the smallest unit of execution within a process. Threads within the same process share the heap, global variables, and open files, but each thread maintains its own private stack and program counter. Inter-process communication (IPC) requires OS primitives (pipes, sockets, shared memory), while inter-thread communication is faster via shared memory, requiring synchronization primitives (mutexes, semaphores) to prevent race conditions.",
+          "interviewer_note": "Generated by HireX Sovereign Context Engine"
+        }
+      ],
+      "overall_evaluation": null,
+      "created_at": 1792236633.9612932,
+      "updated_at": 1792236633.9612932,
+      "ai_engine": "HireX Sovereign Context Engine"
+    },
+    "mock_33d2a61480": {
+      "id": "mock_33d2a61480",
+      "student_id": "std_1",
+      "role": "Software Developer",
+      "round": "Technical Fundamentals",
+      "difficulty": "Intermediate",
+      "experience_level": "Fresher / Student (0-1 yrs)",
+      "duration_minutes": 10,
+      "target_company": "Barclays",
+      "job_description": "",
+      "resume_text": "",
+      "status": "IN_PROGRESS",
+      "current_question_index": 2,
+      "target_question_count": 3,
+      "questions": [
+        {
+          "index": 1,
+          "question": "Welcome! I am your AI Technical Interviewer at Barclays. Today we will focus on Technical Fundamentals. Let's begin: Can you explain the difference between a process and a thread, and how memory (heap vs stack) is shared between them in modern operating systems?",
+          "category": "Operating Systems & Concurrency",
+          "hints": [
+            "Think about isolated address space vs shared memory",
+            "Consider context-switching overhead"
+          ],
+          "expected_concepts": [
+            "address space",
+            "stack vs heap",
+            "context switching",
+            "IPC",
+            "thread safety",
+            "race conditions"
+          ],
+          "model_answer": "A process is an executing program instance with its own private address space, file descriptors, and OS resources. A thread is the smallest unit of execution within a process. Threads within the same process share the heap, global variables, and open files, but each thread maintains its own private stack and program counter. Inter-process communication (IPC) requires OS primitives (pipes, sockets, shared memory), while inter-thread communication is faster via shared memory, requiring synchronization primitives (mutexes, semaphores) to prevent race conditions.",
+          "interviewer_note": "Generated by HireX Sovereign Context Engine",
+          "student_answer": "A process has its own address space and memory isolated by the OS. Threads run inside a process and share the heap and global memory, but have their own separate stack and program counter. Because threads share memory, we need mutexes to prevent race conditions.",
+          "answered_at": 1792236660.9964721,
+          "audio_duration_seconds": 14.5,
+          "evaluation": {
+            "technical_score": 8.8,
+            "problem_solving_score": 8.4,
+            "relevance_score": 7.5,
+            "communication_score": 8.5,
+            "practical_score": 7.9,
+            "overall_score": 8.4,
+            "strengths": [
+              "Correctly referenced key principles: address space, stack vs heap, thread safety",
+              "Structured articulation with technical elaboration"
+            ],
+            "weaknesses": [
+              "Omitted critical trade-off concepts: context switching, IPC"
+            ],
+            "feedback": "Well-structured response demonstrating sound conceptual grounding and engineering trade-offs.",
+            "keywords_detected": [
+              "address space",
+              "stack vs heap",
+              "thread safety",
+              "race conditions"
+            ],
+            "concepts_missed": [
+              "context switching",
+              "IPC"
+            ],
+            "model_answer": "In production, an optimal answer explains both the implementation mechanism and the architectural trade-offs."
+          }
+        },
+        {
+          "index": 2,
+          "question": "In your previous explanation, you glossed over 'context switching'. Before we proceed, how does that impact the solution? Specifically: Explain the ACID properties in relational databases and provide a real-world scenario where relaxing Isolation (e.g. using Read Committed instead of Serializable) is an acceptable trade-off.",
+          "category": "DBMS & Transactions",
+          "hints": [
+            "Define each acronym letter briefly",
+            "Explain throughput vs strict serializability"
+          ],
+          "expected_concepts": [
+            "Atomicity",
+            "Consistency",
+            "Isolation",
+            "Durability",
+            "concurrency",
+            "lock contention",
+            "dirty read",
+            "phantom read"
+          ],
+          "model_answer": "ACID stands for Atomicity (all-or-nothing), Consistency (state transitions respect constraints), Isolation (concurrent transactions execute without interference), and Durability (committed changes survive crashes). Full Serializable isolation requires strict 2-phase locking or SSI, which drastically limits transaction throughput. In read-heavy systems like analytics dashboards or social feed generation, Read Committed is preferred because non-repeatable reads or phantom reads do not corrupt critical financial ledger states, while unlocking 10x higher concurrency.",
+          "interviewer_note": "Contextualized by HireX Sovereign Context Engine"
+        }
+      ],
+      "overall_evaluation": null,
+      "created_at": 1792236660.9329112,
+      "updated_at": 1792236660.9964721,
+      "ai_engine": "HireX Sovereign Context Engine"
+    },
+    "mock_f76c6c0901": {
+      "id": "mock_f76c6c0901",
+      "student_id": "std_1",
+      "role": "Software Developer",
+      "round": "Technical Fundamentals",
+      "difficulty": "Intermediate",
+      "experience_level": "Fresher / Student (0-1 yrs)",
+      "duration_minutes": 10,
+      "target_company": "Barclays",
+      "job_description": "",
+      "resume_text": "",
+      "status": "IN_PROGRESS",
+      "current_question_index": 2,
+      "target_question_count": 3,
+      "questions": [
+        {
+          "index": 1,
+          "question": "Welcome! I am your AI Technical Interviewer at Barclays. Today we will focus on Technical Fundamentals. Let's begin: Can you explain the difference between a process and a thread, and how memory (heap vs stack) is shared between them in modern operating systems?",
+          "category": "Operating Systems & Concurrency",
+          "hints": [
+            "Think about isolated address space vs shared memory",
+            "Consider context-switching overhead"
+          ],
+          "expected_concepts": [
+            "address space",
+            "stack vs heap",
+            "context switching",
+            "IPC",
+            "thread safety",
+            "race conditions"
+          ],
+          "model_answer": "A process is an executing program instance with its own private address space, file descriptors, and OS resources. A thread is the smallest unit of execution within a process. Threads within the same process share the heap, global variables, and open files, but each thread maintains its own private stack and program counter. Inter-process communication (IPC) requires OS primitives (pipes, sockets, shared memory), while inter-thread communication is faster via shared memory, requiring synchronization primitives (mutexes, semaphores) to prevent race conditions.",
+          "interviewer_note": "Generated by HireX Sovereign Context Engine",
+          "student_answer": "A process has its own address space and memory isolated by the OS. Threads run inside a process and share the heap and global memory, but have their own separate stack and program counter. Because threads share memory, we need mutexes to prevent race conditions.",
+          "answered_at": 1792236698.2698264,
+          "audio_duration_seconds": 14.5,
+          "evaluation": {
+            "technical_score": 8.8,
+            "problem_solving_score": 8.4,
+            "relevance_score": 7.5,
+            "communication_score": 8.5,
+            "practical_score": 7.9,
+            "overall_score": 8.4,
+            "strengths": [
+              "Correctly referenced key principles: address space, stack vs heap, thread safety",
+              "Structured articulation with technical elaboration"
+            ],
+            "weaknesses": [
+              "Omitted critical trade-off concepts: context switching, IPC"
+            ],
+            "feedback": "Well-structured response demonstrating sound conceptual grounding and engineering trade-offs.",
+            "keywords_detected": [
+              "address space",
+              "stack vs heap",
+              "thread safety",
+              "race conditions"
+            ],
+            "concepts_missed": [
+              "context switching",
+              "IPC"
+            ],
+            "model_answer": "In production, an optimal answer explains both the implementation mechanism and the architectural trade-offs."
+          }
+        },
+        {
+          "index": 2,
+          "question": "In your previous explanation, you glossed over 'context switching'. Before we proceed, how does that impact the solution? Specifically: Explain the ACID properties in relational databases and provide a real-world scenario where relaxing Isolation (e.g. using Read Committed instead of Serializable) is an acceptable trade-off.",
+          "category": "DBMS & Transactions",
+          "hints": [
+            "Define each acronym letter briefly",
+            "Explain throughput vs strict serializability"
+          ],
+          "expected_concepts": [
+            "Atomicity",
+            "Consistency",
+            "Isolation",
+            "Durability",
+            "concurrency",
+            "lock contention",
+            "dirty read",
+            "phantom read"
+          ],
+          "model_answer": "ACID stands for Atomicity (all-or-nothing), Consistency (state transitions respect constraints), Isolation (concurrent transactions execute without interference), and Durability (committed changes survive crashes). Full Serializable isolation requires strict 2-phase locking or SSI, which drastically limits transaction throughput. In read-heavy systems like analytics dashboards or social feed generation, Read Committed is preferred because non-repeatable reads or phantom reads do not corrupt critical financial ledger states, while unlocking 10x higher concurrency.",
+          "interviewer_note": "Contextualized by HireX Sovereign Context Engine"
+        }
+      ],
+      "overall_evaluation": null,
+      "created_at": 1792236698.2376227,
+      "updated_at": 1792236698.2698264,
+      "ai_engine": "HireX Sovereign Context Engine"
+    },
+    "mock_a90667c793": {
+      "id": "mock_a90667c793",
+      "student_id": "std_unit_test",
+      "role": "Backend Developer",
+      "round": "System Design & Architecture",
+      "difficulty": "Advanced",
+      "experience_level": "Fresher / Student (0-1 yrs)",
+      "duration_minutes": 15,
+      "target_company": "Barclays",
+      "job_description": "",
+      "resume_text": "",
+      "status": "COMPLETED",
+      "current_question_index": 2,
+      "target_question_count": 5,
+      "questions": [
+        {
+          "index": 1,
+          "question": "Welcome! I am your AI Technical Interviewer at Barclays. Today we will focus on System Design & Architecture. Let's begin: Design an idempotent payment processing API endpoint. How do you prevent duplicate charges if a client network timeout triggers an automatic retry?",
+          "category": "API Architecture & Distributed Systems",
+          "hints": [
+            "Require client-generated UUID header",
+            "Lock the key, execute, cache the final response"
+          ],
+          "expected_concepts": [
+            "Idempotency Key",
+            "atomic reservation",
+            "Redis lock / SETNX",
+            "two-phase commit",
+            "state machine",
+            "transaction isolation"
+          ],
+          "model_answer": "To guarantee idempotency: 1) Client generates a unique Idempotency-Key (UUIDv4) in the HTTP header for each payment intent. 2) Upon receiving the request, the backend performs an atomic check-and-set in Redis (SET key 'PROCESSING' NX EX 120). If the key already exists and is 'PROCESSING', return HTTP 409 (Concurrent Request in Progress). 3) If the key is 'COMPLETED', return the cached payment response immediately with 200 OK without re-charging. 4) The payment is processed within a database transaction with a unique constraint on (idempotency_key). Upon success, the response payload is cached in Redis with a 24-hour TTL.",
+          "interviewer_note": "Generated by HireX Sovereign Context Engine",
+          "student_answer": "For idempotency, I use a unique Idempotency-Key UUID header with Redis SETNX atomic locks and a database unique constraint. If a duplicate request arrives, the cached response is returned without re-charging.",
+          "answered_at": 1792239492.9661083,
+          "audio_duration_seconds": 0.0,
+          "evaluation": {
+            "technical_score": 5.7,
+            "problem_solving_score": 6.3,
+            "relevance_score": 7.5,
+            "communication_score": 8.5,
+            "practical_score": 5.1,
+            "overall_score": 6.5,
+            "strengths": [
+              "Correctly referenced key principles: Idempotency Key, atomic reservation, Redis lock / SETNX",
+              "Structured articulation with technical elaboration"
+            ],
+            "weaknesses": [
+              "Omitted critical trade-off concepts: two-phase commit, state machine"
+            ],
+            "feedback": "Good fundamental answer, but lacks architectural depth and real-world failure handling.",
+            "keywords_detected": [
+              "Idempotency Key",
+              "atomic reservation",
+              "Redis lock / SETNX"
+            ],
+            "concepts_missed": [
+              "two-phase commit",
+              "state machine",
+              "transaction isolation"
+            ],
+            "model_answer": "In production, an optimal answer explains both the implementation mechanism and the architectural trade-offs."
+          }
+        },
+        {
+          "index": 2,
+          "question": "In your previous explanation, you glossed over 'two-phase commit'. Before we proceed, how does that impact the solution? Specifically: Design an idempotent payment processing API endpoint. How do you prevent duplicate charges if a client network timeout triggers an automatic retry?",
+          "category": "API Architecture & Distributed Systems",
+          "hints": [
+            "Require client-generated UUID header",
+            "Lock the key, execute, cache the final response"
+          ],
+          "expected_concepts": [
+            "Idempotency Key",
+            "atomic reservation",
+            "Redis lock / SETNX",
+            "two-phase commit",
+            "state machine",
+            "transaction isolation"
+          ],
+          "model_answer": "To guarantee idempotency: 1) Client generates a unique Idempotency-Key (UUIDv4) in the HTTP header for each payment intent. 2) Upon receiving the request, the backend performs an atomic check-and-set in Redis (SET key 'PROCESSING' NX EX 120). If the key already exists and is 'PROCESSING', return HTTP 409 (Concurrent Request in Progress). 3) If the key is 'COMPLETED', return the cached payment response immediately with 200 OK without re-charging. 4) The payment is processed within a database transaction with a unique constraint on (idempotency_key). Upon success, the response payload is cached in Redis with a 24-hour TTL.",
+          "interviewer_note": "Contextualized by HireX Sovereign Context Engine"
+        }
+      ],
+      "overall_evaluation": {
+        "overall_score": 6.5,
+        "max_score": 10.0,
+        "verdict": "Developing Candidate (Gaps in Edge Cases & Trade-offs)",
+        "total_questions_answered": 1,
+        "category_scores": {
+          "technical_depth": 5.7,
+          "problem_solving": 6.3,
+          "relevance": 7.5,
+          "communication": 8.5,
+          "industry_knowledge": 5.1
+        },
+        "strengths": [
+          "Correctly referenced key principles: Idempotency Key, atomic reservation, Redis lock / SETNX",
+          "Structured articulation with technical elaboration"
+        ],
+        "areas_for_improvement": [
+          "Omitted critical trade-off concepts: two-phase commit, state machine"
+        ],
+        "recommended_topics": [
+          "Concurrency & Thread Safety Primitives",
+          "Database Indexing B-Trees & Transaction Isolation Levels",
+          "Asynchronous Event Loop & Non-Blocking I/O",
+          "Cache Invalidation & Thundering Herd Stampede Mitigations",
+          "Distributed Systems: Idempotency & Two-Phase Commit",
+          "API Design: Rate Limiting & REST/gRPC Trade-offs"
+        ],
+        "personalized_preparation_plan": [
+          {
+            "day": "Day 1-2",
+            "focus": "Core Language & OS Internals",
+            "action": "Deep dive into memory allocation (heap vs stack), context switching, and event loop mechanics."
+          },
+          {
+            "day": "Day 3-4",
+            "focus": "Database Transactions & Query Optimization",
+            "action": "Review PostgreSQL EXPLAIN ANALYZE, composite indexes, and isolation anomalies (dirty/phantom reads)."
+          },
+          {
+            "day": "Day 5-6",
+            "focus": "System Design Trade-offs",
+            "action": "Practice end-to-end architectures: Redis caching patterns, message queues (Kafka), and horizontal partition sharding."
+          },
+          {
+            "day": "Day 7",
+            "focus": "Full Mock Simulation",
+            "action": "Retake a 30-minute Advanced AI Mock Interview focusing on edge cases and failure mode recovery."
+          }
+        ],
+        "ai_engine_used": "HireX Sovereign Context Engine"
+      },
+      "created_at": 1792239492.9478288,
+      "updated_at": 1792239492.9854894,
+      "ai_engine": "HireX Sovereign Context Engine"
+    },
+    "mock_b46a170fc9": {
+      "id": "mock_b46a170fc9",
+      "student_id": "std_unit_test",
+      "role": "Backend Developer",
+      "round": "System Design & Architecture",
+      "difficulty": "Advanced",
+      "experience_level": "Fresher / Student (0-1 yrs)",
+      "duration_minutes": 15,
+      "target_company": "Barclays",
+      "job_description": "",
+      "resume_text": "",
+      "status": "COMPLETED",
+      "current_question_index": 2,
+      "target_question_count": 5,
+      "questions": [
+        {
+          "index": 1,
+          "question": "Welcome! I am your AI Technical Interviewer at Barclays. Today we will focus on System Design & Architecture. Let's begin: Design an idempotent payment processing API endpoint. How do you prevent duplicate charges if a client network timeout triggers an automatic retry?",
+          "category": "API Architecture & Distributed Systems",
+          "hints": [
+            "Require client-generated UUID header",
+            "Lock the key, execute, cache the final response"
+          ],
+          "expected_concepts": [
+            "Idempotency Key",
+            "atomic reservation",
+            "Redis lock / SETNX",
+            "two-phase commit",
+            "state machine",
+            "transaction isolation"
+          ],
+          "model_answer": "To guarantee idempotency: 1) Client generates a unique Idempotency-Key (UUIDv4) in the HTTP header for each payment intent. 2) Upon receiving the request, the backend performs an atomic check-and-set in Redis (SET key 'PROCESSING' NX EX 120). If the key already exists and is 'PROCESSING', return HTTP 409 (Concurrent Request in Progress). 3) If the key is 'COMPLETED', return the cached payment response immediately with 200 OK without re-charging. 4) The payment is processed within a database transaction with a unique constraint on (idempotency_key). Upon success, the response payload is cached in Redis with a 24-hour TTL.",
+          "interviewer_note": "Generated by HireX Sovereign Context Engine",
+          "student_answer": "For idempotency, I use a unique Idempotency-Key UUID header with Redis SETNX atomic locks and a database unique constraint. If a duplicate request arrives, the cached response is returned without re-charging.",
+          "answered_at": 1792240171.417762,
+          "audio_duration_seconds": 0.0,
+          "evaluation": {
+            "technical_score": 5.7,
+            "problem_solving_score": 6.3,
+            "relevance_score": 7.5,
+            "communication_score": 8.5,
+            "practical_score": 5.1,
+            "overall_score": 6.5,
+            "strengths": [
+              "Correctly referenced key principles: Idempotency Key, atomic reservation, Redis lock / SETNX",
+              "Structured articulation with technical elaboration"
+            ],
+            "weaknesses": [
+              "Omitted critical trade-off concepts: two-phase commit, state machine"
+            ],
+            "feedback": "Good fundamental answer, but lacks architectural depth and real-world failure handling.",
+            "keywords_detected": [
+              "Idempotency Key",
+              "atomic reservation",
+              "Redis lock / SETNX"
+            ],
+            "concepts_missed": [
+              "two-phase commit",
+              "state machine",
+              "transaction isolation"
+            ],
+            "model_answer": "In production, an optimal answer explains both the implementation mechanism and the architectural trade-offs."
+          }
+        },
+        {
+          "index": 2,
+          "question": "In your previous explanation, you glossed over 'two-phase commit'. Before we proceed, how does that impact the solution? Specifically: Design an idempotent payment processing API endpoint. How do you prevent duplicate charges if a client network timeout triggers an automatic retry?",
+          "category": "API Architecture & Distributed Systems",
+          "hints": [
+            "Require client-generated UUID header",
+            "Lock the key, execute, cache the final response"
+          ],
+          "expected_concepts": [
+            "Idempotency Key",
+            "atomic reservation",
+            "Redis lock / SETNX",
+            "two-phase commit",
+            "state machine",
+            "transaction isolation"
+          ],
+          "model_answer": "To guarantee idempotency: 1) Client generates a unique Idempotency-Key (UUIDv4) in the HTTP header for each payment intent. 2) Upon receiving the request, the backend performs an atomic check-and-set in Redis (SET key 'PROCESSING' NX EX 120). If the key already exists and is 'PROCESSING', return HTTP 409 (Concurrent Request in Progress). 3) If the key is 'COMPLETED', return the cached payment response immediately with 200 OK without re-charging. 4) The payment is processed within a database transaction with a unique constraint on (idempotency_key). Upon success, the response payload is cached in Redis with a 24-hour TTL.",
+          "interviewer_note": "Contextualized by HireX Sovereign Context Engine"
+        }
+      ],
+      "overall_evaluation": {
+        "overall_score": 6.5,
+        "max_score": 10.0,
+        "verdict": "Developing Candidate (Gaps in Edge Cases & Trade-offs)",
+        "total_questions_answered": 1,
+        "category_scores": {
+          "technical_depth": 5.7,
+          "problem_solving": 6.3,
+          "relevance": 7.5,
+          "communication": 8.5,
+          "industry_knowledge": 5.1
+        },
+        "strengths": [
+          "Correctly referenced key principles: Idempotency Key, atomic reservation, Redis lock / SETNX",
+          "Structured articulation with technical elaboration"
+        ],
+        "areas_for_improvement": [
+          "Omitted critical trade-off concepts: two-phase commit, state machine"
+        ],
+        "recommended_topics": [
+          "Concurrency & Thread Safety Primitives",
+          "Database Indexing B-Trees & Transaction Isolation Levels",
+          "Asynchronous Event Loop & Non-Blocking I/O",
+          "Cache Invalidation & Thundering Herd Stampede Mitigations",
+          "Distributed Systems: Idempotency & Two-Phase Commit",
+          "API Design: Rate Limiting & REST/gRPC Trade-offs"
+        ],
+        "personalized_preparation_plan": [
+          {
+            "day": "Day 1-2",
+            "focus": "Core Language & OS Internals",
+            "action": "Deep dive into memory allocation (heap vs stack), context switching, and event loop mechanics."
+          },
+          {
+            "day": "Day 3-4",
+            "focus": "Database Transactions & Query Optimization",
+            "action": "Review PostgreSQL EXPLAIN ANALYZE, composite indexes, and isolation anomalies (dirty/phantom reads)."
+          },
+          {
+            "day": "Day 5-6",
+            "focus": "System Design Trade-offs",
+            "action": "Practice end-to-end architectures: Redis caching patterns, message queues (Kafka), and horizontal partition sharding."
+          },
+          {
+            "day": "Day 7",
+            "focus": "Full Mock Simulation",
+            "action": "Retake a 30-minute Advanced AI Mock Interview focusing on edge cases and failure mode recovery."
+          }
+        ],
+        "ai_engine_used": "HireX Sovereign Context Engine"
+      },
+      "created_at": 1792240171.4027646,
+      "updated_at": 1792240171.4607742,
+      "ai_engine": "HireX Sovereign Context Engine"
+    }
+  }
 }

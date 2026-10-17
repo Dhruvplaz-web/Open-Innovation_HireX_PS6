@@ -56,13 +56,30 @@ def test_recruiter_invitation_sync():
     data = pool_res.json()
     talents = data.get("talents", [])
     assert len(talents) > 0
-    target_talent = next((t for t in talents if not t.get("is_invited") and t.get("invitation_status") not in ("INVITED", "PENDING")), None)
+
+    from app.routes.recruiter import get_student_id_from_talent_id
+
+    # Retrieve existing invitations to avoid duplicate constraint
+    inv_res = client.get("/api/recruiter/talent-invitations", headers={"x-user-role": "recruiter"})
+    existing_invites = inv_res.json().get("invitations", []) if inv_res.status_code == 200 else []
+    invited_combos = {(i.get("student_id"), i.get("opportunity_id")) for i in existing_invites if i.get("status") in ("PENDING", "INVITED")}
+
+    candidate_opps = ["opp_1", "opp_2", "opp_3", "opp_4", "opp_5", "opp_6"]
+    target_talent = None
+    opp_id = "opp_1"
+
+    for t in talents:
+        sid = get_student_id_from_talent_id(t["talent_id"])
+        for op in candidate_opps:
+            if (sid, op) not in invited_combos:
+                target_talent = t
+                opp_id = op
+                break
+        if target_talent:
+            break
+
     if not target_talent:
-        # Pick the first one if all are invited, but choose a different opportunity
         target_talent = talents[0]
-        opp_id = "opp_2"
-    else:
-        opp_id = "opp_1"
 
     talent_id = target_talent["talent_id"]
 

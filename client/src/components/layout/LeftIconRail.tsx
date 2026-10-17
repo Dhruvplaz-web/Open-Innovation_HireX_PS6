@@ -8,15 +8,14 @@ import {
   User,
   Sun,
   Moon,
-  Info,
   ShieldCheck,
-  UserCheck,
   GraduationCap,
   FolderGit2,
   Lock,
   Users,
   TrendingUp,
   ShieldAlert,
+  Bot,
   LucideIcon
 } from 'lucide-react';
 import { Role } from '../../types';
@@ -85,7 +84,14 @@ export const LeftIconRail: React.FC<LeftIconRailProps> = ({
             label: 'Campus Drives & ATS Resume Scanner',
             icon: Briefcase,
             color: 'text-slate-400',
-            activeMatch: ['opportunities', 'applications', 'interviews']
+            activeMatch: ['opportunities', 'applications']
+          },
+          {
+            id: 'mock-interview',
+            label: 'AI Mock Interview Simulator & Voice Prep',
+            icon: Bot,
+            color: 'text-rose-400',
+            activeMatch: ['mock-interview', 'interview', 'interviews', 'ai-interview']
           },
           {
             id: 'codelab',
@@ -102,18 +108,11 @@ export const LeftIconRail: React.FC<LeftIconRailProps> = ({
             activeMatch: ['aptitude']
           },
           {
-            id: 'transcript',
-            label: 'Certificate Scanner & AICTE Skill Transcript',
+            id: 'scanner',
+            label: 'Forensic Certificate Scanner & NCrF Auditor',
             icon: ShieldCheck,
             color: 'text-indigo-400',
-            activeMatch: ['transcript', 'certificates', 'certificate-scanner', 'scanner']
-          },
-          {
-            id: 'verification',
-            label: 'Multi-Signal Skill Verification & Credential Passport',
-            icon: Award,
-            color: 'text-amber-400',
-            activeMatch: ['verification', 'skill-verification', 'passport']
+            activeMatch: ['scanner', 'certificate-scanner', 'certificates', 'transcript']
           },
           {
             id: 'profile',
@@ -274,9 +273,9 @@ export const LeftIconRail: React.FC<LeftIconRailProps> = ({
         </span>
       </div>
 
-      {/* Center Nav Rail Capsule — Exact Match to Reference Design */}
+      {/* Center Nav Rail Capsule — Clean, Scrollbar-Free Fit */}
       <nav
-        className="flex flex-col items-center bg-[#0d0e15] border border-white/[0.08] py-2.5 px-1.5 rounded-[28px] shadow-2xl gap-1.5 my-auto max-h-[calc(100vh-170px)] overflow-y-auto no-scrollbar"
+        className="flex flex-col items-center bg-[#0d0e15] border border-white/[0.08] py-2 px-1.5 rounded-[28px] shadow-2xl gap-1.5 my-auto overflow-hidden select-none"
         aria-label="Role Functions"
       >
         {/* Dynamic Role-Aware Items */}
@@ -290,11 +289,10 @@ export const LeftIconRail: React.FC<LeftIconRailProps> = ({
               type="button"
               onClick={() => setActiveTab(item.id)}
               title={item.label}
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer group relative ${
-                active
+              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer group relative ${active
                   ? 'bg-[#182035] text-white shadow-sm ring-1 ring-blue-500/30'
                   : `${item.color} hover:text-white hover:bg-white/[0.06]`
-              }`}
+                }`}
               aria-label={item.label}
             >
               <Icon className="w-4.5 h-4.5 shrink-0" />
@@ -304,65 +302,18 @@ export const LeftIconRail: React.FC<LeftIconRailProps> = ({
             </button>
           );
         })}
-
-        {/* Divider Line */}
-        <div className="w-5 h-[1px] bg-slate-800/80 my-1 shrink-0" />
-
-        {/* Universal Utility Icons: Info, Account / Auth, Legal & Compliance */}
-        {/* Info / About */}
-        <button
-          type="button"
-          onClick={() => openModal('about')}
-          title="About Project & Hackathon"
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer group relative"
-          aria-label="About Project"
-        >
-          <Info className="w-4.5 h-4.5 shrink-0" />
-          <span className="absolute left-14 bg-slate-900 text-white text-xs font-semibold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md border border-slate-800">
-            About Project & Verification
-          </span>
-        </button>
-
-        {/* Account & Firebase Authentication */}
-        <button
-          type="button"
-          onClick={() => openModal('auth')}
-          title="Firebase Auth & Persona Gateway"
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer group relative"
-          aria-label="Account & Auth"
-        >
-          <UserCheck className="w-4.5 h-4.5 shrink-0" />
-          <span className="absolute left-14 bg-slate-900 text-white text-xs font-semibold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md border border-slate-800">
-            Firebase Auth & Persona Gateway
-          </span>
-        </button>
-
-        {/* Legal & Compliance */}
-        <button
-          type="button"
-          onClick={() => openModal('legal')}
-          title="Compliance & DPDP Act 2023"
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer group relative"
-          aria-label="Legal & Compliance"
-        >
-          <ShieldCheck className="w-4.5 h-4.5 shrink-0" />
-          <span className="absolute left-14 bg-slate-900 text-white text-xs font-semibold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md border border-slate-800">
-            Compliance & DPDP Act 2023
-          </span>
-        </button>
       </nav>
 
-      {/* Bottom Theme Switcher Pill (Sun / Moon) — Exact Match to Reference */}
+      {/* Bottom Theme Switcher Pill (Sun / Moon) */}
       <div className="bg-[#0d0e15] border border-white/[0.08] p-1 rounded-2xl shadow-xl flex flex-col gap-1 items-center shrink-0">
         <button
           type="button"
           onClick={toggleDark}
           title={!isDark ? "Radiant Light Mode Active" : "Switch to Light Mode"}
-          className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
-            !isDark
+          className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer ${!isDark
               ? 'bg-[#182035] text-white ring-1 ring-blue-500/20'
               : 'text-slate-400 hover:text-white'
-          }`}
+            }`}
           aria-label="Light mode"
         >
           <Sun className="w-4 h-4" />
@@ -371,11 +322,10 @@ export const LeftIconRail: React.FC<LeftIconRailProps> = ({
           type="button"
           onClick={toggleDark}
           title={isDark ? "Midnight Dark Mode Active" : "Switch to Dark Mode"}
-          className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
-            isDark
+          className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer ${isDark
               ? 'bg-[#182035] text-white ring-1 ring-blue-500/20'
               : 'text-slate-400 hover:text-white'
-          }`}
+            }`}
           aria-label="Dark mode"
         >
           <Moon className="w-4 h-4" />

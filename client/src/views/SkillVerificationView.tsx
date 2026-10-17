@@ -162,7 +162,7 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
 
   // Pre-load and warm up face-api.js TinyFaceDetector models
   useEffect(() => {
-    initFaceDetector().catch(() => {});
+    initFaceDetector().catch(() => { });
   }, []);
 
   // Prefill extracted resume text and claimed skills from userProfile / student
@@ -239,7 +239,7 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
       examTimerRef.current = null;
     }
     if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current.close().catch(() => { });
       audioContextRef.current = null;
     }
   }, [mediaStream]);
@@ -255,7 +255,7 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
 
       // Exit fullscreen if still active
       if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
+        document.exitFullscreen().catch(() => { });
       }
 
       // Log to backend audit engine
@@ -269,7 +269,7 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
           'q_active',
           reason
         )
-        .catch(() => {});
+        .catch(() => { });
     },
     [studentId, stopAllMediaTracks]
   );
@@ -292,7 +292,7 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
           'q_active',
           `Violation ${currentCount}/3: ${reason}`
         )
-        .catch(() => {});
+        .catch(() => { });
 
       if (currentCount >= 3) {
         triggerDisqualification(`Disqualified: Max allowed violations exceeded (3/3) — ${reason}`);
@@ -433,10 +433,10 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
       }
 
       setMediaStream(stream);
-      initFaceDetector().catch(() => {});
+      initFaceDetector().catch(() => { });
       if (videoElementRef.current) {
         videoElementRef.current.srcObject = stream;
-        videoElementRef.current.play().catch(() => {});
+        videoElementRef.current.play().catch(() => { });
       }
     } catch (err: any) {
       alert(`Hardware permission error: ${err.message || 'Unable to access camera and microphone.'}`);
@@ -671,7 +671,7 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
   const handleSubmitExam = async () => {
     stopAllMediaTracks();
     if (document.fullscreenElement) {
-      document.exitFullscreen().catch(() => {});
+      document.exitFullscreen().catch(() => { });
     }
 
     const totalQ = questions.length;
@@ -801,7 +801,7 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
   useEffect(() => {
     if (mediaStream && videoElementRef.current) {
       videoElementRef.current.srcObject = mediaStream;
-      videoElementRef.current.play().catch(() => {});
+      videoElementRef.current.play().catch(() => { });
     }
   }, [mediaStream, examState]);
 
@@ -863,11 +863,10 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
                 setExamState('configure');
               }
             }}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
-              activeMainTab === 'assess'
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${activeMainTab === 'assess'
                 ? 'bg-indigo-600 text-white shadow-sm'
                 : 'bg-white dark:bg-card-dark text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400'
-            }`}
+              }`}
           >
             <Zap className="w-4 h-4" />
             <span>Assess & Verify Skill</span>
@@ -875,11 +874,10 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
 
           <button
             onClick={() => setActiveMainTab('passport')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
-              activeMainTab === 'passport'
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${activeMainTab === 'passport'
                 ? 'bg-indigo-600 text-white shadow-sm'
                 : 'bg-white dark:bg-card-dark text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400'
-            }`}
+              }`}
           >
             <ShieldCheck className="w-4 h-4" />
             <span>Verified Credentials ({passportItems.length})</span>
@@ -887,11 +885,10 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
 
           <button
             onClick={() => setActiveMainTab('scanner')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
-              activeMainTab === 'scanner'
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${activeMainTab === 'scanner'
                 ? 'bg-indigo-600 text-white shadow-sm'
                 : 'bg-white dark:bg-card-dark text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400'
-            }`}
+              }`}
           >
             <Award className="w-4 h-4" />
             <span>Forensic Certificate Scanner</span>
@@ -1048,13 +1045,12 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
                   <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-700">
                     Confidence: {evalResult.mlVerification.confidence_pct || 95}%
                   </span>
-                  <span className={`px-3 py-1 rounded-full text-xs font-black shadow-xs ${
-                    evalResult.performanceTier?.includes('Gold')
+                  <span className={`px-3 py-1 rounded-full text-xs font-black shadow-xs ${evalResult.performanceTier?.includes('Gold')
                       ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950'
                       : evalResult.performanceTier?.includes('Silver')
-                      ? 'bg-gradient-to-r from-slate-200 to-slate-400 text-slate-900'
-                      : 'bg-gradient-to-r from-amber-600 to-orange-600 text-white'
-                  }`}>
+                        ? 'bg-gradient-to-r from-slate-200 to-slate-400 text-slate-900'
+                        : 'bg-gradient-to-r from-amber-600 to-orange-600 text-white'
+                    }`}>
                     {evalResult.performanceTier}
                   </span>
                 </div>
@@ -1108,20 +1104,18 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
                 return (
                   <div
                     key={q.id}
-                    className={`p-4 rounded-2xl border transition ${
-                      isCorrect
+                    className={`p-4 rounded-2xl border transition ${isCorrect
                         ? 'border-emerald-200 dark:border-emerald-800/40 bg-emerald-50/20 dark:bg-emerald-950/10'
                         : 'border-rose-200 dark:border-rose-800/40 bg-rose-50/20 dark:bg-rose-950/10'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
                         Q{idx + 1}. {q.question}
                       </span>
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                          isCorrect ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'
-                        }`}
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${isCorrect ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'
+                          }`}
                       >
                         {isCorrect ? 'Correct' : 'Incorrect'}
                       </span>
@@ -1262,19 +1256,17 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
                     <button
                       key={oIdx}
                       onClick={() => handleSelectOption(oIdx)}
-                      className={`w-full text-left p-4 rounded-xl border transition-all flex items-center justify-between ${
-                        isSelected
+                      className={`w-full text-left p-4 rounded-xl border transition-all flex items-center justify-between ${isSelected
                           ? 'border-indigo-600 bg-indigo-50/80 dark:bg-indigo-950/40 text-indigo-950 dark:text-indigo-100 shadow-xs'
                           : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 bg-white dark:bg-card-dark text-slate-800 dark:text-slate-200'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-3">
                         <span
-                          className={`w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 ${
-                            isSelected
+                          className={`w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 ${isSelected
                               ? 'bg-indigo-600 text-white'
                               : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
-                          }`}
+                            }`}
                         >
                           {String.fromCharCode(65 + oIdx)}
                         </span>
@@ -1531,11 +1523,10 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
                     <div
                       key={sk.name}
                       onClick={() => setSelectedSkill(sk.name)}
-                      className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                        isSelected
+                      className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${isSelected
                           ? 'border-indigo-600 bg-indigo-50/80 dark:bg-indigo-950/40 shadow-xs ring-2 ring-indigo-600/20'
                           : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 bg-white dark:bg-card-dark'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center justify-between mb-1.5">
                         <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
@@ -1578,11 +1569,10 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
                 {/* Easy */}
                 <div
                   onClick={() => setDifficulty('easy')}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                    difficulty === 'easy'
+                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${difficulty === 'easy'
                       ? 'border-emerald-600 bg-emerald-50/80 dark:bg-emerald-950/30 ring-2 ring-emerald-600/20'
                       : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 bg-white dark:bg-card-dark'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200">
@@ -1601,11 +1591,10 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
                 {/* Intermediate */}
                 <div
                   onClick={() => setDifficulty('intermediate')}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                    difficulty === 'intermediate'
+                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${difficulty === 'intermediate'
                       ? 'border-amber-600 bg-amber-50/80 dark:bg-amber-950/30 ring-2 ring-amber-600/20'
                       : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 bg-white dark:bg-card-dark'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200">
@@ -1624,11 +1613,10 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
                 {/* Hard */}
                 <div
                   onClick={() => setDifficulty('hard')}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                    difficulty === 'hard'
+                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${difficulty === 'hard'
                       ? 'border-rose-600 bg-rose-50/80 dark:bg-rose-950/30 ring-2 ring-rose-600/20'
                       : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 bg-white dark:bg-card-dark'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-200">
