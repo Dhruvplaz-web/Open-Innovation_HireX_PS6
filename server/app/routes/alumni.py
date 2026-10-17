@@ -66,6 +66,40 @@ class EndorsementRequest(BaseModel):
     skill: str
     context: str
 
+class CurriculumFeedbackRequest(BaseModel):
+    alumni_id: str = "alm_1"
+    alumni_name: str = "Vikram Aditya"
+    current_company: str = "Google"
+    department: str = "Computer Engineering"
+    course_name: str
+    syllabus_topic: str
+    status_verdict: str = Field(..., description="OBSOLETE_DEPRECATE, CRITICAL_ADD, or KEEP_THEORY")
+    suggested_modern_replacement: Optional[str] = ""
+    industry_priority: str = "HIGH"
+    notes: Optional[str] = ""
+
+class CreateMasterclassRequest(BaseModel):
+    title: str
+    speaker_id: str = "alm_1"
+    speaker_name: str = "Vikram Aditya"
+    speaker_company: str = "Google"
+    speaker_role: str = "Staff Software Engineer"
+    department: str = "Computer Engineering"
+    target_year: str = "3rd & 4th Year"
+    date_time: str
+    meeting_link: str
+    description: str
+    capacity: Optional[int] = 200
+
+class RegisterMasterclassRequest(BaseModel):
+    student_id: str
+    student_name: str
+
+class ReviewReferralApplicationRequest(BaseModel):
+    student_id: str
+    decision: str = Field(..., description="SUBMITTED_TO_HR, GUIDANCE_PROVIDED, or DECLINED")
+    notes: Optional[str] = None
+
 # -------------------------------------------------------------
 # PROFILE & DASHBOARD ENDPOINTS
 # -------------------------------------------------------------
@@ -213,3 +247,75 @@ def get_directory(
 ):
     directory = canonical_store.get_alumni_directory(query, department, company)
     return {"status": "success", "total": len(directory), "directory": directory}
+
+# -------------------------------------------------------------
+# CURRICULUM FEEDBACK & SYLLABUS MODERNIZATION
+# -------------------------------------------------------------
+@router.post("/curriculum/feedback")
+def submit_curriculum_feedback(payload: CurriculumFeedbackRequest):
+    dump = payload.model_dump() if hasattr(payload, "model_dump") else payload.dict()
+    fb = canonical_store.submit_curriculum_feedback(dump)
+    sync_service.publish_event(
+        event_type="ALUMNI_CURRICULUM_FEEDBACK_SUBMITTED",
+        data={"feedback": fb, "department": fb.get("department")},
+        role="academician"
+    )
+    return {"status": "success", "feedback": fb}
+
+@router.get("/curriculum/feedback")
+def get_curriculum_feedback(department: Optional[str] = Query(None)):
+    feedbacks = canonical_store.get_curriculum_feedback(department)
+    return {"status": "success", "total": len(feedbacks), "feedbacks": feedbacks}
+
+@router.get("/curriculum/summary")
+def get_curriculum_summary(department: Optional[str] = Query(None)):
+    summary = canonical_store.get_curriculum_advisory_summary(department)
+    return {"status": "success", "summary": summary}
+
+# -------------------------------------------------------------
+# MASTERCLASSES & CAPSTONE CLINICS
+# -------------------------------------------------------------
+@router.get("/masterclasses")
+def get_masterclasses(status: Optional[str] = Query(None)):
+    masterclasses = canonical_store.get_masterclasses(status)
+    return {"status": "success", "total": len(masterclasses), "masterclasses": masterclasses}
+
+@router.post("/masterclasses")
+def create_masterclass(payload: CreateMasterclassRequest):
+    dump = payload.model_dump() if hasattr(payload, "model_dump") else payload.dict()
+    mst = canonical_store.create_masterclass(dump)
+    sync_service.publish_event(
+        event_type="NEW_ALUMNI_MASTERCLASS",
+        data={"masterclass": mst, "title": mst.get("title")},
+        role="all"
+    )
+    return {"status": "success", "masterclass": mst}
+
+@router.post("/masterclasses/{masterclass_id}/register")
+def register_for_masterclass(masterclass_id: str, payload: RegisterMasterclassRequest):
+    res = canonical_store.register_for_masterclass(
+        masterclass_id=masterclass_id,
+        student_id=payload.student_id,
+        student_name=payload.student_name
+    )
+    return {"status": "success", **res}
+
+# -------------------------------------------------------------
+# ALUMNI REFERRAL REVIEW DECISION
+# -------------------------------------------------------------
+@router.post("/referrals/{referral_id}/review")
+def review_referral_application(referral_id: str, payload: ReviewReferralApplicationRequest):
+    res = canonical_store.review_alumni_referral_application(
+        referral_id=referral_id,
+        student_id=payload.student_id,
+        decision=payload.decision,
+        notes=payload.notes
+    )
+    sync_service.publish_event(
+        event_type="ALUMNI_REFERRAL_DECISION",
+        data={"referral_id": referral_id, "student_id": payload.student_id, "decision": payload.decision},
+        role="student",
+        student_id=payload.student_id
+    )
+    return {"status": "success", **res}
+

@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
-import { Award, Mic, FileText, CheckCircle2, Printer, ShieldCheck } from 'lucide-react';
+import { Award, Mic, FileText, CheckCircle2, Printer, ShieldCheck, Sparkles } from 'lucide-react';
 import { StudentProfile } from '../types';
 import { apiService } from '../services/api';
+import { CertificateScannerWorkspace } from '../components/certificates/CertificateScannerWorkspace';
 
 interface PortfolioTranscriptViewProps {
   student: StudentProfile;
+  initialTab?: 'scanner' | 'transcript' | 'mock_interview';
+  onProfileUpdated?: (updatedStudent: any) => void;
 }
 
-export const PortfolioTranscriptView: React.FC<PortfolioTranscriptViewProps> = ({ student }) => {
-  const [activeTab, setActiveTab] = useState<'transcript' | 'mock_interview'>('transcript');
+export const PortfolioTranscriptView: React.FC<PortfolioTranscriptViewProps> = ({
+  student,
+  initialTab = 'scanner',
+  onProfileUpdated
+}) => {
+  const [activeTab, setActiveTab] = useState<'scanner' | 'transcript' | 'mock_interview'>(initialTab);
   const [showHashVerified, setShowHashVerified] = useState<boolean>(false);
 
   const handleVerifyHash = () => {
@@ -70,7 +77,18 @@ export const PortfolioTranscriptView: React.FC<PortfolioTranscriptViewProps> = (
           </p>
         </div>
 
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700">
+        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700">
+          <button
+            onClick={() => setActiveTab('scanner')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+              activeTab === 'scanner'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Forensic Certificate Scanner</span>
+          </button>
           <button
             onClick={() => setActiveTab('transcript')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
@@ -96,7 +114,14 @@ export const PortfolioTranscriptView: React.FC<PortfolioTranscriptViewProps> = (
         </div>
       </div>
 
-      {activeTab === 'transcript' ? (
+      {activeTab === 'scanner' && (
+        <CertificateScannerWorkspace
+          student={student}
+          onProfileUpdated={onProfileUpdated}
+        />
+      )}
+
+      {activeTab === 'transcript' && (
         /* Official Transcript Document */
         <div className="p-8 md:p-10 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-md space-y-8 max-w-4xl mx-auto">
           {/* Transcript Header */}
@@ -240,7 +265,9 @@ export const PortfolioTranscriptView: React.FC<PortfolioTranscriptViewProps> = (
             </div>
           </div>
         </div>
-      ) : (
+      )}
+
+      {activeTab === 'mock_interview' && (
         /* AI Mock Technical Interview Simulator */
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-7 p-6 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-5">

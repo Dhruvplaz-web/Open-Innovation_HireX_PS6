@@ -1170,11 +1170,19 @@ PROJECTS:
                 <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs">
                   <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold">
                     <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    <span>Attached Evidence Passport</span>
+                    <span>Attached Evidence Passport &amp; Faculty Recommendation</span>
                   </div>
                   <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">
                     Your verified skills ({Object.keys(student.skills || {}).slice(0, 4).join(', ') || 'Core Engineering'}) and HireX calibration will be shared to back this referral.
                   </p>
+                  <div className="flex items-center gap-2 mt-2 flex-wrap">
+                    <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono text-[10px] font-bold">
+                      Verified Score: {student.verified_score || 88}%
+                    </span>
+                    <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 font-mono text-[10px] font-bold flex items-center gap-1">
+                      ⭐ Faculty Recommended (Dr. Rajesh Kulkarni)
+                    </span>
+                  </div>
                 </div>
 
                 <div>
@@ -1204,14 +1212,22 @@ PROJECTS:
                     onClick={async () => {
                       setIsSubmittingReferralReq(true);
                       try {
-                        await apiService.createAlumniMentorshipRequest({
-                          alumni_id: selectedAlumniForReferral.id,
-                          student_id: student.id || "std_1",
-                          student_name: student.name || "Dhruv Patil",
-                          target_role: referralModalOpp.title || "Software Engineering Role",
-                          topic: `Referral Request: ${referralModalOpp.title} at ${referralModalOpp.company}`,
-                          message: referralPitch
-                        });
+                        const targetRefId = (referralModalOpp as any).alumni_referral_id || "ref_alm_1";
+                        await Promise.all([
+                          apiService.createAlumniMentorshipRequest({
+                            alumni_id: selectedAlumniForReferral.id,
+                            student_id: student.id || "std_1",
+                            student_name: student.name || "Dhruv Patil",
+                            target_role: referralModalOpp.title || "Software Engineering Role",
+                            topic: `Referral Request: ${referralModalOpp.title} at ${referralModalOpp.company}`,
+                            message: referralPitch
+                          }),
+                          apiService.applyToAlumniReferral(targetRefId, {
+                            student_id: student.id || "std_1",
+                            student_name: student.name || "Dhruv Patil",
+                            endorsement_note: referralPitch
+                          })
+                        ]);
                         setReferralSentSuccess(true);
                       } catch {
                         setReferralSentSuccess(true);

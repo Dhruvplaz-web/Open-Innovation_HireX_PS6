@@ -103,10 +103,17 @@ export const LeftIconRail: React.FC<LeftIconRailProps> = ({
           },
           {
             id: 'transcript',
-            label: 'Official AICTE Skill Transcript & AI Mock Interview',
+            label: 'Certificate Scanner & AICTE Skill Transcript',
+            icon: ShieldCheck,
+            color: 'text-indigo-400',
+            activeMatch: ['transcript', 'certificates', 'certificate-scanner', 'scanner']
+          },
+          {
+            id: 'verification',
+            label: 'Multi-Signal Skill Verification & Credential Passport',
             icon: Award,
-            color: 'text-slate-400',
-            activeMatch: ['transcript']
+            color: 'text-amber-400',
+            activeMatch: ['verification', 'skill-verification', 'passport']
           },
           {
             id: 'profile',

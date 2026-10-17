@@ -235,7 +235,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* Card 3: Verified Match Index */}
-        <div className="hub-card p-5 relative overflow-hidden group">
+        <div 
+          onClick={() => onNavigateTab('transcript')}
+          className="hub-card p-5 relative overflow-hidden group cursor-pointer hover:border-indigo-400/80 transition-all"
+        >
           <div className="flex items-start justify-between">
             <div className="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 border border-cyan-200/60 dark:border-cyan-800/60 flex items-center justify-center shadow-xs">
               <ShieldCheck className="w-5 h-5" />
@@ -254,9 +257,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-0.5">
             {student?.verified_score || 0}%
           </h3>
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
-            {(student?.verified_score || 0) >= 75 ? "Institutional TPO cleared" : "Verification Required"}
-          </p>
+          <div className="flex items-center justify-between mt-1">
+            <p className="text-[11px] text-slate-400 dark:text-slate-500">
+              {(student?.verified_score || 0) >= 75 ? "Institutional TPO cleared" : "Verification Required"}
+            </p>
+            <span className="text-[11px] font-bold text-indigo-500 group-hover:text-indigo-600 flex items-center gap-0.5">
+              <span>Scan Cert</span>
+              <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </span>
+          </div>
         </div>
 
         {/* Card 4: Interviews Scheduled */}

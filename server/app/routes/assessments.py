@@ -2185,3 +2185,101 @@ def get_student_jd_analysis(
         "analyses": analyses,
         "opportunities": analyses
     }
+
+# -------------------------------------------------------------
+# FORENSIC CERTIFICATE SCANNER & CREDENTIAL ELEVATION ENDPOINTS
+# -------------------------------------------------------------
+class CertificateScanRequest(BaseModel):
+    raw_text: str
+    student_id: Optional[str] = "std_1"
+    student_kyc_name: Optional[str] = None
+    custom_hash: Optional[str] = None
+
+class CertificateCommitRequest(BaseModel):
+    student_id: str
+    certificate_data: Dict[str, Any]
+
+@router.post("/certificates/scan")
+def scan_certificate(payload: CertificateScanRequest):
+    """
+    Ingests OCR raw text or uploads, extracts issuer/title/recipient/date/score anchors,
+    runs Levenshtein KYC name checking and SHA-256 duplicate image collision checks,
+    and calculates NCrF academic credits.
+    """
+    from app.services.certificate_scanner import certificate_scanner_service
+    from app.data.seed_data import STUDENTS
+
+    student_kyc = payload.student_kyc_name
+    if not student_kyc:
+        std = next((s for s in STUDENTS if s.get("id") == payload.student_id), None)
+        if std:
+            student_kyc = std.get("name")
+
+    audit_res = certificate_scanner_service.parse_and_audit_certificate(
+        raw_text=payload.raw_text,
+        student_id=payload.student_id,
+        student_kyc_name=student_kyc,
+        custom_hash=payload.custom_hash
+    )
+    return {"status": "success", "audit": audit_res}
+
+@router.post("/certificates/commit-to-profile")
+def commit_certificate_to_profile(payload: CertificateCommitRequest):
+    """
+    Automatically elevates verified skills in the student's institutional profile with
+    tamper-evident audit hashes and NCrF credit attribution.
+    """
+    from app.data.seed_data import STUDENTS, log_audit_trail
+    from app.db.canonical_store import canonical_store
+    from app.services.sync_service import sync_service
+
+    student = next((s for s in STUDENTS if s.get("id") == payload.student_id), None)
+    if not student:
+        student = STUDENTS[0] if STUDENTS else {"id": payload.student_id, "skills": {}}
+
+    cert = payload.certificate_data
+    skills_to_add = cert.get("skills", [])
+    if isinstance(skills_to_add, list):
+        if "skills" not in student:
+            student["skills"] = {}
+        for sk in skills_to_add:
+            student["skills"][sk] = {
+                "score": cert.get("score") or 85,
+                "verified": True,
+                "source": f"Forensic Certificate ({cert.get('issuer', 'Accredited Issuer')})",
+                "badge": cert.get("badge", "Verified"),
+                "tier": cert.get("tier", "Verified"),
+                "audit_hash": cert.get("sha256_hash", ""),
+                "credential_id": cert.get("credential_id", ""),
+                "verified_at": cert.get("timestamp", time.strftime("%Y-%m-%d %H:%M:%SZ"))
+            }
+
+    # Also update canonical store if present
+    if hasattr(canonical_store, "students") and payload.student_id in canonical_store.students:
+        can_std = canonical_store.students[payload.student_id]
+        if "skills" not in can_std:
+            can_std["skills"] = {}
+        for sk in skills_to_add:
+            can_std["skills"][sk] = student["skills"][sk]
+        canonical_store._save_to_disk()
+
+    # Recompute overall score & fit
+    verified_count = sum(1 for s in student["skills"].values() if isinstance(s, dict) and s.get("verified"))
+    total_skills = max(len(student["skills"]), 1)
+    student["verified_score"] = min(98, max(student.get("verified_score", 70), int((verified_count / total_skills) * 100)))
+
+    log_audit_trail(
+        actor=student.get("name", "Student"),
+        action="CERTIFICATE_CREDENTIAL_COMMITTED",
+        target=cert.get("course_title", "Certified Course"),
+        details=f"Elevated skills: {', '.join(skills_to_add)} with hash {cert.get('sha256_hash')}"
+    )
+
+    sync_service.publish_event(
+        event_type="CERTIFICATE_COMMITTED_TO_PROFILE",
+        data={"student_id": payload.student_id, "skills": skills_to_add, "issuer": cert.get("issuer")},
+        role="all"
+    )
+
+    return {"status": "success", "student": student, "elevated_skills": skills_to_add}
+

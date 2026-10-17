@@ -1,7 +1,13 @@
-import * as faceapi from '@vladmandic/face-api';
-
+let faceapiModule: any = null;
 let isModelLoaded = false;
 let isModelLoading = false;
+
+async function getFaceApi(): Promise<any> {
+  if (!faceapiModule) {
+    faceapiModule = await import('@vladmandic/face-api');
+  }
+  return faceapiModule;
+}
 
 /**
  * Initializes and preloads the TinyFaceDetector neural network model.
@@ -20,6 +26,7 @@ export async function initFaceDetector(): Promise<boolean> {
 
   isModelLoading = true;
   try {
+    const faceapi = await getFaceApi();
     // Try local public folder first (/models)
     await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
     isModelLoaded = true;
@@ -28,6 +35,7 @@ export async function initFaceDetector(): Promise<boolean> {
   } catch (localErr) {
     console.warn('[FaceDetection] Local /models load failed, trying CDN fallback...', localErr);
     try {
+      const faceapi = await getFaceApi();
       await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
       isModelLoaded = true;
       console.log('[FaceDetection] face-api.js TinyFaceDetector loaded from CDN.');
@@ -76,6 +84,7 @@ export async function detectFaces(
   // 1. Primary Deep Learning Detection via face-api.js
   if (isModelLoaded) {
     try {
+      const faceapi = await getFaceApi();
       const options = new faceapi.TinyFaceDetectorOptions({
         inputSize: 224,
         scoreThreshold: 0.5

@@ -192,16 +192,18 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
     try {
       if (authMode === 'signin') {
-        const profile = await loginWithEmail(email, password);
-        // If a new user signs in without having completed their resume onboarding, direct them to Onboarding
-        if (!profile?.isOnboarded) {
+        const profile = await loginWithEmail(email, password, selectedRole);
+        // If an alumni signs in or role is alumni, take directly to alumni portal
+        if (profile?.role === 'alumni') {
+          onEnterRole('alumni');
+        } else if (!profile?.isOnboarded) {
           setShowOnboarding(true);
         } else {
-          onEnterRole(profile?.role || 'student');
+          onEnterRole(profile?.role || selectedRole || 'student');
         }
       } else {
         const fullName = `${firstName} ${lastName}`.trim() || 'New Member';
-        await registerWithEmail(email, password, fullName);
+        await registerWithEmail(email, password, fullName, selectedRole);
         setShowOnboarding(true);
       }
     } catch (err: any) {
@@ -564,6 +566,69 @@ export const AuthView: React.FC<AuthViewProps> = ({
                             }`}
                           />
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : selectedRole === 'alumni' ? (
+                  <div className="space-y-3 text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Current Company / Organization</label>
+                        <input
+                          type="text"
+                          value={companyName}
+                          onChange={(e) => setCompanyName(e.target.value)}
+                          placeholder="e.g. Google, Microsoft, Amazon"
+                          className={`w-full px-3 py-2.5 rounded-xl border outline-none text-xs ${
+                            isDark 
+                              ? 'bg-[#202236] border-slate-700/70 text-white placeholder-slate-500 focus:border-indigo-500' 
+                              : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600'
+                          }`}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Current Designation / Role</label>
+                        <input
+                          type="text"
+                          value={designation}
+                          onChange={(e) => setDesignation(e.target.value)}
+                          placeholder="e.g. Staff Software Engineer"
+                          className={`w-full px-3 py-2.5 rounded-xl border outline-none text-xs ${
+                            isDark 
+                              ? 'bg-[#202236] border-slate-700/70 text-white placeholder-slate-500 focus:border-indigo-500' 
+                              : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600'
+                          }`}
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Alma Mater / College</label>
+                        <input
+                          type="text"
+                          value={college}
+                          onChange={(e) => setCollege(e.target.value)}
+                          placeholder="e.g. JSPM RSCOE, Pune"
+                          className={`w-full px-3 py-2.5 rounded-xl border outline-none text-xs ${
+                            isDark 
+                              ? 'bg-[#202236] border-slate-700/70 text-white placeholder-slate-500 focus:border-indigo-500' 
+                              : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600'
+                          }`}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Graduation Batch / Year</label>
+                        <input
+                          type="text"
+                          value={year}
+                          onChange={(e) => setYear(e.target.value)}
+                          placeholder="e.g. Batch 2021"
+                          className={`w-full px-3 py-2.5 rounded-xl border outline-none text-xs ${
+                            isDark 
+                              ? 'bg-[#202236] border-slate-700/70 text-white placeholder-slate-500 focus:border-indigo-500' 
+                              : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600'
+                          }`}
+                        />
                       </div>
                     </div>
                   </div>

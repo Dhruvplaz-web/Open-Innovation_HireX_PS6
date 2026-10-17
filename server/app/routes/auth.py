@@ -15,6 +15,7 @@ from app.data.seed_data import (
     resolve_or_create_institution,
     resolve_or_create_department
 )
+from app.db.canonical_store import canonical_store
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
 
@@ -194,7 +195,8 @@ def login(req: LoginRequest):
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials. Account not found.")
 
-    req_hash = hash_password(req.password or "")
+    user_salt = user.get("salt", "sb_secure_salt_2026")
+    req_hash = hash_password(req.password or "", user_salt)
     if req.password != "demo123" and user.get("password_hash") != req_hash:
         raise HTTPException(status_code=401, detail="Incorrect password. Please try again.")
 
@@ -204,6 +206,7 @@ def login(req: LoginRequest):
     inst_id = "inst_rscoe"
     dept_id = "dept_comp"
 
+    alumni_profile = None
     if user["role"] == "academician":
         acad = next((a for a in ACADEMICIANS if a.get("email", "").lower() == email_clean or a.get("id") == user["id"]), None)
         if acad:
@@ -226,23 +229,32 @@ def login(req: LoginRequest):
         status = "APPROVED"
         inst_id = "inst_rscoe"
         dept_id = "dept_comp"
+        alumni_profile = canonical_store.get_alumni_profile(user["id"]) or canonical_store.get_alumni_profile(email_clean)
 
     token = create_token(user["id"], user["email"], user["role"])
+    user_resp = {
+        "id": user["id"],
+        "email": user["email"],
+        "name": user["name"],
+        "role": user["role"],
+        "title": user.get("title", ""),
+        "avatar": user.get("avatar", f"https://api.dicebear.com/7.x/avataaars/svg?seed={user['name']}"),
+        "is_email_verified": is_verified,
+        "verification_status": status,
+        "institution_id": inst_id,
+        "department_id": dept_id
+    }
+    if user["role"] == "alumni" and alumni_profile:
+        user_resp["companyName"] = alumni_profile.get("current_company", "Google")
+        user_resp["designation"] = alumni_profile.get("designation", "Staff Software Engineer")
+        user_resp["batch"] = alumni_profile.get("batch", "2021")
+        user_resp["impact_score"] = alumni_profile.get("impact_score", 480)
+        user_resp["alumni_profile"] = alumni_profile
+
     return {
         "status": "success",
         "token": token,
-        "user": {
-            "id": user["id"],
-            "email": user["email"],
-            "name": user["name"],
-            "role": user["role"],
-            "title": user.get("title", ""),
-            "avatar": user.get("avatar", f"https://api.dicebear.com/7.x/avataaars/svg?seed={user['name']}"),
-            "is_email_verified": is_verified,
-            "verification_status": status,
-            "institution_id": inst_id,
-            "department_id": dept_id
-        }
+        "user": user_resp
     }
 
 @router.post("/register")
@@ -274,14 +286,16 @@ def register(req: RegisterRequest):
     name = req.full_name or email_clean.split("@")[0].replace(".", " ").title()
 
     # Academician and Recruiter require official email verification
-    is_verified = True if role_clean in ["student", "admin"] else False
-    account_status = "APPROVED" if role_clean in ["student", "admin"] else "PENDING"
+    is_verified = True if role_clean in ["student", "admin", "alumni"] else False
+    account_status = "APPROVED" if role_clean in ["student", "admin", "alumni"] else "PENDING"
 
     title_desc = f"{dept_str}, {college_str}"
     if role_clean == "recruiter":
         title_desc = f"{req.designation or 'Campus Talent Lead'}, {req.company or 'Enterprise Partner'}"
     elif role_clean == "academician":
         title_desc = f"{req.designation or 'Faculty / Academician'}, {college_str}"
+    elif role_clean == "alumni":
+        title_desc = f"{req.designation or 'Staff Software Engineer'}, {req.company or 'Tech Innovator'} ({college_str} Alumnus)"
 
     new_user = {
         "id": user_id,
@@ -364,24 +378,73 @@ def register(req: RegisterRequest):
         }
         RECRUITERS.append(recruiter_entry)
 
+    elif role_clean == "alumni":
+        batch_year = req.year if req.year and any(c.isdigit() for c in req.year) else "2021"
+        comp_name = req.company or "Tech Innovator"
+        desig_name = req.designation or "Software Engineer"
+        iso_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time()))
+        digits_batch = ''.join(filter(str.isdigit, str(batch_year)))
+        passing_yr = int(digits_batch) if digits_batch else 2021
+
+        alumni_entry = {
+            "id": user_id,
+            "name": name,
+            "email": email_clean,
+            "college": college_str,
+            "department": dept_str,
+            "batch": str(batch_year),
+            "passing_year": passing_yr,
+            "current_company": comp_name,
+            "designation": desig_name,
+            "city": "Bengaluru / Pune",
+            "linkedin_url": "",
+            "github_url": "",
+            "avatar": new_user["avatar"],
+            "bio": f"{college_str} ({dept_str}) alumnus. Mentoring juniors and sharing referral opportunities.",
+            "skills": ["Software Engineering", "System Design", "Cloud Architecture"],
+            "is_verified_alumni": True,
+            "verification_status": "APPROVED",
+            "privacy_settings": {
+                "show_company": True,
+                "show_email_to_mentees": True,
+                "show_phone": False,
+                "allow_referral_requests": True,
+                "allow_mentorship": True
+            },
+            "impact_score": 100,
+            "mentees_count": 0,
+            "referrals_count": 0,
+            "sessions_delivered": 0,
+            "version": 1,
+            "created_at": iso_now,
+            "updated_at": iso_now
+        }
+        canonical_store.alumni[user_id] = alumni_entry
+        canonical_store._save_to_disk()
+
     token = create_token(user_id, email_clean, role_clean)
+    user_data = {
+        "id": user_id,
+        "email": email_clean,
+        "name": name,
+        "role": role_clean,
+        "avatar": new_user["avatar"],
+        "is_email_verified": is_verified,
+        "verification_status": account_status,
+        "institution_id": inst_id,
+        "department_id": dept_id
+    }
+    if role_clean == "alumni":
+        user_data["companyName"] = req.company or "Tech Innovator"
+        user_data["designation"] = req.designation or "Software Engineer"
+        user_data["batch"] = req.year or "2021"
+        user_data["impact_score"] = 100
+
     return {
         "status": "success",
-        "message": f"Successfully registered new {role_clean} account." + (
-            " Official institutional email verification is required." if not is_verified else ""
-        ),
+        "message": f"Successfully registered new {role_clean} account.",
         "token": token,
-        "user": {
-            "id": user_id,
-            "email": email_clean,
-            "name": name,
-            "role": role_clean,
-            "avatar": new_user["avatar"],
-            "is_email_verified": is_verified,
-            "verification_status": account_status,
-            "institution_id": inst_id,
-            "department_id": dept_id
-        }
+        "user": user_data
     }
 
 @router.post("/verify-institutional-email")

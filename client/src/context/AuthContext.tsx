@@ -48,8 +48,8 @@ interface AuthContextType {
   userProfile: UserProfile | null;
   loading: boolean;
   loginWithGoogle: () => Promise<UserProfile | null>;
-  loginWithEmail: (email: string, pass: string) => Promise<UserProfile | null>;
-  registerWithEmail: (email: string, pass: string, name: string) => Promise<UserProfile | null>;
+  loginWithEmail: (email: string, pass: string, role?: Role) => Promise<UserProfile | null>;
+  registerWithEmail: (email: string, pass: string, name: string, role?: Role) => Promise<UserProfile | null>;
   logout: () => Promise<void>;
   saveOnboardingProfile: (data: Partial<UserProfile>) => Promise<void>;
   updateAvatar: (photoURL: string) => Promise<void>;
@@ -278,7 +278,71 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const loginWithEmail = async (email: string, pass: string): Promise<UserProfile | null> => {
+  const loginWithEmail = async (email: string, pass: string, role?: Role): Promise<UserProfile | null> => {
+    // 1. Attempt Backend API Login first
+    try {
+      const backendRes = await apiService.login({
+        email: email.trim(),
+        password: pass,
+        role
+      });
+      if (backendRes && backendRes.user) {
+        const u = backendRes.user;
+        const resolvedRole: Role = (u.role as Role) || role || 'student';
+        localStorage.setItem('hirex_auth_role', resolvedRole);
+
+        let mappedProfile: UserProfile;
+        if (resolvedRole === 'alumni') {
+          mappedProfile = {
+            ...DEMO_PERSONAS.alumni,
+            uid: u.id || 'alm_1',
+            email: u.email || email,
+            displayName: u.name || 'Vikram Aditya',
+            role: 'alumni',
+            companyName: u.companyName || 'Google',
+            designation: u.designation || 'Staff Software Engineer',
+            year: u.batch ? `Batch ${u.batch}` : 'Batch 2021',
+            verifiedScore: u.impact_score || 480,
+            photoURL: u.avatar || DEMO_PERSONAS.alumni.photoURL,
+            isOnboarded: true,
+            bio: u.title || DEMO_PERSONAS.alumni.bio
+          };
+        } else if (DEMO_PERSONAS[resolvedRole]) {
+          mappedProfile = {
+            ...DEMO_PERSONAS[resolvedRole],
+            uid: u.id || DEMO_PERSONAS[resolvedRole].uid,
+            email: u.email || email,
+            displayName: u.name || DEMO_PERSONAS[resolvedRole].displayName,
+            photoURL: u.avatar || DEMO_PERSONAS[resolvedRole].photoURL,
+            role: resolvedRole
+          };
+        } else {
+          mappedProfile = {
+            uid: u.id || `user_${Date.now()}`,
+            email: u.email || email,
+            displayName: u.name || email.split('@')[0],
+            photoURL: u.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.id}`,
+            role: resolvedRole,
+            college: 'JSPM RSCOE, Pune',
+            department: 'Computer Engineering',
+            year: '3rd Year',
+            cgpa: 8.5,
+            prn: '',
+            targetRole: 'Full-Stack AI Engineer',
+            verifiedScore: 75,
+            isOnboarded: true
+          };
+        }
+
+        setUserProfile(mappedProfile);
+        signInWithEmailAndPassword(auth, email, pass).catch(() => {});
+        return mappedProfile;
+      }
+    } catch (backendErr: any) {
+      console.warn('[Backend Auth] API login fallback:', backendErr?.message || backendErr);
+    }
+
+    // 2. Firebase Auth Fallback
     try {
       const res = await signInWithEmailAndPassword(auth, email, pass);
       if (res.user) {
@@ -288,54 +352,102 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error: any) {
       console.warn('[Firebase Auth] Email login error:', error);
       // Fallback for demo credentials or offline localhost testing
-      if (email.toLowerCase().includes('dhruv') || email.toLowerCase().includes('student') || pass === 'demo123') {
+      if (email.toLowerCase().includes('dhruv') || email.toLowerCase().includes('student') || (pass === 'demo123' && role === 'student')) {
         setUserProfile(DEMO_PERSONAS.student);
+        localStorage.setItem('hirex_auth_role', 'student');
         return DEMO_PERSONAS.student;
-      } else if (email.toLowerCase().includes('priya') || email.toLowerCase().includes('recruiter')) {
+      } else if (email.toLowerCase().includes('priya') || email.toLowerCase().includes('recruiter') || (pass === 'demo123' && role === 'recruiter')) {
         setUserProfile(DEMO_PERSONAS.recruiter);
+        localStorage.setItem('hirex_auth_role', 'recruiter');
         return DEMO_PERSONAS.recruiter;
-      } else if (email.toLowerCase().includes('rajesh') || email.toLowerCase().includes('hod')) {
+      } else if (email.toLowerCase().includes('rajesh') || email.toLowerCase().includes('hod') || (pass === 'demo123' && role === 'academician')) {
         setUserProfile(DEMO_PERSONAS.academician);
+        localStorage.setItem('hirex_auth_role', 'academician');
         return DEMO_PERSONAS.academician;
-      } else if (email.toLowerCase().includes('admin')) {
+      } else if (email.toLowerCase().includes('admin') || (pass === 'demo123' && role === 'admin')) {
         setUserProfile(DEMO_PERSONAS.admin);
+        localStorage.setItem('hirex_auth_role', 'admin');
         return DEMO_PERSONAS.admin;
-      } else if (email.toLowerCase().includes('vikram') || email.toLowerCase().includes('alumni') || email.toLowerCase().includes('google')) {
+      } else if (email.toLowerCase().includes('vikram') || email.toLowerCase().includes('alumni') || email.toLowerCase().includes('google') || (pass === 'demo123' && role === 'alumni') || role === 'alumni') {
         setUserProfile(DEMO_PERSONAS.alumni);
+        localStorage.setItem('hirex_auth_role', 'alumni');
         return DEMO_PERSONAS.alumni;
       }
       throw error;
     }
   };
 
-  const registerWithEmail = async (email: string, pass: string, name: string): Promise<UserProfile | null> => {
+  const registerWithEmail = async (email: string, pass: string, name: string, role: Role = 'student'): Promise<UserProfile | null> => {
     isRegisteringRef.current = true;
     try {
-      const res = await createUserWithEmailAndPassword(auth, email, pass);
-      if (res.user) {
-        const userRef = doc(db, 'users', res.user.uid);
-        const newProfile: UserProfile = {
-          uid: res.user.uid,
+      // 1. Sync with FastAPI Backend Register
+      let backendUser: any = null;
+      try {
+        const regRes = await apiService.register({
+          email: email.trim(),
+          password: pass,
+          role,
+          full_name: name
+        });
+        backendUser = regRes?.user;
+      } catch (backendErr) {
+        console.warn('[Backend Auth] Registration sync fallback:', backendErr);
+      }
+
+      // 2. Firebase user creation
+      let firebaseUser: User | null = null;
+      try {
+        const res = await createUserWithEmailAndPassword(auth, email, pass);
+        firebaseUser = res.user;
+      } catch (fbErr) {
+        console.warn('[Firebase Auth] Registration fallback:', fbErr);
+      }
+
+      const uid = backendUser?.id || firebaseUser?.uid || `user_${Date.now()}`;
+      let newProfile: UserProfile;
+
+      if (role === 'alumni') {
+        newProfile = {
+          ...DEMO_PERSONAS.alumni,
+          uid,
           email,
           displayName: name || email.split('@')[0],
-          photoURL: `https://api.dicebear.com/7.x/avataaars/svg?seed=${res.user.uid}`,
-          role: 'student',
+          photoURL: backendUser?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || email)}`,
+          role: 'alumni',
+          companyName: backendUser?.companyName || 'Tech Innovator',
+          designation: backendUser?.designation || 'Software Engineer',
+          year: backendUser?.batch ? `Batch ${backendUser.batch}` : 'Batch 2021',
+          verifiedScore: 100,
+          isOnboarded: false,
+          bio: `Distinguished alumnus of JSPM RSCOE, Pune. Mentoring juniors and reviewing engineering projects.`
+        };
+      } else {
+        newProfile = {
+          uid,
+          email,
+          displayName: name || email.split('@')[0],
+          photoURL: backendUser?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || email)}`,
+          role,
           college: 'JSPM RSCOE, Pune',
           department: 'Computer Engineering',
           year: '3rd Year',
           cgpa: 8.5,
           prn: '',
-          targetRole: 'Full-Stack AI Engineer',
+          targetRole: role === 'recruiter' ? 'Campus Talent Partner' : 'Full-Stack AI Engineer',
           verifiedScore: 0,
           isOnboarded: false,
           bio: 'New member setting up verified skill passport.'
         };
+      }
 
-        // 1. Optimistic Instant State: Update UI immediately in <1ms
-        setUserProfile(newProfile);
-        setCurrentUser(res.user);
+      // 1. Optimistic Instant State: Update UI immediately in <1ms
+      setUserProfile(newProfile);
+      if (firebaseUser) setCurrentUser(firebaseUser);
+      localStorage.setItem('hirex_auth_role', role);
 
-        // 2. Non-blocking background Firestore write
+      // 2. Non-blocking background Firestore write
+      if (firebaseUser) {
+        const userRef = doc(db, 'users', firebaseUser.uid);
         setDoc(userRef, {
           ...newProfile,
           createdAt: serverTimestamp(),
@@ -343,24 +455,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }, { merge: true }).catch((dbErr) => {
           console.warn('[Firestore] Profile initial write fallback:', dbErr);
         });
-
-        // 3. Non-blocking background FastAPI backend sync
-        apiService.updateStudentProfile({
-          id: newProfile.uid,
-          name: newProfile.displayName,
-          email: newProfile.email,
-          college: newProfile.college,
-          department: newProfile.department,
-          year: newProfile.year,
-          cgpa: newProfile.cgpa,
-          target_role: newProfile.targetRole
-        }).catch((apiErr) => {
-          console.warn('[Backend] Initial profile sync fallback:', apiErr);
-        });
-
-        return newProfile;
       }
-      return userProfile;
+
+      return newProfile;
     } catch (error: any) {
       console.warn('[Firebase Auth] Registration error:', error);
       // Fallback for offline localhost testing
@@ -369,18 +466,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email,
         displayName: name || email.split('@')[0],
         photoURL: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || email)}`,
-        role: 'student',
+        role,
         college: 'JSPM RSCOE, Pune',
         department: 'Computer Engineering',
         year: '3rd Year',
         cgpa: 8.5,
         prn: '',
-        targetRole: 'Full-Stack AI Engineer',
+        targetRole: role === 'alumni' ? 'Staff Software Engineer' : 'Full-Stack AI Engineer',
         verifiedScore: 0,
         isOnboarded: false,
-        bio: 'Passionate student developer.'
+        bio: 'Passionate community member.'
       };
       setUserProfile(offlineProfile);
+      localStorage.setItem('hirex_auth_role', role);
       return offlineProfile;
     } finally {
       setTimeout(() => {
@@ -392,10 +490,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     try {
       await signOut(auth);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('hirex_jwt_token');
+        localStorage.removeItem('hirex_auth_role');
+      }
       setCurrentUser(null);
       setUserProfile(DEFAULT_PROFILE);
     } catch (error) {
       console.error('[Firebase Auth] Sign out error:', error);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('hirex_jwt_token');
+        localStorage.removeItem('hirex_auth_role');
+      }
       setCurrentUser(null);
       setUserProfile(DEFAULT_PROFILE);
     }
@@ -412,19 +518,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // 1. Immediate optimistic UI update
     setUserProfile(updated);
+    if (updated.role) {
+      localStorage.setItem('hirex_auth_role', updated.role);
+    }
 
     // 2. Non-blocking background sync to FastAPI backend
-    apiService.updateStudentProfile({
-      id: updated.uid,
-      name: updated.displayName,
-      email: updated.email,
-      college: updated.college,
-      department: updated.department,
-      year: updated.year,
-      cgpa: updated.cgpa,
-      target_role: updated.targetRole,
-      bio: updated.bio
-    }).catch((apiErr) => console.warn('[Backend] Profile sync fallback:', apiErr));
+    if (updated.role === 'alumni') {
+      apiService.updateAlumniProfile(updated.uid, {
+        current_company: updated.companyName,
+        designation: updated.designation,
+        bio: updated.bio,
+        skills: updated.detectedSkills || ["Distributed Systems", "Go", "Python", "Kubernetes", "System Design"]
+      }).catch((apiErr) => console.warn('[Backend] Alumni profile sync fallback:', apiErr));
+    } else {
+      apiService.updateStudentProfile({
+        id: updated.uid,
+        name: updated.displayName,
+        email: updated.email,
+        college: updated.college,
+        department: updated.department,
+        year: updated.year,
+        cgpa: updated.cgpa,
+        target_role: updated.targetRole,
+        bio: updated.bio
+      }).catch((apiErr) => console.warn('[Backend] Profile sync fallback:', apiErr));
+    }
 
     if (updated.role === 'student' && updated.resumeText) {
       apiService.submitStudentRegistration({
@@ -497,11 +615,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         ...persona,
         role
       });
+      localStorage.setItem('hirex_auth_role', role);
+      // Synchronize with backend login in background so JWT token is acquired
+      apiService.login({
+        email: persona.email,
+        password: 'demo123',
+        role
+      }).catch((e) => console.warn('[Backend] Demo switch sync fallback:', e));
     } else if (userProfile) {
       setUserProfile({
         ...userProfile,
         role
       });
+      localStorage.setItem('hirex_auth_role', role);
     }
   };
 

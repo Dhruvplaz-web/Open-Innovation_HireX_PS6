@@ -60,7 +60,12 @@ export interface AlumniReferralItem {
   student_referrals: {
     student_id: string;
     student_name: string;
-    status: 'SUBMITTED' | 'SHORTLISTED' | 'INTERVIEWING' | 'OFFERED' | 'REJECTED';
+    student_avatar?: string;
+    verified_score?: number;
+    teacher_endorsed?: boolean;
+    teacher_endorser_name?: string;
+    teacher_endorsement_note?: string;
+    status: 'SUBMITTED' | 'SHORTLISTED' | 'INTERVIEWING' | 'OFFERED' | 'REJECTED' | 'SUBMITTED_TO_HR' | 'GUIDANCE_PROVIDED';
     applied_at: string;
     endorsement_note?: string;
   }[];

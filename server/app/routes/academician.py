@@ -1392,3 +1392,39 @@ def resolve_student_dispute(
         "message": f"Dispute '{dispute_id}' resolved with verdict: {req.resolution}.",
         "dispute": result
     }
+
+# -------------------------------------------------------------
+# ALUMNI ADVISORY & STUDENT ENDORSEMENT ENDPOINTS
+# -------------------------------------------------------------
+class EndorseStudentForAlumniRequest(BaseModel):
+    teacher_id: str = "acad_1"
+    teacher_name: str = "Dr. Rajesh Kulkarni"
+    note: str
+    academic_standing: Optional[str] = "Top 10% Cohort"
+
+@router.get("/alumni/curriculum-insights")
+def get_alumni_curriculum_insights(department: Optional[str] = Query(None)):
+    """Allows teachers and HODs to view synthesized industry feedback from alumni."""
+    from app.db.canonical_store import canonical_store
+    summary = canonical_store.get_curriculum_advisory_summary(department)
+    return {"status": "success", "insights": summary}
+
+@router.post("/students/{student_id}/endorse-for-alumni")
+def endorse_student_for_alumni(student_id: str, payload: EndorseStudentForAlumniRequest):
+    """Teacher gives official recommendation seal to student for alumni referral queues."""
+    from app.db.canonical_store import canonical_store
+    from app.services.sync_service import sync_service
+    rec = canonical_store.endorse_student_for_referrals(
+        teacher_id=payload.teacher_id,
+        teacher_name=payload.teacher_name,
+        student_id=student_id,
+        note=payload.note,
+        academic_standing=payload.academic_standing
+    )
+    sync_service.publish_event(
+        event_type="TEACHER_ALUMNI_RECOMMENDATION",
+        data={"student_id": student_id, "recommendation": rec},
+        role="all"
+    )
+    return {"status": "success", "recommendation": rec}
+

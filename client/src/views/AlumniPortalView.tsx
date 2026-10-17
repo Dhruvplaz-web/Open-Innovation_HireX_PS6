@@ -24,11 +24,17 @@ import {
   TrendingUp,
   FileCheck,
   BookOpen,
-  ArrowRight
+  ArrowRight,
+  GraduationCap,
+  Video,
+  Star,
+  Layers,
+  FileText
 } from 'lucide-react';
 import { AlumniProfile, AlumniMentorshipRequest, AlumniReferralItem, AlumniInsightItem } from '../types';
 import { apiService } from '../services/api';
 import { SEOHead } from '../components/common/SEOHead';
+import { useAuth } from '../context/AuthContext';
 
 interface AlumniPortalViewProps {
   onNavigateTab: (tab: string) => void;
@@ -36,13 +42,17 @@ interface AlumniPortalViewProps {
   initialTab?: AlumniTab;
 }
 
-type AlumniTab = 'overview' | 'mentorship' | 'referrals' | 'endorsements' | 'insights';
+type AlumniTab = 'overview' | 'mentorship' | 'referrals' | 'endorsements' | 'insights' | 'curriculum' | 'masterclasses';
 
 export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
   onNavigateTab,
   alumniEmail = 'vikram.aditya@google.com',
   initialTab
 }) => {
+  const { userProfile, switchDemoRole } = useAuth();
+  const effectiveAlumniId = (userProfile?.role === 'alumni' && userProfile.uid) ? userProfile.uid : 'alm_1';
+  const effectiveEmail = userProfile?.email || alumniEmail;
+
   const [activeTab, setActiveTab] = useState<AlumniTab>(initialTab || 'overview');
 
   useEffect(() => {
@@ -71,7 +81,28 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
   const [showPostInsightModal, setShowPostInsightModal] = useState<boolean>(false);
   const [showEndorsementModal, setShowEndorsementModal] = useState<boolean>(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState<boolean>(false);
+  const [showCurriculumModal, setShowCurriculumModal] = useState<boolean>(false);
+  const [showMasterclassModal, setShowMasterclassModal] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Curriculum & Masterclass States
+  const [curriculumSummary, setCurriculumSummary] = useState<any | null>(null);
+  const [masterclasses, setMasterclasses] = useState<any[]>([]);
+
+  // Curriculum Form States
+  const [currCourse, setCurrCourse] = useState<string>('Web Technologies & Distributed Cloud Services');
+  const [currTopic, setCurrTopic] = useState<string>('SOAP APIs & XML RPC');
+  const [currVerdict, setCurrVerdict] = useState<string>('OBSOLETE_DEPRECATE');
+  const [currReplacement, setCurrReplacement] = useState<string>('RESTful Microservices, gRPC & Protobuf');
+  const [currPriority, setCurrPriority] = useState<string>('CRITICAL');
+  const [currNotes, setCurrNotes] = useState<string>('Industry standard distributed microservices use gRPC and Protobuf rather than legacy SOAP.');
+
+  // Masterclass Form States
+  const [mstTitle, setMstTitle] = useState<string>('Production Microservices & Distributed Caching with Go & Kubernetes');
+  const [mstDateTime, setMstDateTime] = useState<string>('2026-10-28 17:00 IST');
+  const [mstMeetLink, setMstMeetLink] = useState<string>('https://meet.google.com/hxr-masterclass-cloud');
+  const [mstDesc, setMstDesc] = useState<string>('Deep dive on building low-latency microservices, cache invalidation, and cracking tier-1 engineering interviews.');
+  const [mstCapacity, setMstCapacity] = useState<number>(150);
 
   // New Referral Form
   const [refCompany, setRefCompany] = useState<string>('Google');
@@ -100,15 +131,17 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
   const loadData = async () => {
     setLoading(true);
     try {
-      const dash = await apiService.getAlumniDashboard('alm_1', alumniEmail);
+      const dash = await apiService.getAlumniDashboard(effectiveAlumniId, effectiveEmail);
       if (dash) {
         setProfile(dash.profile);
         setStats(dash.stats);
         setAnnouncements(dash.college_announcements || []);
-        setRequests(await apiService.getAlumniMentorshipRequests('alm_1'));
-        setReferrals(await apiService.getAlumniReferrals('alm_1'));
+        setRequests(await apiService.getAlumniMentorshipRequests(effectiveAlumniId));
+        setReferrals(await apiService.getAlumniReferrals(effectiveAlumniId));
         setInsights(await apiService.getAlumniInsights());
         setDirectory(await apiService.getAlumniDirectory());
+        setCurriculumSummary(await apiService.getCurriculumSummary(dash.profile?.department));
+        setMasterclasses(await apiService.getMasterclasses());
       }
     } catch (e) {
       console.warn('Error loading alumni portal data:', e);
@@ -119,7 +152,7 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
 
   useEffect(() => {
     loadData();
-  }, [alumniEmail]);
+  }, [effectiveAlumniId, effectiveEmail]);
 
   // Handle Mentorship Action
   const handleActionMentorship = async (reqId: string, action: 'ACCEPTED' | 'DECLINED' | 'COMPLETED') => {
@@ -140,8 +173,8 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
   const handlePostReferral = async (e: React.FormEvent) => {
     e.preventDefault();
     const res = await apiService.postAlumniReferral({
-      alumni_id: profile?.id || 'alm_1',
-      alumni_name: profile?.name || 'Vikram Aditya',
+      alumni_id: profile?.id || effectiveAlumniId,
+      alumni_name: profile?.name || userProfile?.displayName || 'Vikram Aditya',
       company: refCompany,
       role: refRole,
       location: refLocation,
@@ -159,10 +192,10 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
   const handlePostInsight = async (e: React.FormEvent) => {
     e.preventDefault();
     const res = await apiService.postAlumniInsight({
-      alumni_id: profile?.id || 'alm_1',
-      alumni_name: profile?.name || 'Vikram Aditya',
-      company: profile?.current_company || 'Google',
-      designation: profile?.designation || 'Staff Software Engineer',
+      alumni_id: profile?.id || effectiveAlumniId,
+      alumni_name: profile?.name || userProfile?.displayName || 'Vikram Aditya',
+      company: profile?.current_company || userProfile?.companyName || 'Google',
+      designation: profile?.designation || userProfile?.designation || 'Staff Software Engineer',
       role_interviewed: insRole,
       rounds_breakdown: [
         {
@@ -186,8 +219,8 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
   const handleEndorsementSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const res = await apiService.submitAlumniEndorsement({
-      alumni_id: profile?.id || 'alm_1',
-      alumni_name: profile?.name || 'Vikram Aditya',
+      alumni_id: profile?.id || effectiveAlumniId,
+      alumni_name: profile?.name || userProfile?.displayName || 'Vikram Aditya',
       student_id: 'std_1',
       student_name: endStudentName,
       skill: endSkill,
@@ -196,6 +229,51 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
     if (res?.status === 'success') {
       showToast(`Verified skill endorsement added for ${endStudentName} (+1.25x trust signal)!`);
       setShowEndorsementModal(false);
+      loadData();
+    }
+  };
+
+  // Handle Curriculum Feedback Submit
+  const handleCurriculumSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const res = await apiService.submitCurriculumFeedback({
+      alumni_id: profile?.id || effectiveAlumniId,
+      alumni_name: profile?.name || 'Vikram Aditya',
+      current_company: profile?.current_company || 'Google',
+      department: profile?.department || 'Computer Engineering',
+      course_name: currCourse,
+      syllabus_topic: currTopic,
+      status_verdict: currVerdict,
+      suggested_modern_replacement: currReplacement,
+      industry_priority: currPriority,
+      notes: currNotes
+    });
+    if (res?.status === 'success') {
+      showToast("Syllabus advisory submitted to Academician Planning! (+35 Pts)");
+      setShowCurriculumModal(false);
+      loadData();
+    }
+  };
+
+  // Handle Masterclass Submit
+  const handleMasterclassSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const res = await apiService.createMasterclass({
+      title: mstTitle,
+      speaker_id: profile?.id || effectiveAlumniId,
+      speaker_name: profile?.name || 'Vikram Aditya',
+      speaker_company: profile?.current_company || 'Google',
+      speaker_role: profile?.designation || 'Staff Software Engineer',
+      department: profile?.department || 'Computer Engineering',
+      target_year: '3rd & 4th Year',
+      date_time: mstDateTime,
+      meeting_link: mstMeetLink,
+      description: mstDesc,
+      capacity: mstCapacity
+    });
+    if (res?.status === 'success') {
+      showToast("Industry Masterclass scheduled & published to students! (+75 Pts)");
+      setShowMasterclassModal(false);
       loadData();
     }
   };
@@ -236,8 +314,8 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
         <div className="flex items-center gap-4">
           <div className="relative">
             <img
-              src={profile?.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Vikram'}
-              alt={profile?.name || 'Alumni'}
+              src={profile?.avatar || userProfile?.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Vikram'}
+              alt={profile?.name || userProfile?.displayName || 'Alumni'}
               className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 object-cover border-2 border-indigo-500/30"
             />
             <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] ring-2 ring-white dark:ring-slate-900 shadow-xs">
@@ -247,17 +325,17 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl md:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
-                {profile?.name || 'Vikram Aditya'}
+                {profile?.name || userProfile?.displayName || 'Vikram Aditya'}
               </h1>
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
-                VERIFIED ALUMNI (BATCH {profile?.batch || '2021'})
+                VERIFIED ALUMNI (BATCH {profile?.batch || userProfile?.year?.replace('Batch ', '') || '2021'})
               </span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              {profile?.designation} • <span className="font-semibold text-slate-700 dark:text-slate-300">{profile?.current_company}</span> ({profile?.city})
+              {profile?.designation || userProfile?.designation || 'Staff Software Engineer'} • <span className="font-semibold text-slate-700 dark:text-slate-300">{profile?.current_company || userProfile?.companyName || 'Google'}</span> ({profile?.city || 'Bengaluru / Pune'})
             </p>
             <div className="flex flex-wrap gap-1.5 mt-2">
-              {profile?.skills.slice(0, 5).map((sk) => (
+              {(profile?.skills || ['Distributed Systems', 'Go', 'Python', 'Kubernetes', 'System Design']).slice(0, 5).map((sk) => (
                 <span key={sk} className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700">
                   {sk}
                 </span>
@@ -286,12 +364,14 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
         </div>
       </div>
 
-      {/* 5 High-Impact Modern Tabs */}
+      {/* 7 High-Impact Modern Tabs */}
       <div className="flex items-center gap-2 border-b border-slate-200/80 dark:border-slate-800 pb-2 overflow-x-auto">
         {[
           { id: 'overview' as AlumniTab, label: 'Overview & Impact', icon: Award },
           { id: 'mentorship' as AlumniTab, label: `Mentorship Hub (${requests.filter((r) => r.status === 'PENDING').length} Pending)`, icon: Users },
           { id: 'referrals' as AlumniTab, label: `Referrals & Jobs (${referrals.length})`, icon: Briefcase },
+          { id: 'curriculum' as AlumniTab, label: 'Syllabus Advisory (Faculty)', icon: GraduationCap },
+          { id: 'masterclasses' as AlumniTab, label: `Masterclasses & Clinics (${masterclasses.length})`, icon: Video },
           { id: 'endorsements' as AlumniTab, label: 'Skill Endorsements', icon: ShieldCheck },
           { id: 'insights' as AlumniTab, label: 'Insights & Network', icon: BookOpen }
         ].map((tab) => {
@@ -482,7 +562,19 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
                   <div className="flex items-center gap-3">
                     <img src={req.student_avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv'} alt={req.student_name} className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800" />
                     <div>
-                      <span className="text-sm font-bold text-slate-900 dark:text-white block">{req.student_name}</span>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-sm font-bold text-slate-900 dark:text-white block">{req.student_name}</span>
+                        {(req as any).verified_score && (
+                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-500 font-bold">
+                            {(req as any).verified_score}% Verified
+                          </span>
+                        )}
+                        {(req as any).teacher_endorsed && (
+                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-500 border border-amber-500/30 font-bold flex items-center gap-1">
+                            ⭐ Faculty Recommended
+                          </span>
+                        )}
+                      </div>
                       <span className="text-[11px] text-indigo-500 font-semibold">{req.target_role}</span>
                     </div>
                   </div>
@@ -616,15 +708,20 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
                       {ref.student_referrals.map((app) => (
                         <div key={app.student_id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700">
                           <div className="flex items-center gap-3">
-                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv" alt={app.student_name} className="w-8 h-8 rounded-lg bg-slate-200" />
+                            <img src={app.student_avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv"} alt={app.student_name} className="w-8 h-8 rounded-lg bg-slate-200" />
                             <div>
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2 flex-wrap">
                                 <span className="text-xs font-bold text-slate-900 dark:text-white">{app.student_name}</span>
                                 <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-500 font-bold">
-                                  88% Verified
+                                  {app.verified_score || 88}% Verified
                                 </span>
+                                {(app.teacher_endorsed || app.student_id === 'std_1') && (
+                                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-500 border border-amber-500/30 font-bold flex items-center gap-0.5">
+                                    ⭐ Faculty Recommended ({app.teacher_endorser_name || 'Prof. Kulkarni'})
+                                  </span>
+                                )}
                               </div>
-                              <p className="text-[11px] text-slate-500 dark:text-slate-400">{app.endorsement_note}</p>
+                              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{app.endorsement_note}</p>
                             </div>
                           </div>
 
@@ -632,12 +729,26 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
                             <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400 font-bold">
                               {app.status}
                             </span>
-                            <button
-                              onClick={() => showToast(`Referral submitted to ${ref.company} internal hiring portal for ${app.student_name}!`)}
-                              className="px-3 py-1 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold transition shadow-xs"
-                            >
-                              Endorse &amp; Refer
-                            </button>
+                            {app.status !== 'SUBMITTED_TO_HR' ? (
+                              <button
+                                onClick={async () => {
+                                  await apiService.reviewReferralApplication(ref.id, {
+                                    student_id: app.student_id,
+                                    decision: 'SUBMITTED_TO_HR',
+                                    notes: `Referred directly to ${ref.company} engineering hiring pipeline.`
+                                  });
+                                  showToast(`Referral submitted to ${ref.company} internal hiring portal for ${app.student_name}! (+60 Impact Pts)`);
+                                  loadData();
+                                }}
+                                className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs"
+                              >
+                                Submit to Company ATS
+                              </button>
+                            ) : (
+                              <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+                                ✓ Referred
+                              </span>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -831,6 +942,153 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 4: SYLLABUS ADVISORY (FACULTY <-> ALUMNI BRIDGE) */}
+      {activeTab === 'curriculum' && (
+        <div className="space-y-6 animate-in fade-in duration-200">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-extrabold text-slate-900 dark:text-white">Curriculum &amp; Industry Syllabus Modernizer</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Help professors calibrate university coursework against production tech stacks at {profile?.current_company || 'top tech companies'}.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowCurriculumModal(true)}
+              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center gap-2 shadow-xs"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Submit Syllabus Feedback</span>
+            </button>
+          </div>
+
+          {/* Alignment Radar Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="p-5 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-xs">
+              <span className="text-[10px] font-mono text-slate-400 block uppercase">Industry Alignment Score</span>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="text-2xl font-black text-indigo-600 dark:text-indigo-400">
+                  {curriculumSummary?.curriculum_industry_alignment_score || 82}%
+                </span>
+                <span className="text-[11px] font-semibold text-emerald-500">Above State Average</span>
+              </div>
+              <p className="text-[11px] text-slate-500 mt-1">Calibrated from alumni at Google, Microsoft, and Amazon.</p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-xs">
+              <span className="text-[10px] font-mono text-slate-400 block uppercase">Obsolete Topics Flagged</span>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="text-2xl font-black text-rose-500">
+                  {curriculumSummary?.obsolete_topics_flagged || 1} Topics
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 mt-1">Legacy protocols recommended for syllabus sunset.</p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-xs">
+              <span className="text-[10px] font-mono text-slate-400 block uppercase">Modern Skills To Integrate</span>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="text-2xl font-black text-emerald-500">
+                  {curriculumSummary?.critical_skills_to_add || 2} Production Skills
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 mt-1">Directly delivered to Academician Curriculum Planning.</p>
+            </div>
+          </div>
+
+          {/* Priority Modernization Recommendations */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <GraduationCap className="w-4 h-4 text-indigo-500" />
+              <span>Priority Syllabus Modernization Directives</span>
+            </h3>
+
+            <div className="space-y-3">
+              {(curriculumSummary?.priority_recommendations || []).map((rec: any, idx: number) => (
+                <div key={idx} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-rose-500 line-through">{rec.topic_to_modernize}</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">{rec.modern_alternative}</span>
+                    </div>
+                    <span className="text-[11px] text-slate-500 block">Recommended by: {rec.recommended_by}</span>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-500 font-bold uppercase">
+                    {rec.priority || 'CRITICAL'} PRIORITY
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 5: MASTERCLASSES & CAPSTONE CLINICS */}
+      {activeTab === 'masterclasses' && (
+        <div className="space-y-6 animate-in fade-in duration-200">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-extrabold text-slate-900 dark:text-white">Alumni Masterclasses &amp; Capstone Clinics</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Deliver interactive technical masterclasses and co-mentor final-year student capstone projects.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowMasterclassModal(true)}
+              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center gap-2 shadow-xs"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Host a Masterclass</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {masterclasses.map((mst) => (
+              <div key={mst.id} className="p-5 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <span className="text-xs font-mono font-bold text-indigo-500 uppercase block mb-1">
+                      {mst.target_year} • {mst.department}
+                    </span>
+                    <h3 className="text-base font-extrabold text-slate-900 dark:text-white">{mst.title}</h3>
+                    <p className="text-xs text-slate-500 mt-0.5">Speaker: {mst.speaker_name} ({mst.speaker_role} at {mst.speaker_company})</p>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold">
+                    {mst.status}
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+                  {mst.description}
+                </p>
+
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+                  <div className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-300">
+                    <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>{mst.date_time}</span>
+                  </div>
+                  <span className="font-mono text-[11px] text-slate-400">
+                    {mst.enrolled_students?.length || 0} Students Enrolled
+                  </span>
+                </div>
+
+                {mst.meeting_link && (
+                  <a
+                    href={mst.meeting_link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition shadow-xs"
+                  >
+                    <Video className="w-3.5 h-3.5" />
+                    <span>Launch Google Meet Live Room</span>
+                  </a>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -1062,6 +1320,196 @@ export const AlumniPortalView: React.FC<AlumniPortalViewProps> = ({
                   className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition shadow-xs"
                 >
                   Submit Endorsement (+25 Pts)
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* CURRICULUM FEEDBACK MODAL */}
+      {showCurriculumModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-card-dark w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 relative">
+            <h3 className="text-base font-extrabold text-slate-900 dark:text-white mb-1">Submit Syllabus &amp; Curriculum Advisory</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+              Your feedback is directly synthesized on the Academician Department Dashboard for syllabus revision.
+            </p>
+
+            <form onSubmit={handleCurriculumSubmit} className="space-y-3 text-xs">
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Course / Subject Name</label>
+                <input
+                  type="text"
+                  required
+                  value={currCourse}
+                  onChange={(e) => setCurrCourse(e.target.value)}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Current Syllabus Topic Flagged</label>
+                <input
+                  type="text"
+                  required
+                  value={currTopic}
+                  onChange={(e) => setCurrTopic(e.target.value)}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Verdict Recommendation</label>
+                  <select
+                    value={currVerdict}
+                    onChange={(e) => setCurrVerdict(e.target.value)}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none"
+                  >
+                    <option value="OBSOLETE_DEPRECATE">Deprecate / Sunset (Outdated)</option>
+                    <option value="CRITICAL_ADD">Critical Addition (Production Need)</option>
+                    <option value="KEEP_THEORY">Keep Foundation Theory</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Industry Priority</label>
+                  <select
+                    value={currPriority}
+                    onChange={(e) => setCurrPriority(e.target.value)}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none"
+                  >
+                    <option value="CRITICAL">Critical (Immediate Gap)</option>
+                    <option value="HIGH">High Priority</option>
+                    <option value="MEDIUM">Medium Priority</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Suggested Modern Industrial Replacement</label>
+                <input
+                  type="text"
+                  required
+                  value={currReplacement}
+                  onChange={(e) => setCurrReplacement(e.target.value)}
+                  placeholder="e.g. RESTful Microservices, gRPC & Protocol Buffers"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Faculty Advisory Notes</label>
+                <textarea
+                  rows={2}
+                  required
+                  value={currNotes}
+                  onChange={(e) => setCurrNotes(e.target.value)}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3">
+                <button
+                  type="button"
+                  onClick={() => setShowCurriculumModal(false)}
+                  className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-900 font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition shadow-xs"
+                >
+                  Submit to Faculty (+35 Pts)
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MASTERCLASS HOSTING MODAL */}
+      {showMasterclassModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-card-dark w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 relative">
+            <h3 className="text-base font-extrabold text-slate-900 dark:text-white mb-1">Host an Alumni Masterclass or Capstone Clinic</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+              Schedule a 1-hour interactive technical workshop or final-year project guidance session for your alma mater.
+            </p>
+
+            <form onSubmit={handleMasterclassSubmit} className="space-y-3 text-xs">
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Session Title</label>
+                <input
+                  type="text"
+                  required
+                  value={mstTitle}
+                  onChange={(e) => setMstTitle(e.target.value)}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Date &amp; Time (IST)</label>
+                  <input
+                    type="text"
+                    required
+                    value={mstDateTime}
+                    onChange={(e) => setMstDateTime(e.target.value)}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Max Student Capacity</label>
+                  <input
+                    type="number"
+                    required
+                    value={mstCapacity}
+                    onChange={(e) => setMstCapacity(Number(e.target.value))}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Meeting Link (Google Meet / Zoom)</label>
+                <input
+                  type="url"
+                  required
+                  value={mstMeetLink}
+                  onChange={(e) => setMstMeetLink(e.target.value)}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Session Description &amp; Takeaways</label>
+                <textarea
+                  rows={3}
+                  required
+                  value={mstDesc}
+                  onChange={(e) => setMstDesc(e.target.value)}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 outline-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3">
+                <button
+                  type="button"
+                  onClick={() => setShowMasterclassModal(false)}
+                  className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-900 font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition shadow-xs"
+                >
+                  Publish Masterclass (+75 Pts)
                 </button>
               </div>
             </form>

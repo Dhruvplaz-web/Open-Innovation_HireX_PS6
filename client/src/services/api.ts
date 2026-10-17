@@ -4288,12 +4288,92 @@ export const apiService = {
   },
 
   // -------------------------------------------------------------
+  // AUTHENTICATION SUITE
+  // -------------------------------------------------------------
+  async login(payload: { email: string; password?: string; role?: Role }) {
+    try {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.token && typeof window !== 'undefined') {
+          localStorage.setItem('hirex_jwt_token', data.token);
+        }
+        if (data.user?.role && typeof window !== 'undefined') {
+          localStorage.setItem('hirex_auth_role', data.user.role);
+        }
+        return data;
+      }
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Login failed. Please check credentials.');
+    } catch (e: any) {
+      console.warn("Backend login failed:", e);
+      throw e;
+    }
+  },
+
+  async register(payload: {
+    email: string;
+    password: string;
+    role: Role;
+    full_name?: string;
+    mobile_number?: string;
+    college?: string;
+    department?: string;
+    year?: string;
+    company?: string;
+    designation?: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.token && typeof window !== 'undefined') {
+          localStorage.setItem('hirex_jwt_token', data.token);
+        }
+        if (data.user?.role && typeof window !== 'undefined') {
+          localStorage.setItem('hirex_auth_role', data.user.role);
+        }
+        return data;
+      }
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Registration failed.');
+    } catch (e: any) {
+      console.warn("Backend register failed:", e);
+      throw e;
+    }
+  },
+
+  async getDemoAccounts() {
+    try {
+      const res = await fetch(`${API_BASE}/auth/demo-accounts`);
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend getDemoAccounts failed:", e);
+    }
+    return [];
+  },
+
+  // -------------------------------------------------------------
   // ALUMNI PORTAL SUITE
   // -------------------------------------------------------------
   async getAlumniProfile(alumniId?: string, email?: string) {
     try {
       const q = alumniId ? `?alumni_id=${encodeURIComponent(alumniId)}` : email ? `?email=${encodeURIComponent(email)}` : '';
-      const res = await fetch(`${API_BASE}/alumni/profile${q}`);
+      const token = typeof window !== 'undefined' ? localStorage.getItem('hirex_jwt_token') : null;
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      if (alumniId) headers['X-User-Id'] = alumniId;
+      headers['X-User-Role'] = 'alumni';
+
+      const res = await fetch(`${API_BASE}/alumni/profile${q}`, { headers });
       if (res.ok) {
         const data = await res.json();
         return data.profile;
@@ -4335,9 +4415,15 @@ export const apiService = {
 
   async updateAlumniProfile(alumniId: string, updates: any) {
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('hirex_jwt_token') : null;
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      headers['X-User-Role'] = 'alumni';
+      headers['X-User-Id'] = alumniId;
+
       const res = await fetch(`${API_BASE}/alumni/profile?alumni_id=${encodeURIComponent(alumniId)}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(updates)
       });
       if (res.ok) {
@@ -4353,7 +4439,13 @@ export const apiService = {
   async getAlumniDashboard(alumniId?: string, email?: string) {
     try {
       const q = alumniId ? `?alumni_id=${encodeURIComponent(alumniId)}` : email ? `?email=${encodeURIComponent(email)}` : '';
-      const res = await fetch(`${API_BASE}/alumni/dashboard${q}`);
+      const token = typeof window !== 'undefined' ? localStorage.getItem('hirex_jwt_token') : null;
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      if (alumniId) headers['X-User-Id'] = alumniId;
+      headers['X-User-Role'] = 'alumni';
+
+      const res = await fetch(`${API_BASE}/alumni/dashboard${q}`, { headers });
       if (res.ok) {
         const data = await res.json();
         return data.dashboard;
@@ -4755,10 +4847,210 @@ export const apiService = {
         impact_score: 260
       }
     ];
+  },
+
+  async submitCurriculumFeedback(payload: {
+    alumni_id?: string;
+    alumni_name?: string;
+    current_company?: string;
+    department?: string;
+    course_name: string;
+    syllabus_topic: string;
+    status_verdict: string;
+    suggested_modern_replacement?: string;
+    industry_priority?: string;
+    notes?: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/alumni/curriculum/feedback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend submitCurriculumFeedback failed:", e);
+    }
+    return {
+      status: "success",
+      feedback: {
+        id: `curr_fb_${Date.now()}`,
+        ...payload,
+        created_at: new Date().toISOString()
+      }
+    };
+  },
+
+  async getCurriculumSummary(department?: string) {
+    try {
+      const q = department ? `?department=${encodeURIComponent(department)}` : '';
+      const res = await fetch(`${API_BASE}/alumni/curriculum/summary${q}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data.summary;
+      }
+    } catch (e) {
+      console.warn("Backend getCurriculumSummary failed:", e);
+    }
+    return {
+      department: department || "Computer Engineering",
+      total_alumni_reviews: 3,
+      curriculum_industry_alignment_score: 82,
+      obsolete_topics_flagged: 1,
+      critical_skills_to_add: 2,
+      priority_recommendations: [
+        {
+          topic_to_modernize: "SOAP Services & Apache Axis XML-RPC",
+          modern_alternative: "RESTful Microservices, gRPC & Protocol Buffers",
+          recommended_by: "Vikram Aditya (Google)",
+          priority: "CRITICAL"
+        },
+        {
+          topic_to_modernize: "Basic Process Forking & Classical IPC",
+          modern_alternative: "Linux Cgroups, Container Namespaces & Kubernetes Pod Architecture",
+          recommended_by: "Sneha Rao (Microsoft)",
+          priority: "HIGH"
+        }
+      ],
+      recent_feedback: []
+    };
+  },
+
+  async getMasterclasses(status?: string) {
+    try {
+      const q = status ? `?status=${encodeURIComponent(status)}` : '';
+      const res = await fetch(`${API_BASE}/alumni/masterclasses${q}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data.masterclasses;
+      }
+    } catch (e) {
+      console.warn("Backend getMasterclasses failed:", e);
+    }
+    return [
+      {
+        id: "mst_1",
+        title: "Building Sub-Millisecond Cloud Microservices with Go & Kubernetes",
+        speaker_id: "alm_1",
+        speaker_name: "Vikram Aditya",
+        speaker_company: "Google",
+        speaker_role: "Staff Software Engineer (Cloud Infrastructure)",
+        department: "Computer Engineering",
+        target_year: "3rd & 4th Year",
+        date_time: "2026-10-28 17:00 IST",
+        meeting_link: "https://meet.google.com/hxr-masterclass-cloud",
+        description: "Exclusive technical masterclass for JSPM RSCOE students on production microservice design patterns, distributed cache invalidation, and cracking tier-1 engineering interviews.",
+        status: "UPCOMING",
+        capacity: 150,
+        enrolled_students: [
+          { student_id: "std_1", student_name: "Dhruv Patil", enrolled_at: new Date().toISOString() }
+        ]
+      }
+    ];
+  },
+
+  async createMasterclass(payload: {
+    title: string;
+    speaker_id?: string;
+    speaker_name?: string;
+    speaker_company?: string;
+    speaker_role?: string;
+    department?: string;
+    target_year?: string;
+    date_time: string;
+    meeting_link: string;
+    description: string;
+    capacity?: number;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/alumni/masterclasses`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend createMasterclass failed:", e);
+    }
+    return {
+      status: "success",
+      masterclass: {
+        id: `mst_${Date.now()}`,
+        ...payload,
+        status: "UPCOMING",
+        enrolled_students: [],
+        created_at: new Date().toISOString()
+      }
+    };
+  },
+
+  async registerForMasterclass(masterclassId: string, payload: { student_id: string; student_name: string }) {
+    try {
+      const res = await fetch(`${API_BASE}/alumni/masterclasses/${masterclassId}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend registerForMasterclass failed:", e);
+    }
+    return { status: "success", message: "Enrolled in masterclass successfully." };
+  },
+
+  async reviewReferralApplication(referralId: string, payload: { student_id: string; decision: string; notes?: string }) {
+    try {
+      const res = await fetch(`${API_BASE}/alumni/referrals/${referralId}/review`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend reviewReferralApplication failed:", e);
+    }
+    return { status: "success", message: "Referral application reviewed." };
+  },
+
+  async getAlumniCurriculumInsights(department?: string) {
+    try {
+      const q = department ? `?department=${encodeURIComponent(department)}` : '';
+      const res = await fetch(`${API_BASE}/academician/alumni/curriculum-insights${q}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data.insights;
+      }
+    } catch (e) {
+      console.warn("Backend getAlumniCurriculumInsights failed:", e);
+    }
+    return await this.getCurriculumSummary(department);
+  },
+
+  async endorseStudentForAlumni(studentId: string, payload: { teacher_id?: string; teacher_name?: string; note: string; academic_standing?: string }) {
+    try {
+      const res = await fetch(`${API_BASE}/academician/students/${studentId}/endorse-for-alumni`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend endorseStudentForAlumni failed:", e);
+    }
+    return {
+      status: "success",
+      recommendation: {
+        student_id: studentId,
+        endorsement_badge: "Faculty Seal of Excellence",
+        ...payload,
+        endorsed_at: new Date().toISOString()
+      }
+    };
   }
 };
 
 export const api = apiService;
+
 
 
 

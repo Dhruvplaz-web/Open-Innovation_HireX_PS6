@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "saved_at": 1792221249.0846546,
+  "saved_at": 1792229399.5815685,
   "users": {},
   "students": {
     "std_1": {
@@ -85,9 +85,9 @@
       "rank_in_college": 4,
       "target_role": "Full-Stack AI Engineer",
       "bio": "Phase 1 Persistence Verified",
-      "version": 72,
+      "version": 78,
       "created_at": 1792149868.2778537,
-      "updated_at": 1792221249.0613573,
+      "updated_at": 1792223562.47759,
       "deleted_at": null,
       "profile_completion": 60,
       "linkedin_connected": false,
@@ -439,8 +439,8 @@
       "linkedin_url": "https://www.linkedin.com/in/dhruv-patil",
       "linkedin_connected": false,
       "projects": [],
-      "updated_at": 1792221249,
-      "aadhaar_tx_id": "UIDAI-AUTH-EB49D81397A4",
+      "updated_at": 1792223562,
+      "aadhaar_tx_id": "UIDAI-AUTH-22A94747C49F",
       "college_id_status": "REAL",
       "college_id_text": "JSPM RSCOE Computer Engineering PRN: 72153921K Valid Till: 2026",
       "college_id_badge": "Official College ID Verified ✓"
@@ -962,6 +962,153 @@
       "alumni_referral_id": "ref_alm_70d18b",
       "version": 1,
       "created_at": "2026-10-17T07:14:07Z"
+    },
+    "opp_alumni_ref_alm_345ffc": {
+      "opportunity_id": "opp_alumni_ref_alm_345ffc",
+      "title": "Cloud Infrastructure Engineer",
+      "company": "Google",
+      "location": "Pune / Bengaluru",
+      "duration": "Full-Time",
+      "stipend": "Industry Competitive",
+      "deadline": "2026-12-31",
+      "matched_skills": [
+        "Python",
+        "Algorithms",
+        "System Design"
+      ],
+      "match_percentage": 90,
+      "color_theme": "emerald",
+      "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
+      "source_type": "ALUMNI_REFERRAL",
+      "alumni_referral_id": "ref_alm_345ffc",
+      "version": 1,
+      "created_at": "2026-10-17T07:48:33Z"
+    },
+    "opp_alumni_ref_alm_ec4b15": {
+      "opportunity_id": "opp_alumni_ref_alm_ec4b15",
+      "title": "Cloud Infrastructure Engineer",
+      "company": "Google",
+      "location": "Pune / Bengaluru",
+      "duration": "Full-Time",
+      "stipend": "Industry Competitive",
+      "deadline": "2026-12-31",
+      "matched_skills": [
+        "Python",
+        "Algorithms",
+        "System Design"
+      ],
+      "match_percentage": 90,
+      "color_theme": "emerald",
+      "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
+      "source_type": "ALUMNI_REFERRAL",
+      "alumni_referral_id": "ref_alm_ec4b15",
+      "version": 1,
+      "created_at": "2026-10-17T07:52:04Z"
+    },
+    "opp_alumni_ref_alm_ce0490": {
+      "opportunity_id": "opp_alumni_ref_alm_ce0490",
+      "title": "Cloud Infrastructure Engineer",
+      "company": "Google",
+      "location": "Pune / Bengaluru",
+      "duration": "Full-Time",
+      "stipend": "Industry Competitive",
+      "deadline": "2026-12-31",
+      "matched_skills": [
+        "Python",
+        "Algorithms",
+        "System Design"
+      ],
+      "match_percentage": 90,
+      "color_theme": "emerald",
+      "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
+      "source_type": "ALUMNI_REFERRAL",
+      "alumni_referral_id": "ref_alm_ce0490",
+      "version": 1,
+      "created_at": "2026-10-17T07:52:29Z"
+    },
+    "opp_alumni_ref_alm_ee16e3": {
+      "opportunity_id": "opp_alumni_ref_alm_ee16e3",
+      "title": "Cloud Infrastructure Engineer",
+      "company": "Google",
+      "location": "Pune / Bengaluru",
+      "duration": "Full-Time",
+      "stipend": "Industry Competitive",
+      "deadline": "2026-12-31",
+      "matched_skills": [
+        "Python",
+        "Algorithms",
+        "System Design"
+      ],
+      "match_percentage": 90,
+      "color_theme": "emerald",
+      "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
+      "source_type": "ALUMNI_REFERRAL",
+      "alumni_referral_id": "ref_alm_ee16e3",
+      "version": 1,
+      "created_at": "2026-10-17T07:52:40Z"
+    },
+    "opp_alumni_ref_alm_e37795": {
+      "opportunity_id": "opp_alumni_ref_alm_e37795",
+      "title": "Cloud Infrastructure Engineer",
+      "company": "Google",
+      "location": "Pune / Bengaluru",
+      "duration": "Full-Time",
+      "stipend": "Industry Competitive",
+      "deadline": "2026-12-31",
+      "matched_skills": [
+        "Python",
+        "Algorithms",
+        "System Design"
+      ],
+      "match_percentage": 90,
+      "color_theme": "emerald",
+      "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
+      "source_type": "ALUMNI_REFERRAL",
+      "alumni_referral_id": "ref_alm_e37795",
+      "version": 1,
+      "created_at": "2026-10-17T08:00:22Z"
+    },
+    "opp_alumni_ref_alm_44d720": {
+      "opportunity_id": "opp_alumni_ref_alm_44d720",
+      "title": "Cloud Infrastructure Engineer",
+      "company": "Google",
+      "location": "Pune / Bengaluru",
+      "duration": "Full-Time",
+      "stipend": "Industry Competitive",
+      "deadline": "2026-12-31",
+      "matched_skills": [
+        "Python",
+        "Algorithms",
+        "System Design"
+      ],
+      "match_percentage": 90,
+      "color_theme": "emerald",
+      "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
+      "source_type": "ALUMNI_REFERRAL",
+      "alumni_referral_id": "ref_alm_44d720",
+      "version": 1,
+      "created_at": "2026-10-17T08:19:53Z"
+    },
+    "opp_alumni_ref_alm_32e4cf": {
+      "opportunity_id": "opp_alumni_ref_alm_32e4cf",
+      "title": "Cloud Infrastructure Engineer",
+      "company": "Google",
+      "location": "Pune / Bengaluru",
+      "duration": "Full-Time",
+      "stipend": "Industry Competitive",
+      "deadline": "2026-12-31",
+      "matched_skills": [
+        "Python",
+        "Algorithms",
+        "System Design"
+      ],
+      "match_percentage": 90,
+      "color_theme": "emerald",
+      "explanation": "Alumni Direct Referral posted by Vikram Aditya.",
+      "source_type": "ALUMNI_REFERRAL",
+      "alumni_referral_id": "ref_alm_32e4cf",
+      "version": 1,
+      "created_at": "2026-10-17T08:28:49Z"
     }
   },
   "applications": {
@@ -1540,6 +1687,42 @@
       "log_id": "aud_1792221248093_4a03",
       "timestamp": 1792221248.0934792,
       "iso_time": "2026-10-17T07:14:08Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792223314371_d15c",
+      "timestamp": 1792223314.371777,
+      "iso_time": "2026-10-17T07:48:34Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792223561039_fd58",
+      "timestamp": 1792223561.0397437,
+      "iso_time": "2026-10-17T07:52:41Z",
       "actor_id": "std_1",
       "action": "STUDENT_SKILL_UPDATED",
       "entity_type": "student_skill",
@@ -2239,6 +2422,22 @@
         "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
         "source": "Code Lab Engine",
         "timestamp": "2026-10-17T07:14:08Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-17T07:48:34Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-17T07:52:41Z"
       }
     ]
   },
@@ -2429,10 +2628,98 @@
           "SQL"
         ],
         "saved_at": 1792221248.3798983
+      },
+      {
+        "id": "ev_user_1792223314_695d69",
+        "title": "Kubernetes Microservices Deployment Capstone",
+        "type": "PROJECT",
+        "description": "Deployed 5 microservices with ingress controller, HPA and helm charts",
+        "url_or_repo": "https://github.com/dhruvpatil/k8s-microservices",
+        "strength": 0.85,
+        "created_at": "2026-10-17",
+        "age_months": 0,
+        "extracted_skills": [
+          "Kubernetes",
+          "Helm",
+          "Docker"
+        ],
+        "saved_at": 1792223314.919918
+      },
+      {
+        "id": "ev_user_1792223314_affc56",
+        "title": "PostgreSQL Index Optimization Project",
+        "type": "PROJECT",
+        "description": "Implemented B-Tree and GIN indexes, improving query throughput by 4x",
+        "url_or_repo": "https://github.com/dhruvpatil/pg-optimization",
+        "strength": 0.85,
+        "created_at": "2026-10-17",
+        "age_months": 0,
+        "extracted_skills": [
+          "PostgreSQL",
+          "SQL"
+        ],
+        "saved_at": 1792223314.9722927
+      },
+      {
+        "id": "ev_user_1792223561_695d69",
+        "title": "Kubernetes Microservices Deployment Capstone",
+        "type": "PROJECT",
+        "description": "Deployed 5 microservices with ingress controller, HPA and helm charts",
+        "url_or_repo": "https://github.com/dhruvpatil/k8s-microservices",
+        "strength": 0.85,
+        "created_at": "2026-10-17",
+        "age_months": 0,
+        "extracted_skills": [
+          "Kubernetes",
+          "Helm",
+          "Docker"
+        ],
+        "saved_at": 1792223561.471306
+      },
+      {
+        "id": "ev_user_1792223561_affc56",
+        "title": "PostgreSQL Index Optimization Project",
+        "type": "PROJECT",
+        "description": "Implemented B-Tree and GIN indexes, improving query throughput by 4x",
+        "url_or_repo": "https://github.com/dhruvpatil/pg-optimization",
+        "strength": 0.85,
+        "created_at": "2026-10-17",
+        "age_months": 0,
+        "extracted_skills": [
+          "PostgreSQL",
+          "SQL"
+        ],
+        "saved_at": 1792223561.5162761
       }
     ]
   },
   "human_review_disputes": [
+    {
+      "dispute_id": "disp_1792223561_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "opportunity_id": "opp_1",
+      "disputed_skill": "Redis",
+      "student_argument": "I completed a Redis pub-sub caching project in my capstone repository.",
+      "supporting_evidence_url": "https://github.com/dhruvpatil/capstone-cache",
+      "status": "PENDING_FACULTY_REVIEW",
+      "created_at": "2026-10-17T07:52:41Z",
+      "assigned_reviewer": "Prof. S. R. Deshmukh (TPO Faculty Incharge)",
+      "id": "disp_982dce32"
+    },
+    {
+      "dispute_id": "disp_1792223314_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "opportunity_id": "opp_1",
+      "disputed_skill": "Redis",
+      "student_argument": "I completed a Redis pub-sub caching project in my capstone repository.",
+      "supporting_evidence_url": "https://github.com/dhruvpatil/capstone-cache",
+      "status": "PENDING_FACULTY_REVIEW",
+      "created_at": "2026-10-17T07:48:34Z",
+      "assigned_reviewer": "Prof. S. R. Deshmukh (TPO Faculty Incharge)",
+      "id": "disp_7f76b769"
+    },
     {
       "dispute_id": "disp_1792221248_1",
       "student_id": "std_1",
@@ -2543,13 +2830,13 @@
         "allow_referral_requests": true,
         "allow_mentorship": true
       },
-      "impact_score": 1425,
+      "impact_score": 2730,
       "mentees_count": 14,
-      "referrals_count": 13,
+      "referrals_count": 20,
       "sessions_delivered": 18,
-      "version": 8,
+      "version": 15,
       "created_at": "2026-10-16T21:54:03Z",
-      "updated_at": "2026-10-17T07:14:07Z"
+      "updated_at": "2026-10-17T08:28:49Z"
     },
     "alm_2": {
       "id": "alm_2",
@@ -2627,9 +2914,344 @@
       "version": 1,
       "created_at": "2026-10-16T21:54:03Z",
       "updated_at": "2026-10-16T21:54:03Z"
+    },
+    "alu_1ba6951c": {
+      "id": "alu_1ba6951c",
+      "name": "Nimisha Joshi",
+      "email": "nimisha.alumni.test@microsoft.com",
+      "college": "JSPM RSCOE, Pune",
+      "department": "Computer Engineering",
+      "batch": "2020",
+      "passing_year": 2020,
+      "current_company": "Microsoft",
+      "designation": "Senior AI Architect",
+      "city": "Bengaluru / Pune",
+      "linkedin_url": "",
+      "github_url": "",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Nimisha Joshi",
+      "bio": "JSPM RSCOE, Pune (Computer Engineering) alumnus. Mentoring juniors and sharing referral opportunities.",
+      "skills": [
+        "Software Engineering",
+        "System Design",
+        "Cloud Architecture"
+      ],
+      "is_verified_alumni": true,
+      "verification_status": "APPROVED",
+      "privacy_settings": {
+        "show_company": true,
+        "show_email_to_mentees": true,
+        "show_phone": false,
+        "allow_referral_requests": true,
+        "allow_mentorship": true
+      },
+      "impact_score": 100,
+      "mentees_count": 0,
+      "referrals_count": 0,
+      "sessions_delivered": 0,
+      "version": 1,
+      "created_at": "2026-10-17T07:52:04Z",
+      "updated_at": "2026-10-17T07:52:04Z"
+    },
+    "alu_dedfd9c4": {
+      "id": "alu_dedfd9c4",
+      "name": "Nimisha Joshi",
+      "email": "nimisha.alumni.test@microsoft.com",
+      "college": "JSPM RSCOE, Pune",
+      "department": "Computer Engineering",
+      "batch": "2020",
+      "passing_year": 2020,
+      "current_company": "Microsoft",
+      "designation": "Senior AI Architect",
+      "city": "Bengaluru / Pune",
+      "linkedin_url": "",
+      "github_url": "",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Nimisha Joshi",
+      "bio": "JSPM RSCOE, Pune (Computer Engineering) alumnus. Mentoring juniors and sharing referral opportunities.",
+      "skills": [
+        "Software Engineering",
+        "System Design",
+        "Cloud Architecture"
+      ],
+      "is_verified_alumni": true,
+      "verification_status": "APPROVED",
+      "privacy_settings": {
+        "show_company": true,
+        "show_email_to_mentees": true,
+        "show_phone": false,
+        "allow_referral_requests": true,
+        "allow_mentorship": true
+      },
+      "impact_score": 100,
+      "mentees_count": 0,
+      "referrals_count": 0,
+      "sessions_delivered": 0,
+      "version": 1,
+      "created_at": "2026-10-17T07:52:29Z",
+      "updated_at": "2026-10-17T07:52:29Z"
+    },
+    "alu_d729f03b": {
+      "id": "alu_d729f03b",
+      "name": "Nimisha Joshi",
+      "email": "nimisha.alumni.test@microsoft.com",
+      "college": "JSPM RSCOE, Pune",
+      "department": "Computer Engineering",
+      "batch": "2020",
+      "passing_year": 2020,
+      "current_company": "Microsoft",
+      "designation": "Senior AI Architect",
+      "city": "Bengaluru / Pune",
+      "linkedin_url": "",
+      "github_url": "",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Nimisha Joshi",
+      "bio": "JSPM RSCOE, Pune (Computer Engineering) alumnus. Mentoring juniors and sharing referral opportunities.",
+      "skills": [
+        "Software Engineering",
+        "System Design",
+        "Cloud Architecture"
+      ],
+      "is_verified_alumni": true,
+      "verification_status": "APPROVED",
+      "privacy_settings": {
+        "show_company": true,
+        "show_email_to_mentees": true,
+        "show_phone": false,
+        "allow_referral_requests": true,
+        "allow_mentorship": true
+      },
+      "impact_score": 100,
+      "mentees_count": 0,
+      "referrals_count": 0,
+      "sessions_delivered": 0,
+      "version": 1,
+      "created_at": "2026-10-17T07:52:40Z",
+      "updated_at": "2026-10-17T07:52:40Z"
+    },
+    "alu_42473ea8": {
+      "id": "alu_42473ea8",
+      "name": "Nimisha Joshi",
+      "email": "nimisha.alumni.test@microsoft.com",
+      "college": "JSPM RSCOE, Pune",
+      "department": "Computer Engineering",
+      "batch": "2020",
+      "passing_year": 2020,
+      "current_company": "Microsoft",
+      "designation": "Senior AI Architect",
+      "city": "Bengaluru / Pune",
+      "linkedin_url": "",
+      "github_url": "",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Nimisha Joshi",
+      "bio": "JSPM RSCOE, Pune (Computer Engineering) alumnus. Mentoring juniors and sharing referral opportunities.",
+      "skills": [
+        "Software Engineering",
+        "System Design",
+        "Cloud Architecture"
+      ],
+      "is_verified_alumni": true,
+      "verification_status": "APPROVED",
+      "privacy_settings": {
+        "show_company": true,
+        "show_email_to_mentees": true,
+        "show_phone": false,
+        "allow_referral_requests": true,
+        "allow_mentorship": true
+      },
+      "impact_score": 100,
+      "mentees_count": 0,
+      "referrals_count": 0,
+      "sessions_delivered": 0,
+      "version": 1,
+      "created_at": "2026-10-17T08:00:22Z",
+      "updated_at": "2026-10-17T08:00:22Z"
+    },
+    "alu_626f9ee3": {
+      "id": "alu_626f9ee3",
+      "name": "Nimisha Joshi",
+      "email": "nimisha.alumni.test@microsoft.com",
+      "college": "JSPM RSCOE, Pune",
+      "department": "Computer Engineering",
+      "batch": "2020",
+      "passing_year": 2020,
+      "current_company": "Microsoft",
+      "designation": "Senior AI Architect",
+      "city": "Bengaluru / Pune",
+      "linkedin_url": "",
+      "github_url": "",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Nimisha Joshi",
+      "bio": "JSPM RSCOE, Pune (Computer Engineering) alumnus. Mentoring juniors and sharing referral opportunities.",
+      "skills": [
+        "Software Engineering",
+        "System Design",
+        "Cloud Architecture"
+      ],
+      "is_verified_alumni": true,
+      "verification_status": "APPROVED",
+      "privacy_settings": {
+        "show_company": true,
+        "show_email_to_mentees": true,
+        "show_phone": false,
+        "allow_referral_requests": true,
+        "allow_mentorship": true
+      },
+      "impact_score": 100,
+      "mentees_count": 0,
+      "referrals_count": 0,
+      "sessions_delivered": 0,
+      "version": 1,
+      "created_at": "2026-10-17T08:19:53Z",
+      "updated_at": "2026-10-17T08:19:53Z"
+    },
+    "alu_895f98b2": {
+      "id": "alu_895f98b2",
+      "name": "Nimisha Joshi",
+      "email": "nimisha.alumni.test@microsoft.com",
+      "college": "JSPM RSCOE, Pune",
+      "department": "Computer Engineering",
+      "batch": "2020",
+      "passing_year": 2020,
+      "current_company": "Microsoft",
+      "designation": "Senior AI Architect",
+      "city": "Bengaluru / Pune",
+      "linkedin_url": "",
+      "github_url": "",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Nimisha Joshi",
+      "bio": "JSPM RSCOE, Pune (Computer Engineering) alumnus. Mentoring juniors and sharing referral opportunities.",
+      "skills": [
+        "Software Engineering",
+        "System Design",
+        "Cloud Architecture"
+      ],
+      "is_verified_alumni": true,
+      "verification_status": "APPROVED",
+      "privacy_settings": {
+        "show_company": true,
+        "show_email_to_mentees": true,
+        "show_phone": false,
+        "allow_referral_requests": true,
+        "allow_mentorship": true
+      },
+      "impact_score": 100,
+      "mentees_count": 0,
+      "referrals_count": 0,
+      "sessions_delivered": 0,
+      "version": 1,
+      "created_at": "2026-10-17T08:28:49Z",
+      "updated_at": "2026-10-17T08:28:49Z"
     }
   },
   "alumni_mentorship_requests": [
+    {
+      "id": "req_alm_2007eb",
+      "alumni_id": "alm_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "student_avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
+      "verified_score": 84,
+      "teacher_endorsed": true,
+      "teacher_endorsement_note": "Exceptional coding craftsmanship and mathematical rigor in CS.",
+      "teacher_endorser_name": "Dr. Rajesh Kulkarni",
+      "target_role": "AI Architect",
+      "topic": "LLM Inference Infrastructure",
+      "message": "Seeking advice on production serving for generative AI agents.",
+      "status": "ACCEPTED",
+      "scheduled_time": "2026-10-25 18:00 IST",
+      "meeting_link": "https://meet.google.com/test-session-link",
+      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
+      "created_at": "2026-10-17T08:28:49Z"
+    },
+    {
+      "id": "req_alm_58dbd2",
+      "alumni_id": "alm_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "student_avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
+      "verified_score": 84,
+      "teacher_endorsed": true,
+      "teacher_endorsement_note": "Consistently demonstrates stellar algorithmic rigor, autonomous software design, and verifiable project integrity in Code Lab. Strongly recommended for product engineering referrals.",
+      "teacher_endorser_name": "Dr. Rajesh Kulkarni",
+      "target_role": "AI Architect",
+      "topic": "LLM Inference Infrastructure",
+      "message": "Seeking advice on production serving for generative AI agents.",
+      "status": "ACCEPTED",
+      "scheduled_time": "2026-10-25 18:00 IST",
+      "meeting_link": "https://meet.google.com/test-session-link",
+      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
+      "created_at": "2026-10-17T08:19:52Z"
+    },
+    {
+      "id": "req_alm_846ca0",
+      "alumni_id": "alm_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "student_avatar": null,
+      "target_role": "AI Architect",
+      "topic": "LLM Inference Infrastructure",
+      "message": "Seeking advice on production serving for generative AI agents.",
+      "status": "ACCEPTED",
+      "scheduled_time": "2026-10-25 18:00 IST",
+      "meeting_link": "https://meet.google.com/test-session-link",
+      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
+      "created_at": "2026-10-17T08:00:22Z"
+    },
+    {
+      "id": "req_alm_8bd3d2",
+      "alumni_id": "alm_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "student_avatar": null,
+      "target_role": "AI Architect",
+      "topic": "LLM Inference Infrastructure",
+      "message": "Seeking advice on production serving for generative AI agents.",
+      "status": "ACCEPTED",
+      "scheduled_time": "2026-10-25 18:00 IST",
+      "meeting_link": "https://meet.google.com/test-session-link",
+      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
+      "created_at": "2026-10-17T07:52:40Z"
+    },
+    {
+      "id": "req_alm_fbc0e3",
+      "alumni_id": "alm_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "student_avatar": null,
+      "target_role": "AI Architect",
+      "topic": "LLM Inference Infrastructure",
+      "message": "Seeking advice on production serving for generative AI agents.",
+      "status": "ACCEPTED",
+      "scheduled_time": "2026-10-25 18:00 IST",
+      "meeting_link": "https://meet.google.com/test-session-link",
+      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
+      "created_at": "2026-10-17T07:52:29Z"
+    },
+    {
+      "id": "req_alm_9e3a5b",
+      "alumni_id": "alm_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "student_avatar": null,
+      "target_role": "AI Architect",
+      "topic": "LLM Inference Infrastructure",
+      "message": "Seeking advice on production serving for generative AI agents.",
+      "status": "ACCEPTED",
+      "scheduled_time": "2026-10-25 18:00 IST",
+      "meeting_link": "https://meet.google.com/test-session-link",
+      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
+      "created_at": "2026-10-17T07:52:04Z"
+    },
+    {
+      "id": "req_alm_8c0aaa",
+      "alumni_id": "alm_1",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "student_avatar": null,
+      "target_role": "AI Architect",
+      "topic": "LLM Inference Infrastructure",
+      "message": "Seeking advice on production serving for generative AI agents.",
+      "status": "ACCEPTED",
+      "scheduled_time": "2026-10-25 18:00 IST",
+      "meeting_link": "https://meet.google.com/test-session-link",
+      "feedback_notes": "Look forward to discussing your vLLM and Triton setups.",
+      "created_at": "2026-10-17T07:48:33Z"
+    },
     {
       "id": "req_alm_97f8f9",
       "alumni_id": "alm_1",
@@ -2744,9 +3366,9 @@
       "target_role": "Full-Stack AI Engineer",
       "topic": "Google Cloud Infrastructure & High-Performance Microservices",
       "message": "Hi Vikram Sir, I am building autonomous multi-signal placement verification systems. Would love your guidance on high-throughput microservices architecture and Google L3/L4 interview prep.",
-      "status": "PENDING",
-      "scheduled_time": "2026-10-24 18:30 IST",
-      "meeting_link": "https://meet.google.com/hxr-alumni-guidance",
+      "status": "ACCEPTED",
+      "scheduled_time": "2026-10-25 18:30 IST",
+      "meeting_link": "https://meet.google.com/hxr-mentorship-live",
       "feedback_notes": "",
       "created_at": "2026-10-16T21:54:03Z"
     },
@@ -2767,6 +3389,156 @@
     }
   ],
   "alumni_referrals": [
+    {
+      "id": "ref_alm_32e4cf",
+      "alumni_id": "alm_1",
+      "company": "Google",
+      "role": "Cloud Infrastructure Engineer",
+      "job_url": "https://careers.google.com/jobs/results/99912",
+      "location": "Pune / Bengaluru",
+      "experience_required": "0-1 Years",
+      "status": "OPEN",
+      "created_at": "2026-10-17T08:28:49Z",
+      "student_referrals": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "student_avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
+          "verified_score": 84,
+          "teacher_endorsed": true,
+          "teacher_endorser_name": "Dr. Rajesh Kulkarni",
+          "teacher_endorsement_note": "Exceptional coding craftsmanship and mathematical rigor in CS.",
+          "status": "SHORTLISTED",
+          "applied_at": "2026-10-17T08:28:49Z",
+          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
+        }
+      ]
+    },
+    {
+      "id": "ref_alm_44d720",
+      "alumni_id": "alm_1",
+      "company": "Google",
+      "role": "Cloud Infrastructure Engineer",
+      "job_url": "https://careers.google.com/jobs/results/99912",
+      "location": "Pune / Bengaluru",
+      "experience_required": "0-1 Years",
+      "status": "OPEN",
+      "created_at": "2026-10-17T08:19:53Z",
+      "student_referrals": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "student_avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
+          "verified_score": 84,
+          "teacher_endorsed": true,
+          "teacher_endorser_name": "Dr. Rajesh Kulkarni",
+          "teacher_endorsement_note": "Consistently demonstrates stellar algorithmic rigor, autonomous software design, and verifiable project integrity in Code Lab. Strongly recommended for product engineering referrals.",
+          "status": "SHORTLISTED",
+          "applied_at": "2026-10-17T08:19:53Z",
+          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
+        }
+      ]
+    },
+    {
+      "id": "ref_alm_e37795",
+      "alumni_id": "alm_1",
+      "company": "Google",
+      "role": "Cloud Infrastructure Engineer",
+      "job_url": "https://careers.google.com/jobs/results/99912",
+      "location": "Pune / Bengaluru",
+      "experience_required": "0-1 Years",
+      "status": "OPEN",
+      "created_at": "2026-10-17T08:00:22Z",
+      "student_referrals": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "status": "SHORTLISTED",
+          "applied_at": "2026-10-17T08:00:22Z",
+          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
+        }
+      ]
+    },
+    {
+      "id": "ref_alm_ee16e3",
+      "alumni_id": "alm_1",
+      "company": "Google",
+      "role": "Cloud Infrastructure Engineer",
+      "job_url": "https://careers.google.com/jobs/results/99912",
+      "location": "Pune / Bengaluru",
+      "experience_required": "0-1 Years",
+      "status": "OPEN",
+      "created_at": "2026-10-17T07:52:40Z",
+      "student_referrals": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "status": "SHORTLISTED",
+          "applied_at": "2026-10-17T07:52:40Z",
+          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
+        }
+      ]
+    },
+    {
+      "id": "ref_alm_ce0490",
+      "alumni_id": "alm_1",
+      "company": "Google",
+      "role": "Cloud Infrastructure Engineer",
+      "job_url": "https://careers.google.com/jobs/results/99912",
+      "location": "Pune / Bengaluru",
+      "experience_required": "0-1 Years",
+      "status": "OPEN",
+      "created_at": "2026-10-17T07:52:29Z",
+      "student_referrals": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "status": "SHORTLISTED",
+          "applied_at": "2026-10-17T07:52:29Z",
+          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
+        }
+      ]
+    },
+    {
+      "id": "ref_alm_ec4b15",
+      "alumni_id": "alm_1",
+      "company": "Google",
+      "role": "Cloud Infrastructure Engineer",
+      "job_url": "https://careers.google.com/jobs/results/99912",
+      "location": "Pune / Bengaluru",
+      "experience_required": "0-1 Years",
+      "status": "OPEN",
+      "created_at": "2026-10-17T07:52:04Z",
+      "student_referrals": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "status": "SHORTLISTED",
+          "applied_at": "2026-10-17T07:52:04Z",
+          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
+        }
+      ]
+    },
+    {
+      "id": "ref_alm_345ffc",
+      "alumni_id": "alm_1",
+      "company": "Google",
+      "role": "Cloud Infrastructure Engineer",
+      "job_url": "https://careers.google.com/jobs/results/99912",
+      "location": "Pune / Bengaluru",
+      "experience_required": "0-1 Years",
+      "status": "OPEN",
+      "created_at": "2026-10-17T07:48:33Z",
+      "student_referrals": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "status": "SHORTLISTED",
+          "applied_at": "2026-10-17T07:48:33Z",
+          "endorsement_note": "Verified 88% skill score with AST complexity certifications."
+        }
+      ]
+    },
     {
       "id": "ref_alm_70d18b",
       "alumni_id": "alm_1",
@@ -2921,9 +3693,10 @@
         {
           "student_id": "std_1",
           "student_name": "Dhruv Patil",
-          "status": "SHORTLISTED",
+          "status": "SUBMITTED_TO_HR",
           "applied_at": "2026-10-16T21:54:03Z",
-          "endorsement_note": "Verified 88% skill score. High integrity AST clean code score and strong distributed systems portfolio."
+          "endorsement_note": "Verified 88% skill score. High integrity AST clean code score and strong distributed systems portfolio.",
+          "alumni_review_notes": "Reviewed Code Lab verification score and faculty endorsement. Referred to Google Cloud team!"
         }
       ]
     },
@@ -2941,6 +3714,181 @@
     }
   ],
   "alumni_insights": [
+    {
+      "id": "ins_alm_aecb23",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "company": "Google",
+      "designation": "Staff SWE",
+      "role_interviewed": "SWE L4",
+      "rounds_breakdown": [
+        {
+          "round_name": "Round 1: DSA",
+          "focus": "Binary trees",
+          "sample_questions": [
+            "Invert binary tree under concurrency"
+          ],
+          "difficulty": "MEDIUM"
+        }
+      ],
+      "skills_we_actually_use": [
+        "Go",
+        "Kubernetes"
+      ],
+      "tips_for_juniors": "Always test edge cases.",
+      "upvotes": 0,
+      "created_at": "2026-10-17T08:28:49Z"
+    },
+    {
+      "id": "ins_alm_bdba23",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "company": "Google",
+      "designation": "Staff SWE",
+      "role_interviewed": "SWE L4",
+      "rounds_breakdown": [
+        {
+          "round_name": "Round 1: DSA",
+          "focus": "Binary trees",
+          "sample_questions": [
+            "Invert binary tree under concurrency"
+          ],
+          "difficulty": "MEDIUM"
+        }
+      ],
+      "skills_we_actually_use": [
+        "Go",
+        "Kubernetes"
+      ],
+      "tips_for_juniors": "Always test edge cases.",
+      "upvotes": 0,
+      "created_at": "2026-10-17T08:19:53Z"
+    },
+    {
+      "id": "ins_alm_fe228b",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "company": "Google",
+      "designation": "Staff SWE",
+      "role_interviewed": "SWE L4",
+      "rounds_breakdown": [
+        {
+          "round_name": "Round 1: DSA",
+          "focus": "Binary trees",
+          "sample_questions": [
+            "Invert binary tree under concurrency"
+          ],
+          "difficulty": "MEDIUM"
+        }
+      ],
+      "skills_we_actually_use": [
+        "Go",
+        "Kubernetes"
+      ],
+      "tips_for_juniors": "Always test edge cases.",
+      "upvotes": 0,
+      "created_at": "2026-10-17T08:00:22Z"
+    },
+    {
+      "id": "ins_alm_49eb88",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "company": "Google",
+      "designation": "Staff SWE",
+      "role_interviewed": "SWE L4",
+      "rounds_breakdown": [
+        {
+          "round_name": "Round 1: DSA",
+          "focus": "Binary trees",
+          "sample_questions": [
+            "Invert binary tree under concurrency"
+          ],
+          "difficulty": "MEDIUM"
+        }
+      ],
+      "skills_we_actually_use": [
+        "Go",
+        "Kubernetes"
+      ],
+      "tips_for_juniors": "Always test edge cases.",
+      "upvotes": 0,
+      "created_at": "2026-10-17T07:52:40Z"
+    },
+    {
+      "id": "ins_alm_91bc46",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "company": "Google",
+      "designation": "Staff SWE",
+      "role_interviewed": "SWE L4",
+      "rounds_breakdown": [
+        {
+          "round_name": "Round 1: DSA",
+          "focus": "Binary trees",
+          "sample_questions": [
+            "Invert binary tree under concurrency"
+          ],
+          "difficulty": "MEDIUM"
+        }
+      ],
+      "skills_we_actually_use": [
+        "Go",
+        "Kubernetes"
+      ],
+      "tips_for_juniors": "Always test edge cases.",
+      "upvotes": 0,
+      "created_at": "2026-10-17T07:52:29Z"
+    },
+    {
+      "id": "ins_alm_0804f5",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "company": "Google",
+      "designation": "Staff SWE",
+      "role_interviewed": "SWE L4",
+      "rounds_breakdown": [
+        {
+          "round_name": "Round 1: DSA",
+          "focus": "Binary trees",
+          "sample_questions": [
+            "Invert binary tree under concurrency"
+          ],
+          "difficulty": "MEDIUM"
+        }
+      ],
+      "skills_we_actually_use": [
+        "Go",
+        "Kubernetes"
+      ],
+      "tips_for_juniors": "Always test edge cases.",
+      "upvotes": 0,
+      "created_at": "2026-10-17T07:52:04Z"
+    },
+    {
+      "id": "ins_alm_13f165",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "company": "Google",
+      "designation": "Staff SWE",
+      "role_interviewed": "SWE L4",
+      "rounds_breakdown": [
+        {
+          "round_name": "Round 1: DSA",
+          "focus": "Binary trees",
+          "sample_questions": [
+            "Invert binary tree under concurrency"
+          ],
+          "difficulty": "MEDIUM"
+        }
+      ],
+      "skills_we_actually_use": [
+        "Go",
+        "Kubernetes"
+      ],
+      "tips_for_juniors": "Always test edge cases.",
+      "upvotes": 0,
+      "created_at": "2026-10-17T07:48:33Z"
+    },
     {
       "id": "ins_alm_031c1e",
       "alumni_id": "alm_1",
@@ -3175,6 +4123,83 @@
   ],
   "alumni_endorsements": [
     {
+      "id": "end_alm_e13654",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "skill": "Python",
+      "weight": 1.25,
+      "context": "Verified high-integrity AST code analysis engine.",
+      "created_at": "2026-10-17T08:28:49Z"
+    },
+    {
+      "id": "end_alm_0a14ac",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "skill": "Python",
+      "weight": 1.25,
+      "context": "Verified high-integrity AST code analysis engine.",
+      "created_at": "2026-10-17T08:19:53Z"
+    },
+    {
+      "id": "end_alm_27c031",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "skill": "Python",
+      "weight": 1.25,
+      "context": "Verified high-integrity AST code analysis engine.",
+      "created_at": "2026-10-17T08:00:22Z"
+    },
+    {
+      "id": "end_alm_4f7a4d",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "skill": "Python",
+      "weight": 1.25,
+      "context": "Verified high-integrity AST code analysis engine.",
+      "created_at": "2026-10-17T07:52:40Z"
+    },
+    {
+      "id": "end_alm_925ba8",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "skill": "Python",
+      "weight": 1.25,
+      "context": "Verified high-integrity AST code analysis engine.",
+      "created_at": "2026-10-17T07:52:29Z"
+    },
+    {
+      "id": "end_alm_b0a6e2",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "skill": "Python",
+      "weight": 1.25,
+      "context": "Verified high-integrity AST code analysis engine.",
+      "created_at": "2026-10-17T07:52:04Z"
+    },
+    {
+      "id": "end_alm_a65ae6",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "skill": "Python",
+      "weight": 1.25,
+      "context": "Verified high-integrity AST code analysis engine.",
+      "created_at": "2026-10-17T07:48:34Z"
+    },
+    {
       "id": "end_alm_488545",
       "alumni_id": "alm_1",
       "alumni_name": "Vikram Aditya",
@@ -3262,5 +4287,161 @@
       "context": "Reviewed HireX sovereign AST auditor implementation and verified linear O(N) algorithmic guarantees.",
       "created_at": "2026-10-16T21:54:03Z"
     }
-  ]
+  ],
+  "alumni_curriculum_feedback": [
+    {
+      "id": "curr_fb_49e82c",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "current_company": "Google",
+      "department": "Computer Engineering",
+      "course_name": "Distributed Systems",
+      "syllabus_topic": "Corba & RMI",
+      "status_verdict": "OBSOLETE_DEPRECATE",
+      "suggested_modern_replacement": "gRPC & Protocol Buffers",
+      "industry_priority": "CRITICAL",
+      "notes": "Replace Java RMI with modern gRPC microservices.",
+      "created_at": "2026-10-17T08:28:49Z"
+    },
+    {
+      "id": "curr_fb_6883ba",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "current_company": "Google",
+      "department": "Computer Engineering",
+      "course_name": "Distributed Systems",
+      "syllabus_topic": "Corba & RMI",
+      "status_verdict": "OBSOLETE_DEPRECATE",
+      "suggested_modern_replacement": "gRPC & Protocol Buffers",
+      "industry_priority": "CRITICAL",
+      "notes": "Replace Java RMI with modern gRPC microservices.",
+      "created_at": "2026-10-17T08:19:53Z"
+    },
+    {
+      "id": "curr_fb_1",
+      "alumni_id": "alm_1",
+      "alumni_name": "Vikram Aditya",
+      "current_company": "Google",
+      "department": "Computer Engineering",
+      "course_name": "Web Technologies & Distributed Cloud Services",
+      "syllabus_topic": "SOAP Services & Apache Axis XML-RPC",
+      "status_verdict": "OBSOLETE_DEPRECATE",
+      "suggested_modern_replacement": "RESTful Microservices, gRPC & Protocol Buffers",
+      "industry_priority": "CRITICAL",
+      "notes": "Internal high-throughput distributed systems at Google and top tech firms rely almost exclusively on gRPC and Protobuf for RPC communication. Students need hands-on gRPC experience.",
+      "created_at": "2026-10-17T08:19:39Z"
+    },
+    {
+      "id": "curr_fb_2",
+      "alumni_id": "alm_2",
+      "alumni_name": "Sneha Rao",
+      "current_company": "Microsoft",
+      "department": "Computer Engineering",
+      "course_name": "Operating Systems & Networking Architecture",
+      "syllabus_topic": "Basic Process Forking & Classical IPC",
+      "status_verdict": "CRITICAL_ADD",
+      "suggested_modern_replacement": "Linux Cgroups, Container Namespaces & Kubernetes Pod Architecture",
+      "industry_priority": "HIGH",
+      "notes": "Modern cloud engineers must understand how Linux containers, cgroups, and namespaces isolate microservices.",
+      "created_at": "2026-10-17T08:19:39Z"
+    },
+    {
+      "id": "curr_fb_3",
+      "alumni_id": "alm_3",
+      "alumni_name": "Rohit Deshmukh",
+      "current_company": "Amazon",
+      "department": "Information Technology",
+      "course_name": "Database Management Systems",
+      "syllabus_topic": "Traditional RDBMS Schema Normalization Only",
+      "status_verdict": "CRITICAL_ADD",
+      "suggested_modern_replacement": "Vector Databases (Milvus/Pinecone) & Distributed Caching (Redis)",
+      "industry_priority": "CRITICAL",
+      "notes": "GenAI workloads require vector indexing (HNSW, IVFFlat) and distributed caching alongside SQL relational knowledge.",
+      "created_at": "2026-10-17T08:19:39Z"
+    }
+  ],
+  "alumni_masterclasses": [
+    {
+      "id": "mst_ff4782",
+      "title": "Autonomous AI Agents in Production",
+      "speaker_id": "alm_1",
+      "speaker_name": "Vikram Aditya",
+      "speaker_company": "Google",
+      "speaker_role": "Staff Software Engineer",
+      "department": "Computer Engineering",
+      "target_year": "3rd & 4th Year",
+      "date_time": "2026-11-12 18:00 IST",
+      "meeting_link": "https://meet.google.com/test-ai-agents",
+      "description": "Building tool-using ReAct agents with low latency.",
+      "status": "UPCOMING",
+      "capacity": 200,
+      "enrolled_students": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "enrolled_at": "2026-10-17T08:28:49Z"
+        }
+      ],
+      "created_at": "2026-10-17T08:28:49Z"
+    },
+    {
+      "id": "mst_b89752",
+      "title": "Autonomous AI Agents in Production",
+      "speaker_id": "alm_1",
+      "speaker_name": "Vikram Aditya",
+      "speaker_company": "Google",
+      "speaker_role": "Staff Software Engineer",
+      "department": "Computer Engineering",
+      "target_year": "3rd & 4th Year",
+      "date_time": "2026-11-12 18:00 IST",
+      "meeting_link": "https://meet.google.com/test-ai-agents",
+      "description": "Building tool-using ReAct agents with low latency.",
+      "status": "UPCOMING",
+      "capacity": 200,
+      "enrolled_students": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "enrolled_at": "2026-10-17T08:19:53Z"
+        }
+      ],
+      "created_at": "2026-10-17T08:19:53Z"
+    },
+    {
+      "id": "mst_1",
+      "title": "Building Sub-Millisecond Cloud Microservices with Go & Kubernetes",
+      "speaker_id": "alm_1",
+      "speaker_name": "Vikram Aditya",
+      "speaker_company": "Google",
+      "speaker_role": "Staff Software Engineer (Cloud Infrastructure)",
+      "department": "Computer Engineering",
+      "target_year": "3rd & 4th Year",
+      "date_time": "2026-10-28 17:00 IST",
+      "meeting_link": "https://meet.google.com/hxr-masterclass-cloud",
+      "description": "Exclusive technical masterclass for JSPM RSCOE students on production microservice design patterns, distributed cache invalidation, and cracking tier-1 engineering interviews.",
+      "status": "UPCOMING",
+      "capacity": 150,
+      "enrolled_students": [
+        {
+          "student_id": "std_1",
+          "student_name": "Dhruv Patil",
+          "enrolled_at": "2026-10-17T08:19:39Z"
+        }
+      ],
+      "created_at": "2026-10-17T08:19:39Z"
+    }
+  ],
+  "teacher_alumni_endorsements": {
+    "std_1": {
+      "student_id": "std_1",
+      "student_name": "Dhruv Patil",
+      "endorsed_by_id": "acad_1",
+      "endorser_name": "Dr. Rajesh Kulkarni",
+      "department": "Computer Engineering",
+      "academic_standing": "Top 5% Cohort",
+      "endorsement_badge": "Faculty Seal of Excellence",
+      "endorsement_note": "Exceptional coding craftsmanship and mathematical rigor in CS.",
+      "endorsed_at": "2026-10-17T08:28:49Z"
+    }
+  }
 }

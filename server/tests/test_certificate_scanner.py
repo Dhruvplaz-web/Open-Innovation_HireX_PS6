@@ -9,6 +9,7 @@ Tests:
 6. Live HTTP Endpoints (/api/assessments/certificates/scan and /commit-to-profile).
 """
 
+import unittest
 import pytest
 from fastapi.testclient import TestClient
 from app.main import app
@@ -178,3 +179,85 @@ def test_http_scan_and_commit_endpoints():
     assert commit_data["status"] == "success"
     assert "Cloud Computing" in commit_data["student"]["skills"]
     assert commit_data["student"]["skills"]["Cloud Computing"]["verified"] is True
+
+
+def test_microsoft_certified_azure_ai():
+    scanner = ForensicCertificateScanner()
+    raw_ms = """
+    Microsoft Certified Professional
+    This acknowledges that
+    Dhruv Patil
+    has successfully achieved the certification
+    Microsoft Certified: Azure AI Engineer Associate
+    Credential ID: MS-AI102-8839210
+    Issue Date: October 14, 2024
+    Verify at learn.microsoft.com/users/credentials/verification
+    """
+    res = scanner.parse_and_audit_certificate(
+        raw_text=raw_ms,
+        student_id="std_1",
+        student_kyc_name="Dhruv Patil"
+    )
+
+    assert res["status"] == "VERIFIED_AUTHENTIC"
+    assert res["is_authentic"] is True
+    assert res["issuer_key"] == "MICROSOFT"
+    assert res["credential_id"] == "MS-AI102-8839210"
+    assert "Azure AI" in res["skills"]
+    assert len(res["canonical_skills"]) > 0
+    assert "learn.microsoft.com" in res["verification_link"]
+    assert len(res["fraud_flags"]) == 0
+
+
+def test_expired_certificate_detection():
+    scanner = ForensicCertificateScanner()
+    raw_expired = """
+    Amazon Web Services Training and Certification
+    Dhruv Patil
+    AWS Certified Developer - Associate
+    Validation Number: AWS-DEV-192837
+    Issue Date: January 10, 2022
+    Expiration Date: January 10, 2025
+    Status: Expired
+    """
+    res = scanner.parse_and_audit_certificate(
+        raw_text=raw_expired,
+        student_id="std_1",
+        student_kyc_name="Dhruv Patil"
+    )
+
+    assert res["status"] == "FLAGGED_FOR_REVIEW"
+    assert res["is_authentic"] is False
+    assert res["is_expired"] is True
+    assert any("EXPIRED" in flag for flag in res["fraud_flags"])
+
+
+class TestCertificateScanner(unittest.TestCase):
+    def test_nptel_elite_parsing_and_skills(self):
+        test_nptel_elite_parsing_and_skills()
+
+    def test_aws_solutions_architect_parsing(self):
+        test_aws_solutions_architect_parsing()
+
+    def test_name_mismatch_fraud_detection(self):
+        test_name_mismatch_fraud_detection()
+
+    def test_duplicate_collision_fraud_detection(self):
+        test_duplicate_collision_fraud_detection()
+
+    def test_future_temporal_anomaly(self):
+        test_future_temporal_anomaly()
+
+    def test_http_scan_and_commit_endpoints(self):
+        test_http_scan_and_commit_endpoints()
+
+    def test_microsoft_certified_azure_ai(self):
+        test_microsoft_certified_azure_ai()
+
+    def test_expired_certificate_detection(self):
+        test_expired_certificate_detection()
+
+
+if __name__ == "__main__":
+    unittest.main()
+

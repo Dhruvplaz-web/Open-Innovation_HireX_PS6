@@ -716,7 +716,9 @@ export const App: React.FC = () => {
             <SkillVerificationView
               studentId={student.id}
               studentName={student.name}
+              initialTab={activeTab === 'passport' || activeTab === 'skill-passport' ? 'passport' : 'assess'}
               onNavigateTab={handleNavigateTab}
+              onProfileUpdated={(updated) => setStudent((prev) => ({ ...prev, ...updated }))}
             />
           );
         case 'opportunities':
@@ -740,7 +742,23 @@ export const App: React.FC = () => {
         case 'aptitude':
           return <AptitudeArenaView />;
         case 'transcript':
-          return <PortfolioTranscriptView student={student} />;
+          return (
+            <PortfolioTranscriptView
+              student={student}
+              initialTab="scanner"
+              onProfileUpdated={(updated) => setStudent(prev => ({ ...prev, ...updated }))}
+            />
+          );
+        case 'certificates':
+        case 'certificate-scanner':
+        case 'scanner':
+          return (
+            <PortfolioTranscriptView
+              student={student}
+              initialTab="scanner"
+              onProfileUpdated={(updated) => setStudent(prev => ({ ...prev, ...updated }))}
+            />
+          );
         case 'profile':
           return (
             <ProfileView

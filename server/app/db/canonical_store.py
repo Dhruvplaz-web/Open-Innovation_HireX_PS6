@@ -90,6 +90,9 @@ class CanonicalStore:
         self.alumni_referrals: List[dict] = []
         self.alumni_insights: List[dict] = []
         self.alumni_endorsements: List[dict] = []
+        self.alumni_curriculum_feedback: List[dict] = []
+        self.alumni_masterclasses: List[dict] = []
+        self.teacher_alumni_endorsements: Dict[str, dict] = {}
 
         self._load_or_bootstrap()
 
@@ -135,11 +138,14 @@ class CanonicalStore:
                     self.alumni_referrals = data.get("alumni_referrals", [])
                     self.alumni_insights = data.get("alumni_insights", [])
                     self.alumni_endorsements = data.get("alumni_endorsements", [])
+                    self.alumni_curriculum_feedback = data.get("alumni_curriculum_feedback", [])
+                    self.alumni_masterclasses = data.get("alumni_masterclasses", [])
+                    self.teacher_alumni_endorsements = data.get("teacher_alumni_endorsements", {})
 
                     if not self.curriculum_mappings or not self.academic_assignments or not self.academic_interventions:
                         self._bootstrap_intelligence_entities()
 
-                    if not self.alumni or not self.alumni_mentorship_requests:
+                    if not self.alumni or not self.alumni_mentorship_requests or not self.alumni_curriculum_feedback:
                         self._bootstrap_alumni_entities()
 
                     self._save_to_disk()
@@ -917,6 +923,95 @@ class CanonicalStore:
                 }
             ]
 
+        if not self.alumni_curriculum_feedback:
+            self.alumni_curriculum_feedback = [
+                {
+                    "id": "curr_fb_1",
+                    "alumni_id": "alm_1",
+                    "alumni_name": "Vikram Aditya",
+                    "current_company": "Google",
+                    "department": "Computer Engineering",
+                    "course_name": "Web Technologies & Distributed Cloud Services",
+                    "syllabus_topic": "SOAP Services & Apache Axis XML-RPC",
+                    "status_verdict": "OBSOLETE_DEPRECATE",
+                    "suggested_modern_replacement": "RESTful Microservices, gRPC & Protocol Buffers",
+                    "industry_priority": "CRITICAL",
+                    "notes": "Internal high-throughput distributed systems at Google and top tech firms rely almost exclusively on gRPC and Protobuf for RPC communication. Students need hands-on gRPC experience.",
+                    "created_at": iso_now
+                },
+                {
+                    "id": "curr_fb_2",
+                    "alumni_id": "alm_2",
+                    "alumni_name": "Sneha Rao",
+                    "current_company": "Microsoft",
+                    "department": "Computer Engineering",
+                    "course_name": "Operating Systems & Networking Architecture",
+                    "syllabus_topic": "Basic Process Forking & Classical IPC",
+                    "status_verdict": "CRITICAL_ADD",
+                    "suggested_modern_replacement": "Linux Cgroups, Container Namespaces & Kubernetes Pod Architecture",
+                    "industry_priority": "HIGH",
+                    "notes": "Modern cloud engineers must understand how Linux containers, cgroups, and namespaces isolate microservices.",
+                    "created_at": iso_now
+                },
+                {
+                    "id": "curr_fb_3",
+                    "alumni_id": "alm_3",
+                    "alumni_name": "Rohit Deshmukh",
+                    "current_company": "Amazon",
+                    "department": "Information Technology",
+                    "course_name": "Database Management Systems",
+                    "syllabus_topic": "Traditional RDBMS Schema Normalization Only",
+                    "status_verdict": "CRITICAL_ADD",
+                    "suggested_modern_replacement": "Vector Databases (Milvus/Pinecone) & Distributed Caching (Redis)",
+                    "industry_priority": "CRITICAL",
+                    "notes": "GenAI workloads require vector indexing (HNSW, IVFFlat) and distributed caching alongside SQL relational knowledge.",
+                    "created_at": iso_now
+                }
+            ]
+
+        if not self.alumni_masterclasses:
+            self.alumni_masterclasses = [
+                {
+                    "id": "mst_1",
+                    "title": "Building Sub-Millisecond Cloud Microservices with Go & Kubernetes",
+                    "speaker_id": "alm_1",
+                    "speaker_name": "Vikram Aditya",
+                    "speaker_company": "Google",
+                    "speaker_role": "Staff Software Engineer (Cloud Infrastructure)",
+                    "department": "Computer Engineering",
+                    "target_year": "3rd & 4th Year",
+                    "date_time": "2026-10-28 17:00 IST",
+                    "meeting_link": "https://meet.google.com/hxr-masterclass-cloud",
+                    "description": "Exclusive technical masterclass for JSPM RSCOE students on production microservice design patterns, distributed cache invalidation, and cracking tier-1 engineering interviews.",
+                    "status": "UPCOMING",
+                    "capacity": 150,
+                    "enrolled_students": [
+                        {
+                            "student_id": "std_1",
+                            "student_name": "Dhruv Patil",
+                            "enrolled_at": iso_now
+                        }
+                    ],
+                    "created_at": iso_now
+                }
+            ]
+
+        if not self.teacher_alumni_endorsements:
+            self.teacher_alumni_endorsements = {
+                "std_1": {
+                    "student_id": "std_1",
+                    "student_name": "Dhruv Patil",
+                    "endorsed_by_id": "acad_1",
+                    "endorser_name": "Dr. Rajesh Kulkarni",
+                    "endorser_designation": "Head of Department (Computer Engineering)",
+                    "department": "Computer Engineering",
+                    "academic_standing": "Top 5% Cohort (CGPA 9.2)",
+                    "endorsement_badge": "Faculty Seal of Excellence",
+                    "endorsement_note": "Consistently demonstrates stellar algorithmic rigor, autonomous software design, and verifiable project integrity in Code Lab. Strongly recommended for product engineering referrals.",
+                    "endorsed_at": iso_now
+                }
+            }
+
     def _save_to_disk(self):
         """Thread-safe, atomic write using temporary swap file."""
         os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
@@ -958,7 +1053,10 @@ class CanonicalStore:
             "alumni_mentorship_requests": self.alumni_mentorship_requests,
             "alumni_referrals": self.alumni_referrals,
             "alumni_insights": self.alumni_insights,
-            "alumni_endorsements": self.alumni_endorsements
+            "alumni_endorsements": self.alumni_endorsements,
+            "alumni_curriculum_feedback": self.alumni_curriculum_feedback,
+            "alumni_masterclasses": self.alumni_masterclasses,
+            "teacher_alumni_endorsements": self.teacher_alumni_endorsements
         }
         with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
@@ -2734,12 +2832,22 @@ class CanonicalStore:
         with self._lock:
             iso_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time()))
             req_id = payload.get("id") or f"req_alm_{uuid.uuid4().hex[:6]}"
+            student_id = payload.get("student_id", "std_1")
+            
+            # Enrich with student verified score and teacher endorsement if available
+            student_obj = self.students.get(student_id, {})
+            teacher_rec = self.teacher_alumni_endorsements.get(student_id, {})
+
             new_req = {
                 "id": req_id,
                 "alumni_id": payload.get("alumni_id", "alm_1"),
-                "student_id": payload.get("student_id", "std_1"),
-                "student_name": payload.get("student_name", "Dhruv Patil"),
-                "student_avatar": payload.get("student_avatar", "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv"),
+                "student_id": student_id,
+                "student_name": payload.get("student_name") or student_obj.get("name", "Dhruv Patil"),
+                "student_avatar": payload.get("student_avatar") or student_obj.get("avatar", "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv"),
+                "verified_score": student_obj.get("verified_score", 88),
+                "teacher_endorsed": bool(teacher_rec),
+                "teacher_endorsement_note": teacher_rec.get("endorsement_note", ""),
+                "teacher_endorser_name": teacher_rec.get("endorser_name", ""),
                 "target_role": payload.get("target_role", "Software Engineer"),
                 "topic": payload.get("topic", "Career & Technical Guidance"),
                 "message": payload.get("message", "Requesting mentorship session."),
@@ -2856,12 +2964,21 @@ class CanonicalStore:
                 if sr.get("student_id") == student_id:
                     return {"status": "already_applied", "referral": ref}
 
+            # Retrieve student verification & teacher endorsement
+            student_obj = self.students.get(student_id, {})
+            teacher_rec = self.teacher_alumni_endorsements.get(student_id, {})
+
             ref_app = {
                 "student_id": student_id,
-                "student_name": student_name,
+                "student_name": student_name or student_obj.get("name", "Candidate"),
+                "student_avatar": student_obj.get("avatar", "https://api.dicebear.com/7.x/avataaars/svg?seed=Student"),
+                "verified_score": student_obj.get("verified_score", 88),
+                "teacher_endorsed": bool(teacher_rec),
+                "teacher_endorser_name": teacher_rec.get("endorser_name", ""),
+                "teacher_endorsement_note": teacher_rec.get("endorsement_note", ""),
                 "status": "SHORTLISTED",
                 "applied_at": iso_now,
-                "endorsement_note": endorsement_note or "Student requested verified alumni referral."
+                "endorsement_note": endorsement_note or "Student requested verified alumni referral with faculty endorsement."
             }
             ref["student_referrals"].append(ref_app)
             self._save_to_disk()
@@ -2932,6 +3049,195 @@ class CanonicalStore:
             if company and company != "All":
                 results = [a for a in results if a.get("current_company", "").lower() == company.lower()]
             return results
+
+    # -------------------------------------------------------------
+    # TEACHER <-> ALUMNI <-> STUDENT CONNECTIVITY METHODS
+    # -------------------------------------------------------------
+    def submit_curriculum_feedback(self, payload: dict) -> dict:
+        """Alumni submits feedback on university syllabus topics to help faculty calibrate curriculum."""
+        with self._lock:
+            iso_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time()))
+            fb_id = payload.get("id") or f"curr_fb_{uuid.uuid4().hex[:6]}"
+            new_fb = {
+                "id": fb_id,
+                "alumni_id": payload.get("alumni_id", "alm_1"),
+                "alumni_name": payload.get("alumni_name", "Vikram Aditya"),
+                "current_company": payload.get("current_company", "Google"),
+                "department": payload.get("department", "Computer Engineering"),
+                "course_name": payload.get("course_name", "Core Curriculum"),
+                "syllabus_topic": payload.get("syllabus_topic", "General Module"),
+                "status_verdict": payload.get("status_verdict", "OBSOLETE_DEPRECATE"),  # OBSOLETE_DEPRECATE, CRITICAL_ADD, KEEP_THEORY
+                "suggested_modern_replacement": payload.get("suggested_modern_replacement", ""),
+                "industry_priority": payload.get("industry_priority", "HIGH"),
+                "notes": payload.get("notes", ""),
+                "created_at": iso_now
+            }
+            self.alumni_curriculum_feedback.insert(0, new_fb)
+
+            # Award impact points to alumni
+            alm = self.alumni.get(new_fb["alumni_id"])
+            if alm:
+                alm["impact_score"] = alm.get("impact_score", 0) + 35
+
+            self._save_to_disk()
+            return new_fb
+
+    def get_curriculum_feedback(self, department: Optional[str] = None) -> List[dict]:
+        with self._lock:
+            if department and department != "All":
+                return [f for f in self.alumni_curriculum_feedback if f.get("department") == department]
+            return list(self.alumni_curriculum_feedback)
+
+    def get_curriculum_advisory_summary(self, department: Optional[str] = None) -> dict:
+        """Generates synthesized telemetry for Academician Dashboard."""
+        with self._lock:
+            feedbacks = self.get_curriculum_feedback(department)
+            total = len(feedbacks)
+            obsolete_count = sum(1 for f in feedbacks if f.get("status_verdict") == "OBSOLETE_DEPRECATE")
+            critical_add_count = sum(1 for f in feedbacks if f.get("status_verdict") == "CRITICAL_ADD")
+            keep_count = sum(1 for f in feedbacks if f.get("status_verdict") == "KEEP_THEORY")
+
+            # High priority modernization recommendations
+            priority_recommendations = [
+                {
+                    "topic_to_modernize": f.get("syllabus_topic"),
+                    "modern_alternative": f.get("suggested_modern_replacement"),
+                    "recommended_by": f"{f.get('alumni_name')} ({f.get('current_company')})",
+                    "priority": f.get("industry_priority")
+                }
+                for f in feedbacks if f.get("status_verdict") in ["OBSOLETE_DEPRECATE", "CRITICAL_ADD"]
+            ]
+
+            alignment_index = max(35, min(95, 100 - (obsolete_count * 8) + (keep_count * 4)))
+
+            return {
+                "department": department or "All Departments",
+                "total_alumni_reviews": total,
+                "curriculum_industry_alignment_score": alignment_index,
+                "obsolete_topics_flagged": obsolete_count,
+                "critical_skills_to_add": critical_add_count,
+                "priority_recommendations": priority_recommendations,
+                "recent_feedback": feedbacks[:10]
+            }
+
+    def create_masterclass(self, payload: dict) -> dict:
+        """Allows Alumni or Teacher to schedule an industry masterclass / capstone clinic."""
+        with self._lock:
+            iso_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time()))
+            mst_id = payload.get("id") or f"mst_{uuid.uuid4().hex[:6]}"
+            new_mst = {
+                "id": mst_id,
+                "title": payload.get("title", "Industry Masterclass"),
+                "speaker_id": payload.get("speaker_id", "alm_1"),
+                "speaker_name": payload.get("speaker_name", "Vikram Aditya"),
+                "speaker_company": payload.get("speaker_company", "Google"),
+                "speaker_role": payload.get("speaker_role", "Staff Software Engineer"),
+                "department": payload.get("department", "Computer Engineering"),
+                "target_year": payload.get("target_year", "3rd & 4th Year"),
+                "date_time": payload.get("date_time", "2026-11-05 18:00 IST"),
+                "meeting_link": payload.get("meeting_link", "https://meet.google.com/hxr-live-masterclass"),
+                "description": payload.get("description", "Interactive technical session bridging academia and production software engineering."),
+                "status": "UPCOMING",
+                "capacity": payload.get("capacity", 200),
+                "enrolled_students": [],
+                "created_at": iso_now
+            }
+            self.alumni_masterclasses.insert(0, new_mst)
+
+            alm = self.alumni.get(new_mst["speaker_id"])
+            if alm:
+                alm["impact_score"] = alm.get("impact_score", 0) + 75
+
+            self._save_to_disk()
+            return new_mst
+
+    def get_masterclasses(self, status: Optional[str] = None) -> List[dict]:
+        with self._lock:
+            if status and status != "ALL":
+                return [m for m in self.alumni_masterclasses if m.get("status") == status]
+            return list(self.alumni_masterclasses)
+
+    def register_for_masterclass(self, masterclass_id: str, student_id: str, student_name: str) -> dict:
+        """Student registers for an alumni masterclass."""
+        with self._lock:
+            iso_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time()))
+            mst = next((m for m in self.alumni_masterclasses if m.get("id") == masterclass_id), None)
+            if not mst:
+                raise HTTPException(status_code=404, detail=f"Masterclass '{masterclass_id}' not found.")
+            
+            # Check already registered
+            for enr in mst.get("enrolled_students", []):
+                if enr.get("student_id") == student_id:
+                    return {"status": "already_enrolled", "masterclass": mst}
+
+            mst["enrolled_students"].append({
+                "student_id": student_id,
+                "student_name": student_name,
+                "enrolled_at": iso_now
+            })
+            self._save_to_disk()
+            return {"status": "success", "masterclass": mst}
+
+    def endorse_student_for_referrals(
+        self,
+        teacher_id: str,
+        teacher_name: str,
+        student_id: str,
+        note: str,
+        academic_standing: Optional[str] = None
+    ) -> dict:
+        """Teacher endorses student to boost their credibility in Alumni Referral queues."""
+        with self._lock:
+            iso_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time()))
+            student_obj = self.students.get(student_id, {})
+            record = {
+                "student_id": student_id,
+                "student_name": student_obj.get("name", "Student"),
+                "endorsed_by_id": teacher_id,
+                "endorser_name": teacher_name,
+                "department": student_obj.get("department", "Computer Engineering"),
+                "academic_standing": academic_standing or "Top 10% Cohort",
+                "endorsement_badge": "Faculty Seal of Excellence",
+                "endorsement_note": note,
+                "endorsed_at": iso_now
+            }
+            self.teacher_alumni_endorsements[student_id] = record
+            self._save_to_disk()
+            return record
+
+    def get_student_alumni_endorsement(self, student_id: str) -> Optional[dict]:
+        with self._lock:
+            return self.teacher_alumni_endorsements.get(student_id)
+
+    def review_alumni_referral_application(
+        self,
+        referral_id: str,
+        student_id: str,
+        decision: str,
+        notes: Optional[str] = None
+    ) -> dict:
+        """Alumni reviews a student's referral application (SUBMITTED_TO_HR, GUIDANCE_PROVIDED, DECLINED)."""
+        with self._lock:
+            ref = next((r for r in self.alumni_referrals if r.get("id") == referral_id), None)
+            if not ref:
+                raise HTTPException(status_code=404, detail=f"Referral opening '{referral_id}' not found.")
+            
+            applicant = next((a for a in ref.get("student_referrals", []) if a.get("student_id") == student_id), None)
+            if not applicant:
+                raise HTTPException(status_code=404, detail=f"Application for student '{student_id}' not found in referral.")
+
+            decision_clean = decision.strip().upper()
+            applicant["status"] = decision_clean
+            if notes:
+                applicant["alumni_review_notes"] = notes
+
+            # Award impact points to alumni on successful referral submission
+            alm = self.alumni.get(ref.get("alumni_id", ""))
+            if alm and decision_clean == "SUBMITTED_TO_HR":
+                alm["impact_score"] = alm.get("impact_score", 0) + 60
+
+            self._save_to_disk()
+            return {"status": "success", "applicant": applicant, "referral": ref}
 
 
 # Global singleton canonical store
