@@ -439,142 +439,147 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
       )}
 
       {/* Header Profile & Institution Bar */}
-      <div className="p-6 rounded-3xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0">
-            <GraduationCap className="w-8 h-8" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl md:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
-                {dashboardData?.profile?.name || "Dr. Rajesh Kulkarni"}
-              </h1>
-              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
-                isEmailVerified
-                  ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                  : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
-              }`}>
-                {isEmailVerified ? "✓ Verified Faculty" : "Verification Required"}
-              </span>
+      <div className="p-6 rounded-3xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-4">
+        {/* Top Row: Identity & Primary Actions */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0">
+              <GraduationCap className="w-8 h-8" />
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              {dashboardData?.profile?.title || "Head of Department"} • {dashboardData?.profile?.college || "JSPM RSCOE, Pune"} ({dashboardData?.profile?.department || "Computer Engineering"})
-            </p>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-xl md:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+                  {dashboardData?.profile?.name || "Dr. Rajesh Kulkarni"}
+                </h1>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                  isEmailVerified
+                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                    : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                }`}>
+                  {isEmailVerified ? "✓ Verified Faculty" : "Verification Required"}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                {dashboardData?.profile?.title || "Head of Department"} • {dashboardData?.profile?.college || "JSPM RSCOE, Pune"} ({dashboardData?.profile?.department || "Computer Engineering"})
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => setShowPasteJobModal(true)}
+              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-indigo-500/20 shrink-0"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>+ Ingest WhatsApp / Referral Job</span>
+            </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          <button
-            onClick={() => setShowPasteJobModal(true)}
-            className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-indigo-500/20 shrink-0"
-          >
-            <Share2 className="w-3.5 h-3.5" />
-            <span>+ Ingest WhatsApp / Referral Job</span>
-          </button>
-        </div>
-
-        {/* Quick Tabs Pill Switcher */}
-        <div className="flex items-center flex-wrap gap-1 p-1 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs font-bold">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`px-3 py-1.5 rounded-xl transition ${
-              activeTab === 'overview'
-                ? 'bg-white dark:bg-card-dark text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            Dashboard
-          </button>
-          <button
-            onClick={() => setActiveTab('job_ingestion')}
-            className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
-              activeTab === 'job_ingestion'
-                ? 'bg-white dark:bg-card-dark text-indigo-600 dark:text-indigo-400 shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <Share2 className="w-3.5 h-3.5" />
-            <span>Job Ingestor & Dedup</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('students')}
-            className={`px-3 py-1.5 rounded-xl transition ${
-              activeTab === 'students'
-                ? 'bg-white dark:bg-card-dark text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            Registered Students ({totalStudents})
-          </button>
-          <button
-            onClick={() => setActiveTab('integrity')}
-            className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
-              activeTab === 'integrity'
-                ? 'bg-white dark:bg-card-dark text-rose-600 dark:text-rose-400 shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <ShieldAlert className="w-3.5 h-3.5" />
-            <span>Assessment Integrity</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('institutional_intelligence')}
-            className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
-              activeTab === 'institutional_intelligence'
-                ? 'bg-white dark:bg-card-dark text-indigo-600 dark:text-indigo-400 shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Institutional Intelligence</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('skill_gaps')}
-            className={`px-3 py-1.5 rounded-xl transition ${
-              activeTab === 'skill_gaps'
-                ? 'bg-white dark:bg-card-dark text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            Cohort Skill Gaps
-          </button>
-          <button
-            onClick={() => setActiveTab('industry_demand')}
-            className={`px-3 py-1.5 rounded-xl transition ${
-              activeTab === 'industry_demand'
-                ? 'bg-white dark:bg-card-dark text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            Industry Demand & Gap
-          </button>
-          <button
-            onClick={() => setActiveTab('recommendations')}
-            className={`px-3 py-1.5 rounded-xl transition ${
-              activeTab === 'recommendations'
-                ? 'bg-white dark:bg-card-dark text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            Course Recommendations
-          </button>
-          <button
-            onClick={() => setActiveTab('placement_outcomes')}
-            className={`px-3 py-1.5 rounded-xl transition ${
-              activeTab === 'placement_outcomes'
-                ? 'bg-white dark:bg-card-dark text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            Placement Analytics
-          </button>
-          <button
-            onClick={() => onNavigateTab('collaboration')}
-            className="px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 font-bold"
-          >
-            <FolderGit2 className="w-3.5 h-3.5" />
-            <span>Collaboration Hub →</span>
-          </button>
+        {/* Bottom Row: Quick Tabs Pill Switcher */}
+        <div className="w-full overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex items-center flex-wrap gap-1 p-1 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs font-bold w-fit max-w-full">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`px-3 py-1.5 rounded-xl transition ${
+                activeTab === 'overview'
+                  ? 'bg-white dark:bg-card-dark text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              Dashboard
+            </button>
+            <button
+              onClick={() => setActiveTab('job_ingestion')}
+              className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
+                activeTab === 'job_ingestion'
+                  ? 'bg-white dark:bg-card-dark text-indigo-600 dark:text-indigo-400 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>Job Ingestor & Dedup</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('students')}
+              className={`px-3 py-1.5 rounded-xl transition ${
+                activeTab === 'students'
+                  ? 'bg-white dark:bg-card-dark text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              Registered Students ({totalStudents})
+            </button>
+            <button
+              onClick={() => setActiveTab('integrity')}
+              className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
+                activeTab === 'integrity'
+                  ? 'bg-white dark:bg-card-dark text-rose-600 dark:text-rose-400 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              <ShieldAlert className="w-3.5 h-3.5" />
+              <span>Assessment Integrity</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('institutional_intelligence')}
+              className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
+                activeTab === 'institutional_intelligence'
+                  ? 'bg-white dark:bg-card-dark text-indigo-600 dark:text-indigo-400 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Institutional Intelligence</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('skill_gaps')}
+              className={`px-3 py-1.5 rounded-xl transition ${
+                activeTab === 'skill_gaps'
+                  ? 'bg-white dark:bg-card-dark text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              Cohort Skill Gaps
+            </button>
+            <button
+              onClick={() => setActiveTab('industry_demand')}
+              className={`px-3 py-1.5 rounded-xl transition ${
+                activeTab === 'industry_demand'
+                  ? 'bg-white dark:bg-card-dark text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              Industry Demand & Gap
+            </button>
+            <button
+              onClick={() => setActiveTab('recommendations')}
+              className={`px-3 py-1.5 rounded-xl transition ${
+                activeTab === 'recommendations'
+                  ? 'bg-white dark:bg-card-dark text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              Course Recommendations
+            </button>
+            <button
+              onClick={() => setActiveTab('placement_outcomes')}
+              className={`px-3 py-1.5 rounded-xl transition ${
+                activeTab === 'placement_outcomes'
+                  ? 'bg-white dark:bg-card-dark text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              Placement Analytics
+            </button>
+            <button
+              onClick={() => onNavigateTab('collaboration')}
+              className="px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 font-bold"
+            >
+              <FolderGit2 className="w-3.5 h-3.5" />
+              <span>Collaboration Hub →</span>
+            </button>
+          </div>
         </div>
       </div>
 

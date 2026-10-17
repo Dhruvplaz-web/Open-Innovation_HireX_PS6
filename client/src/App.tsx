@@ -75,13 +75,23 @@ export const App: React.FC = () => {
 
   // Role state: 'student' | 'recruiter' | 'academician' | 'admin'
   const [currentRole, setCurrentRole] = useState<Role>(() => {
+    const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    const roleParam = urlParams?.get('role') as Role;
+    if (roleParam && ['student', 'recruiter', 'academician', 'admin', 'alumni'].includes(roleParam)) {
+      return roleParam;
+    }
     return (localStorage.getItem('hirex_auth_role') as Role) || 'student';
   });
 
   // Active navigation tab (Default to 'landing' if user has no saved role session and is on root path)
   const [activeTab, setActiveTab] = useState<string>(() => {
+    const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    if (urlParams?.get('tab')) {
+      return urlParams.get('tab')!;
+    }
     const cleanPath = window.location.pathname.replace(/\/+$/, '') || '/';
     if (cleanPath === '/' || cleanPath === '/landing') {
+      if (urlParams?.get('role')) return 'dashboard';
       return 'landing';
     }
     if (cleanPath === '/login' || cleanPath === '/auth') {
