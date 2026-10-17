@@ -309,17 +309,31 @@ def register(req: RegisterRequest):
             "department": dept_str,
             "department_id": dept_id,
             "year": req.year or "3rd Year",
-            "cgpa": 8.5,
+            "cgpa": 0.0,
             "avatar": new_user["avatar"],
-            "verified_score": 75,
+            "verified_score": 0,
+            "placement_readiness_score": 0,
             "skills": {},
+            "claimed_skills": [],
             "projects_count": 0,
             "assessments_completed": 0,
-            "rank_in_college": len(STUDENTS) + 1,
-            "target_role": "Full-Stack AI Developer",
-            "bio": f"Engineering student at {college_str} ({dept_str})."
+            "rank_in_college": 0,
+            "target_role": "Software Engineer",
+            "bio": f"Engineering student at {college_str} ({dept_str}).",
+            "academic_kyc": {
+                "ssc_10th": None,
+                "hsc_12th": None,
+                "cgpa": 0.0,
+                "active_backlogs": 0
+            }
         }
         STUDENTS.append(student_entry)
+        try:
+            from app.db.canonical_store import canonical_store
+            canonical_store.save_student_profile(student_entry, actor_id=user_id)
+            canonical_store.users[user_id] = new_user
+        except Exception:
+            pass
 
     elif role_clean == "academician":
         academician_entry = {

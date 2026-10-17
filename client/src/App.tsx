@@ -403,6 +403,23 @@ export const App: React.FC = () => {
     );
   };
 
+  const handleOpportunityApplied = (oppId: string) => {
+    setOpportunities((prev) =>
+      prev.map((o) => {
+        const oid = o.opportunity_id || o.id;
+        if (oid === oppId) {
+          return { ...o, has_applied: true, application_status: 'Applied' };
+        }
+        return o;
+      })
+    );
+    setSelectedOpportunity((prev) =>
+      prev && (prev.opportunity_id === oppId || prev.id === oppId)
+        ? { ...prev, has_applied: true, application_status: 'Applied' }
+        : prev
+    );
+  };
+
   // Load role-specific data
   useEffect(() => {
     const fetchData = async () => {
@@ -716,6 +733,8 @@ export const App: React.FC = () => {
             <SkillVerificationView
               studentId={student.id}
               studentName={student.name}
+              userProfile={userProfile}
+              student={student}
               onNavigateTab={handleNavigateTab}
             />
           );
@@ -904,6 +923,8 @@ export const App: React.FC = () => {
         }}
         opportunity={selectedOpportunity}
         role={currentRole}
+        studentId={student.id}
+        onApplicationSuccess={handleOpportunityApplied}
       />
 
       <AuthModal

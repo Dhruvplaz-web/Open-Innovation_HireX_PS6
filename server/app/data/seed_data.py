@@ -262,6 +262,15 @@ STUDENTS = [
     }
 ]
 
+# Expand to 300 students cohort for institutional intelligence & placement analytics
+_extra_apps = []
+try:
+    from app.data.seed_300_students import generate_300_students
+    _extra_students, _extra_apps = generate_300_students(start_idx=len(STUDENTS) + 1, end_idx=300)
+    STUDENTS.extend(_extra_students)
+except Exception as _e:
+    print(f"[SeedData] Warning expanding 300 cohort: {_e}")
+
 def get_or_create_student(student_id: str = "std_1") -> Dict[str, Any]:
     """
     Returns student profile for a given ID.
@@ -285,26 +294,52 @@ def get_or_create_student(student_id: str = "std_1") -> Dict[str, Any]:
     if clean_id == "std_1":
         return STUDENTS[0]
     
+    # Check if a user record exists to pull full name/email
+    user_name = "New Student"
+    user_email = ""
+    try:
+        from app.db.canonical_store import canonical_store
+        user_rec = canonical_store.users.get(clean_id)
+        if user_rec:
+            user_name = user_rec.get("name", user_name)
+            user_email = user_rec.get("email", user_email)
+    except Exception:
+        pass
+
     new_student = {
         "id": clean_id,
-        "name": "New Student",
-        "email": "",
+        "name": user_name,
+        "email": user_email,
         "college": "JSPM RSCOE, Pune",
         "institution_id": "inst_rscoe",
         "department": "Computer Engineering",
         "department_id": "dept_comp",
         "year": "3rd Year",
-        "cgpa": 8.0,
+        "batch": "2026",
+        "cgpa": 0.0,
         "avatar": f"https://api.dicebear.com/7.x/avataaars/svg?seed={clean_id}",
         "verified_score": 0,
+        "placement_readiness_score": 0,
         "skills": {},
+        "claimed_skills": [],
         "projects_count": 0,
         "assessments_completed": 0,
         "rank_in_college": 0,
         "target_role": "Full-Stack AI Developer",
-        "bio": "New member setting up verified skill passport."
+        "bio": "New member setting up verified skill passport.",
+        "academic_kyc": {
+            "ssc_10th": None,
+            "hsc_12th": None,
+            "cgpa": 0.0,
+            "active_backlogs": 0
+        }
     }
     STUDENTS.append(new_student)
+    try:
+        from app.db.canonical_store import canonical_store
+        canonical_store.save_student_profile(new_student, actor_id=clean_id)
+    except Exception:
+        pass
     return new_student
 
 OPPORTUNITIES = [
@@ -597,6 +632,14 @@ APPLICATIONS = [
         "jdFitComputedAt": None
     }
 ]
+
+# Expand applications cohort
+try:
+    if '_extra_apps' in locals() and _extra_apps:
+        APPLICATIONS.extend(_extra_apps)
+except Exception as _e:
+    pass
+
 
 ACADEMICIAN_RECOMMENDATIONS = [
     {

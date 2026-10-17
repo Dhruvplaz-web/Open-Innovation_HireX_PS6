@@ -269,17 +269,23 @@ def analyze_student_for_opportunity(
 
         key_lower = norm_req_name.lower()
 
-        # Check exact or normalized alias
-        if key_lower in norm_skills_lookup and norm_skills_lookup[key_lower]["score"] is not None:
+        # Check exact or normalized alias (STRICTLY requires verified == True)
+        if key_lower in norm_skills_lookup and norm_skills_lookup[key_lower]["score"] is not None and norm_skills_lookup[key_lower].get("verified", False):
             matched_via = "EXACT" if raw_skill_name.strip().lower() == norm_req_name.lower() else "ALIAS"
             matched_skill_name = norm_skills_lookup[key_lower]["canonicalName"]
             raw_score = int(norm_skills_lookup[key_lower]["score"])
             effective_score = float(raw_score)
+        elif key_lower in norm_skills_lookup and not norm_skills_lookup[key_lower].get("verified", False):
+            # Claimed from resume / self-reported, but not yet verified via proctored assessment
+            matched_via = "CLAIMED_UNVERIFIED"
+            matched_skill_name = norm_skills_lookup[key_lower]["canonicalName"]
+            raw_score = None
+            effective_score = 0.0
         else:
-            # Check related skills
+            # Check related skills (STRICTLY requires verified == True)
             rel_keys = config["related_skills"].get(key_lower, [])
             for rel_k in rel_keys:
-                if rel_k in norm_skills_lookup and norm_skills_lookup[rel_k]["score"] is not None:
+                if rel_k in norm_skills_lookup and norm_skills_lookup[rel_k]["score"] is not None and norm_skills_lookup[rel_k].get("verified", False):
                     matched_via = "RELATED"
                     matched_skill_name = norm_skills_lookup[rel_k]["canonicalName"]
                     raw_score = int(norm_skills_lookup[rel_k]["score"])
@@ -288,7 +294,7 @@ def analyze_student_for_opportunity(
 
         # Calculate coverage: min(effectiveScore / target, 1.0)
         if raw_score is None:
-            status = "NOT_ASSESSED"
+            status = "CLAIMED_UNVERIFIED" if matched_via == "CLAIMED_UNVERIFIED" else "NOT_ASSESSED"
             coverage = 0.0
             gap = target_level
         else:

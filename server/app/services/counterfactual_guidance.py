@@ -6,7 +6,7 @@ Provides natural language match explanations, minimal-effort counterfactual advi
 
 from typing import Dict, Any, List, Optional
 import time
-from app.data.seed_data import STUDENTS, OPPORTUNITIES, log_audit_trail
+from app.data.seed_data import STUDENTS, OPPORTUNITIES, log_audit_trail, get_or_create_student
 from app.services.evidence_mapper import evidence_mapper_service
 from app.services.jd_skill_analysis import analyze_student_for_opportunity
 
@@ -23,7 +23,7 @@ class CounterfactualGuidanceService:
         against a specific campus placement opportunity.
         """
         from app.db.canonical_store import canonical_store
-        student = next((s for s in STUDENTS if s["id"] == student_id), None) or canonical_store.get_student(student_id) or STUDENTS[0]
+        student = get_or_create_student(student_id)
         opportunity = next((o for o in OPPORTUNITIES if o.get("id") == opportunity_id or o.get("opportunity_id") == opportunity_id), None) or OPPORTUNITIES[0]
 
         # Analyze current fit

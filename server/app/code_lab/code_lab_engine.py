@@ -14,7 +14,29 @@ import time
 import uuid
 import hashlib
 import sqlite3
+import threading
+import queue
+import concurrent.futures
 from typing import Dict, Any, List, Optional
+
+def run_with_timeout(func, args=(), kwargs=None, timeout=3.0):
+    """Executes a callable inside an isolated daemon thread with strict timeout protection."""
+    q = queue.Queue()
+    def worker():
+        try:
+            res = func(*args, **(kwargs or {}))
+            q.put(("SUCCESS", res))
+        except Exception as e:
+            q.put(("ERROR", e))
+    t = threading.Thread(target=worker, daemon=True)
+    t.start()
+    try:
+        status, val = q.get(timeout=timeout)
+        if status == "ERROR":
+            raise val
+        return val
+    except queue.Empty:
+        raise TimeoutError(f"Execution timed out after {timeout} seconds (Infinite loop or slow algorithm detected).")
 
 try:
     from .code_lab_bank import CHALLENGE_BANK, CHALLENGE_MAP
@@ -96,8 +118,8 @@ class CodeLabEngine:
         """
         student = canonical_store.get_student(student_id)
         if not student:
-            from app.data.seed_data import STUDENTS
-            student = next((s for s in STUDENTS if s["id"] == student_id), STUDENTS[0])
+            from app.data.seed_data import get_or_create_student
+            student = get_or_create_student(student_id)
 
         skills_dict = student.get("skills", {})
         projects_count = student.get("projects_count", 0)
@@ -435,7 +457,9 @@ class CodeLabEngine:
         start_exec_time = time.time()
         try:
             compiled = compile(source_code, f"<student_submission_{challenge_id}>", "exec")
-            exec(compiled, sandbox_scope)
+            run_with_timeout(exec, args=(compiled, sandbox_scope), timeout=3.0)
+        except TimeoutError:
+            exec_error = "TimeoutError: Compilation/Execution exceeded 3.0 seconds execution limit."
         except Exception as e:
             exec_error = f"{type(e).__name__}: {str(e)}"
 
@@ -474,10 +498,10 @@ class CodeLabEngine:
                 continue
 
             try:
-                # Call function
+                # Call function with 3.0-second safety timeout against infinite loops
                 call_expr = f"user_fn({tc['input']})"
                 eval_scope = {"user_fn": user_fn, "__builtins__": safe_builtins}
-                actual_val = eval(call_expr, eval_scope)
+                actual_val = run_with_timeout(eval, args=(call_expr, eval_scope), timeout=3.0)
 
                 actual_str = str(actual_val)
                 expected_str = str(tc.get("expected", "")).strip()
@@ -506,6 +530,32 @@ class CodeLabEngine:
                     "is_hidden": is_hidden,
                     "description": tc.get("description", "")
                 })
+            except TimeoutError as te:
+                results.append({
+                    "test_case_id": idx + 1,
+                    "category": cat,
+                    "input": tc.get("input", "") if not is_hidden else "[Hidden Test Input]",
+                    "expected": tc.get("expected", "") if not is_hidden else "[Hidden]",
+                    "actual": f"TimeoutError: {str(te)}",
+                    "passed": False,
+                    "is_hidden": is_hidden,
+                    "description": tc.get("description", "")
+                })
+                # Fast fail remaining tests immediately on infinite loop / timeout
+                for rem_idx in range(idx + 1, len(all_tests)):
+                    rem_tc = all_tests[rem_idx]
+                    rem_hidden = rem_tc.get("is_hidden", False)
+                    results.append({
+                        "test_case_id": rem_idx + 1,
+                        "category": rem_tc.get("category", "visible"),
+                        "input": rem_tc.get("input", "") if not rem_hidden else "[Hidden Test Input]",
+                        "expected": rem_tc.get("expected", "") if not rem_hidden else "[Hidden]",
+                        "actual": "Skipped due to prior execution timeout",
+                        "passed": False,
+                        "is_hidden": rem_hidden,
+                        "description": rem_tc.get("description", "")
+                    })
+                break
             except Exception as call_err:
                 results.append({
                     "test_case_id": idx + 1,
@@ -928,8 +978,8 @@ class CodeLabEngine:
         """
         student = canonical_store.get_student(student_id)
         if not student:
-            from app.data.seed_data import STUDENTS
-            student = next((s for s in STUDENTS if s["id"] == student_id), STUDENTS[0])
+            from app.data.seed_data import get_or_create_student
+            student = get_or_create_student(student_id)
 
         skills_dict = student.get("skills", {})
         history = self.submission_history.get(student_id, [])

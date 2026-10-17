@@ -57,3 +57,49 @@ def audit_truthful_resume_claims(req: TruthfulResumeAuditRequest):
         "audit": audit
     }
 
+from fastapi import UploadFile, File
+import io
+
+@router.post("/extract-pdf")
+async def extract_resume_pdf(file: UploadFile = File(...)):
+    """
+    Extracts plain text from an uploaded resume PDF or text document.
+    """
+    filename = file.filename or "resume.pdf"
+    content = await file.read()
+    
+    if not content:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty.")
+        
+    extracted_text = ""
+    if filename.lower().endswith(".pdf"):
+        try:
+            import pypdf
+            reader = pypdf.PdfReader(io.BytesIO(content))
+            for page in reader.pages:
+                text = page.extract_text()
+                if text:
+                    extracted_text += text + "\n"
+        except Exception as e:
+            # Fallback text decoding if PDF reading encounters an issue
+            try:
+                extracted_text = content.decode("utf-8", errors="ignore")
+            except Exception:
+                raise HTTPException(status_code=400, detail=f"Failed to parse PDF document: {str(e)}")
+    else:
+        try:
+            extracted_text = content.decode("utf-8", errors="ignore")
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Failed to decode text file: {str(e)}")
+            
+    extracted_text = extracted_text.strip()
+    if not extracted_text:
+        raise HTTPException(status_code=400, detail="Could not extract readable text from this file.")
+        
+    return {
+        "status": "success",
+        "filename": filename,
+        "text": extracted_text,
+        "char_count": len(extracted_text)
+    }
+

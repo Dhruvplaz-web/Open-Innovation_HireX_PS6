@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "saved_at": 1792221249.0846546,
+  "saved_at": 1792229400.9492836,
   "users": {},
   "students": {
     "std_1": {
@@ -14,13 +14,23 @@
       "year": "2026",
       "cgpa": 8.92,
       "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
-      "verified_score": 84,
+      "verified_score": 84.6,
       "skills": {
         "Python": {
+          "skill_name": "Python",
           "level": "Advanced",
-          "score": 92,
-          "verified": true,
-          "project_verified": true
+          "score": 96.0,
+          "confidence": 0.85,
+          "verification_status": "DEMONSTRATED",
+          "verified": false,
+          "source": "Code Lab: Two Sum (Target Array Indices)",
+          "evidence_type": "code_lab",
+          "evidence_id": "proof_8df76d10c4cd",
+          "verified_by": null,
+          "verified_at": null,
+          "last_assessed_at": null,
+          "updated_at": "2026-10-17T09:25:43Z",
+          "version": 3
         },
         "React": {
           "level": "Advanced",
@@ -85,9 +95,9 @@
       "rank_in_college": 4,
       "target_role": "Full-Stack AI Engineer",
       "bio": "Phase 1 Persistence Verified",
-      "version": 72,
+      "version": 79,
       "created_at": 1792149868.2778537,
-      "updated_at": 1792221249.0613573,
+      "updated_at": 1792229143.8891864,
       "deleted_at": null,
       "profile_completion": 60,
       "linkedin_connected": false,
@@ -415,32 +425,145 @@
       "updated_at": 1792149868.2778537,
       "deleted_at": null,
       "profile_completion": 51
+    },
+    "test_sync_std_001": {
+      "id": "test_sync_std_001",
+      "name": "New Student",
+      "email": "",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "batch": "2026",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=test_sync_std_001",
+      "verified_score": 0,
+      "placement_readiness_score": 0,
+      "skills": {},
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 0,
+      "rank_in_college": 0,
+      "target_role": "Full-Stack AI Developer",
+      "bio": "New member setting up verified skill passport.",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792226069.7021024,
+      "updated_at": 1792226069.7021024,
+      "deleted_at": null,
+      "profile_completion": 0
+    },
+    "test_sync_std_6e13b0": {
+      "id": "test_sync_std_6e13b0",
+      "name": "New Student",
+      "email": "",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "batch": "2026",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=test_sync_std_6e13b0",
+      "verified_score": 0,
+      "placement_readiness_score": 0,
+      "skills": {},
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 0,
+      "rank_in_college": 0,
+      "target_role": "Full-Stack AI Developer",
+      "bio": "New member setting up verified skill passport.",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792226161.7765377,
+      "updated_at": 1792226161.7765377,
+      "deleted_at": null,
+      "profile_completion": 0
+    },
+    "test_sync_std_f7ecf8": {
+      "id": "test_sync_std_f7ecf8",
+      "name": "New Student",
+      "email": "",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "batch": "2026",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=test_sync_std_f7ecf8",
+      "verified_score": 0,
+      "placement_readiness_score": 0,
+      "skills": {},
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 0,
+      "rank_in_college": 0,
+      "target_role": "Full-Stack AI Developer",
+      "bio": "New member setting up verified skill passport.",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792226204.811616,
+      "updated_at": 1792226204.811616,
+      "deleted_at": null,
+      "profile_completion": 0
+    },
+    "test_sync_std_c9f65b": {
+      "id": "test_sync_std_c9f65b",
+      "name": "New Student",
+      "email": "",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "batch": "2026",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=test_sync_std_c9f65b",
+      "verified_score": 0,
+      "placement_readiness_score": 0,
+      "skills": {},
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 0,
+      "rank_in_college": 0,
+      "target_role": "Full-Stack AI Developer",
+      "bio": "New member setting up verified skill passport.",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792229143.634906,
+      "updated_at": 1792229143.634906,
+      "deleted_at": null,
+      "profile_completion": 0
     }
   },
   "student_registrations": {
     "std_1": {
-      "student_id": "std_1",
-      "full_name": "Dhruv Patil",
-      "mobile_number": "9876543210",
-      "email": "dhruv.patil@rscoe.edu.in",
-      "college_name": "JSPM RSCOE, Pune",
-      "graduating_year": "2026",
-      "stream_branch": "Computer Engineering",
-      "city": "Pune",
-      "state": "Maharashtra",
-      "country": "India",
-      "aadhaar_masked": "XXXX-XXXX-1230",
       "aadhaar_status": "VERIFIED",
-      "college_id_card_url": "",
-      "college_id_card_filename": "",
-      "resume_text": "",
-      "resume_filename": "",
-      "github_url": "https://github.com/dhruv-patil",
-      "linkedin_url": "https://www.linkedin.com/in/dhruv-patil",
-      "linkedin_connected": false,
-      "projects": [],
-      "updated_at": 1792221249,
-      "aadhaar_tx_id": "UIDAI-AUTH-EB49D81397A4",
+      "aadhaar_masked": "XXXX-XXXX-1230",
+      "aadhaar_tx_id": "UIDAI-AUTH-49FBF06A23A2",
       "college_id_status": "REAL",
       "college_id_text": "JSPM RSCOE Computer Engineering PRN: 72153921K Valid Till: 2026",
       "college_id_badge": "Official College ID Verified ✓"
@@ -1090,6 +1213,162 @@
       "created_at": 1792149868.2778537,
       "updated_at": 1792149868.2778537,
       "deleted_at": null
+    },
+    "app_c9a23636": {
+      "id": "app_c9a23636",
+      "student_id": "test_sync_std_001",
+      "student_name": "New Student",
+      "student_email": "",
+      "student_college": "JSPM RSCOE, Pune",
+      "opportunity_id": "opp_1",
+      "company": "Barclays India Innovation Centre",
+      "title": "Full-Stack AI Developer Intern",
+      "match_percentage": 25,
+      "matched_skills": [],
+      "status": "Applied",
+      "applied_at": "2026-10-17T08:34:29Z",
+      "jdFitScore": 0,
+      "jdFitVerdict": "NEEDS_WORK",
+      "jdFitSummary": {
+        "mustHaveCoverage": 0.0,
+        "niceToHaveCoverage": 0.0,
+        "topGaps": [
+          "Python",
+          "React",
+          "FastAPI"
+        ],
+        "metCount": 0,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-17T08:34:29Z",
+      "version": 1,
+      "created_at": 1792226069.7141023,
+      "updated_at": 1792226069.7141023,
+      "deleted_at": null,
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-17T08:34:29Z",
+          "note": "Application submitted"
+        }
+      ]
+    },
+    "app_b053205c": {
+      "id": "app_b053205c",
+      "student_id": "test_sync_std_6e13b0",
+      "student_name": "New Student",
+      "student_email": "",
+      "student_college": "JSPM RSCOE, Pune",
+      "opportunity_id": "opp_1",
+      "company": "Barclays India Innovation Centre",
+      "title": "Full-Stack AI Developer Intern",
+      "match_percentage": 25,
+      "matched_skills": [],
+      "status": "Applied",
+      "applied_at": "2026-10-17T08:36:01Z",
+      "jdFitScore": 0,
+      "jdFitVerdict": "NEEDS_WORK",
+      "jdFitSummary": {
+        "mustHaveCoverage": 0.0,
+        "niceToHaveCoverage": 0.0,
+        "topGaps": [
+          "Python",
+          "React",
+          "FastAPI"
+        ],
+        "metCount": 0,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-17T08:36:01Z",
+      "version": 1,
+      "created_at": 1792226161.793872,
+      "updated_at": 1792226161.793872,
+      "deleted_at": null,
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-17T08:36:01Z",
+          "note": "Application submitted"
+        }
+      ]
+    },
+    "app_bce54147": {
+      "id": "app_bce54147",
+      "student_id": "test_sync_std_f7ecf8",
+      "student_name": "New Student",
+      "student_email": "",
+      "student_college": "JSPM RSCOE, Pune",
+      "opportunity_id": "opp_1",
+      "company": "Barclays India Innovation Centre",
+      "title": "Full-Stack AI Developer Intern",
+      "match_percentage": 25,
+      "matched_skills": [],
+      "status": "Applied",
+      "applied_at": "2026-10-17T08:36:44Z",
+      "jdFitScore": 0,
+      "jdFitVerdict": "NEEDS_WORK",
+      "jdFitSummary": {
+        "mustHaveCoverage": 0.0,
+        "niceToHaveCoverage": 0.0,
+        "topGaps": [
+          "Python",
+          "React",
+          "FastAPI"
+        ],
+        "metCount": 0,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-17T08:36:44Z",
+      "version": 1,
+      "created_at": 1792226204.8306177,
+      "updated_at": 1792226204.8306177,
+      "deleted_at": null,
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-17T08:36:44Z",
+          "note": "Application submitted"
+        }
+      ]
+    },
+    "app_69d16380": {
+      "id": "app_69d16380",
+      "student_id": "test_sync_std_c9f65b",
+      "student_name": "New Student",
+      "student_email": "",
+      "student_college": "JSPM RSCOE, Pune",
+      "opportunity_id": "opp_1",
+      "company": "Barclays India Innovation Centre",
+      "title": "Full-Stack AI Developer Intern",
+      "match_percentage": 25,
+      "matched_skills": [],
+      "status": "Applied",
+      "applied_at": "2026-10-17T09:25:43Z",
+      "jdFitScore": 0,
+      "jdFitVerdict": "NEEDS_WORK",
+      "jdFitSummary": {
+        "mustHaveCoverage": 0.0,
+        "niceToHaveCoverage": 0.0,
+        "topGaps": [
+          "Python",
+          "React",
+          "FastAPI"
+        ],
+        "metCount": 0,
+        "totalCount": 6
+      },
+      "jdFitComputedAt": "2026-10-17T09:25:43Z",
+      "version": 1,
+      "created_at": 1792229143.6468818,
+      "updated_at": 1792229143.6468818,
+      "deleted_at": null,
+      "status_history": [
+        {
+          "status": "Applied",
+          "updated_at": "2026-10-17T09:25:43Z",
+          "note": "Application submitted"
+        }
+      ]
     }
   },
   "assessments": {},
@@ -1553,9 +1832,176 @@
         "score": 96.0
       },
       "event_id": null
+    },
+    {
+      "log_id": "aud_1792226069714_4f5f",
+      "timestamp": 1792226069.7141023,
+      "iso_time": "2026-10-17T08:34:29Z",
+      "actor_id": "test_sync_std_001",
+      "action": "APPLICATION_CREATED",
+      "entity_type": "application",
+      "entity_id": "app_c9a23636",
+      "from_value": null,
+      "to_value": {
+        "status": "Applied",
+        "opportunity_id": "opp_1",
+        "student_id": "test_sync_std_001"
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792226161793_f917",
+      "timestamp": 1792226161.793872,
+      "iso_time": "2026-10-17T08:36:01Z",
+      "actor_id": "test_sync_std_6e13b0",
+      "action": "APPLICATION_CREATED",
+      "entity_type": "application",
+      "entity_id": "app_b053205c",
+      "from_value": null,
+      "to_value": {
+        "status": "Applied",
+        "opportunity_id": "opp_1",
+        "student_id": "test_sync_std_6e13b0"
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792226204830_e575",
+      "timestamp": 1792226204.8306177,
+      "iso_time": "2026-10-17T08:36:44Z",
+      "actor_id": "test_sync_std_f7ecf8",
+      "action": "APPLICATION_CREATED",
+      "entity_type": "application",
+      "entity_id": "app_bce54147",
+      "from_value": null,
+      "to_value": {
+        "status": "Applied",
+        "opportunity_id": "opp_1",
+        "student_id": "test_sync_std_f7ecf8"
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792227423452_68a5",
+      "timestamp": 1792227423.4524329,
+      "iso_time": "2026-10-17T08:57:03Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "SELF_DECLARED",
+        "score": 92
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792227567390_4f2f",
+      "timestamp": 1792227567.3908257,
+      "iso_time": "2026-10-17T08:59:27Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792229143646_a252",
+      "timestamp": 1792229143.6468818,
+      "iso_time": "2026-10-17T09:25:43Z",
+      "actor_id": "test_sync_std_c9f65b",
+      "action": "APPLICATION_CREATED",
+      "entity_type": "application",
+      "entity_id": "app_69d16380",
+      "from_value": null,
+      "to_value": {
+        "status": "Applied",
+        "opportunity_id": "opp_1",
+        "student_id": "test_sync_std_c9f65b"
+      },
+      "event_id": null
+    },
+    {
+      "log_id": "aud_1792229143889_cc13",
+      "timestamp": 1792229143.889731,
+      "iso_time": "2026-10-17T09:25:43Z",
+      "actor_id": "std_1",
+      "action": "STUDENT_SKILL_UPDATED",
+      "entity_type": "student_skill",
+      "entity_id": "std_1:Python",
+      "from_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "to_value": {
+        "status": "DEMONSTRATED",
+        "score": 96.0
+      },
+      "event_id": null
     }
   ],
-  "notifications": [],
+  "notifications": [
+    {
+      "notification_id": "notif_1792226069714_7ec8",
+      "recipient_id": "recruiter_general",
+      "type": "NEW_APPLICANT",
+      "title": "New Candidate Applied for Full-Stack AI Developer Intern",
+      "message": "Student New Student applied with match score 25%.",
+      "entity_type": "application",
+      "entity_id": "app_c9a23636",
+      "read_at": null,
+      "created_at": 1792226069.7141023,
+      "formatted_time": "14:04:29"
+    },
+    {
+      "notification_id": "notif_1792226161793_4769",
+      "recipient_id": "recruiter_general",
+      "type": "NEW_APPLICANT",
+      "title": "New Candidate Applied for Full-Stack AI Developer Intern",
+      "message": "Student New Student applied with match score 25%.",
+      "entity_type": "application",
+      "entity_id": "app_b053205c",
+      "read_at": null,
+      "created_at": 1792226161.793872,
+      "formatted_time": "14:06:01"
+    },
+    {
+      "notification_id": "notif_1792226204830_289f",
+      "recipient_id": "recruiter_general",
+      "type": "NEW_APPLICANT",
+      "title": "New Candidate Applied for Full-Stack AI Developer Intern",
+      "message": "Student New Student applied with match score 25%.",
+      "entity_type": "application",
+      "entity_id": "app_bce54147",
+      "read_at": null,
+      "created_at": 1792226204.8306177,
+      "formatted_time": "14:06:44"
+    },
+    {
+      "notification_id": "notif_1792229143646_7716",
+      "recipient_id": "recruiter_general",
+      "type": "NEW_APPLICANT",
+      "title": "New Candidate Applied for Full-Stack AI Developer Intern",
+      "message": "Student New Student applied with match score 25%.",
+      "entity_type": "application",
+      "entity_id": "app_69d16380",
+      "read_at": null,
+      "created_at": 1792229143.6468818,
+      "formatted_time": "14:55:43"
+    }
+  ],
   "match_cache": {},
   "skill_reviews": {},
   "assessment_questions": {},
@@ -2239,6 +2685,30 @@
         "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
         "source": "Code Lab Engine",
         "timestamp": "2026-10-17T07:14:08Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-17T08:57:03Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-17T08:59:27Z"
+      },
+      {
+        "skill": "Python",
+        "month": "Oct",
+        "score": 96,
+        "event": "Code Lab Proof-of-Skill Demonstrated (Two Sum (Target Array Indices): 96.0%)",
+        "source": "Code Lab Engine",
+        "timestamp": "2026-10-17T09:25:43Z"
       }
     ]
   },
@@ -3261,6 +3731,128 @@
       "weight": 1.25,
       "context": "Reviewed HireX sovereign AST auditor implementation and verified linear O(N) algorithmic guarantees.",
       "created_at": "2026-10-16T21:54:03Z"
+    }
+  ],
+  "invitations": {
+    "inv_509954ea": {
+      "id": "inv_509954ea",
+      "talent_id": "SB-TALENT-43886",
+      "student_id": "std_282",
+      "recruiter_id": "rec_1",
+      "recruiter_name": "Priya Sharma",
+      "recruiter_email": "priya.sharma@barclays.com",
+      "company": "Barclays India Innovation Centre",
+      "opportunity_id": "opp_1",
+      "opportunity_title": "Full-Stack AI Developer Intern",
+      "match_percentage": 71,
+      "matched_skills": [
+        "Python",
+        "React",
+        "FastAPI",
+        "PostgreSQL"
+      ],
+      "message": "We invite you to interview for our opening.",
+      "status": "PENDING",
+      "created_at": "2026-10-17T08:36:02Z",
+      "responded_at": null
+    },
+    "inv_2a980403": {
+      "id": "inv_2a980403",
+      "talent_id": "SB-TALENT-80533",
+      "student_id": "std_45",
+      "recruiter_id": "rec_1",
+      "recruiter_name": "Priya Sharma",
+      "recruiter_email": "priya.sharma@barclays.com",
+      "company": "Barclays India Innovation Centre",
+      "opportunity_id": "opp_1",
+      "opportunity_title": "Full-Stack AI Developer Intern",
+      "match_percentage": 70,
+      "matched_skills": [
+        "Python",
+        "React",
+        "FastAPI",
+        "PostgreSQL"
+      ],
+      "message": "We invite you to interview for our opening.",
+      "status": "PENDING",
+      "created_at": "2026-10-17T08:36:44Z",
+      "responded_at": null
+    },
+    "inv_7d3eb0c2": {
+      "id": "inv_7d3eb0c2",
+      "talent_id": "SB-TALENT-89013",
+      "student_id": "std_46",
+      "recruiter_id": "rec_1",
+      "recruiter_name": "Priya Sharma",
+      "recruiter_email": "priya.sharma@barclays.com",
+      "company": "Barclays India Innovation Centre",
+      "opportunity_id": "opp_1",
+      "opportunity_title": "Full-Stack AI Developer Intern",
+      "match_percentage": 70,
+      "matched_skills": [
+        "Python",
+        "React",
+        "FastAPI",
+        "PostgreSQL"
+      ],
+      "message": "We invite you to interview for our opening.",
+      "status": "PENDING",
+      "created_at": "2026-10-17T09:25:43Z",
+      "responded_at": null
+    }
+  },
+  "proctor_events": [
+    {
+      "eventType": "MULTIPLE_FACES_DETECTED",
+      "event_type": "MULTIPLE_FACES_DETECTED",
+      "severity": "HIGH",
+      "details": "Second individual detected in camera frame",
+      "student_id": "std_1",
+      "studentId": "std_1",
+      "assessment_id": "asmt_phase4_audit_1792228645",
+      "assessmentAttemptId": "asmt_phase4_audit_1792228645",
+      "confidence": 0.92,
+      "id": "pevt_c293747b",
+      "timestamp": "2026-10-17T09:17:25Z"
+    },
+    {
+      "eventType": "MULTIPLE_FACES_DETECTED",
+      "event_type": "MULTIPLE_FACES_DETECTED",
+      "severity": "HIGH",
+      "details": "Second individual detected in camera frame",
+      "student_id": "std_1",
+      "studentId": "std_1",
+      "assessment_id": "asmt_phase4_audit_1792228961",
+      "assessmentAttemptId": "asmt_phase4_audit_1792228961",
+      "confidence": 0.92,
+      "id": "pevt_75a5f52b",
+      "timestamp": "2026-10-17T09:22:41Z"
+    },
+    {
+      "eventType": "MULTIPLE_FACES_DETECTED",
+      "event_type": "MULTIPLE_FACES_DETECTED",
+      "severity": "HIGH",
+      "details": "Second individual detected in camera frame",
+      "student_id": "std_1",
+      "studentId": "std_1",
+      "assessment_id": "asmt_phase4_audit_1792229108",
+      "assessmentAttemptId": "asmt_phase4_audit_1792229108",
+      "confidence": 0.92,
+      "id": "pevt_8364a557",
+      "timestamp": "2026-10-17T09:25:08Z"
+    },
+    {
+      "eventType": "MULTIPLE_FACES_DETECTED",
+      "event_type": "MULTIPLE_FACES_DETECTED",
+      "severity": "HIGH",
+      "details": "Second individual detected in camera frame",
+      "student_id": "std_1",
+      "studentId": "std_1",
+      "assessment_id": "asmt_phase4_audit_1792229143",
+      "assessmentAttemptId": "asmt_phase4_audit_1792229143",
+      "confidence": 0.92,
+      "id": "pevt_6fe9cf9a",
+      "timestamp": "2026-10-17T09:25:43Z"
     }
   ]
 }

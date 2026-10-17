@@ -1,30 +1,60 @@
-import React, { useState } from 'react';
-import { X, Building2, MapPin, Clock, Calendar, CheckCircle2, AlertTriangle, ArrowRight, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Building2, MapPin, Clock, Calendar, CheckCircle2, AlertTriangle, ArrowRight, ShieldCheck, Loader2 } from 'lucide-react';
 import { MatchedOpportunity, Role } from '../../types';
+import { apiService } from '../../services/api';
 
 interface OpportunityModalProps {
   isOpen: boolean;
   onClose: () => void;
   opportunity: MatchedOpportunity | null;
   role: Role;
+  studentId?: string;
+  onApplicationSuccess?: (opportunityId: string) => void;
 }
 
 export const OpportunityModal: React.FC<OpportunityModalProps> = ({
   isOpen,
   onClose,
   opportunity,
-  role
+  role,
+  studentId = 'std_1',
+  onApplicationSuccess
 }) => {
-  const [applied, setApplied] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [hasAppliedLocal, setHasAppliedLocal] = useState(false);
+
+  useEffect(() => {
+    if (opportunity) {
+      setHasAppliedLocal(Boolean(opportunity.has_applied));
+      setErrorMessage(null);
+    }
+  }, [opportunity]);
 
   if (!isOpen || !opportunity) return null;
 
-  const handleAction = () => {
-    setApplied(true);
-    setTimeout(() => {
-      setApplied(false);
-      onClose();
-    }, 1800);
+  const handleAction = async () => {
+    if (role === 'student') {
+      setIsSubmitting(true);
+      setErrorMessage(null);
+      try {
+        const oppId = opportunity.opportunity_id || opportunity.id || '';
+        await apiService.applyOpportunity(studentId, oppId);
+        setHasAppliedLocal(true);
+        if (onApplicationSuccess) {
+          onApplicationSuccess(oppId);
+        }
+      } catch (err: any) {
+        setErrorMessage(err.message || 'Application submission failed. Please try again.');
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else {
+      setHasAppliedLocal(true);
+      setTimeout(() => {
+        onClose();
+      }, 1500);
+    }
   };
 
   return (
@@ -145,11 +175,19 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({
           </div>
         )}
 
+        {/* Error Alert */}
+        {errorMessage && (
+          <div className="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200 text-xs flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
         {/* Action Button */}
-        {applied ? (
-          <div className="p-4 text-center bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200/80 text-emerald-800 dark:text-emerald-200 text-xs font-bold flex items-center justify-center gap-2">
+        {(hasAppliedLocal || opportunity.has_applied) ? (
+          <div className="p-4 text-center bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200/80 text-emerald-800 dark:text-emerald-200 text-xs font-bold flex items-center justify-center gap-2 font-mono">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>Verified Credentials Submitted to {opportunity.company}!</span>
+            <span>Application Submitted ✓ ({opportunity.application_status || 'Under TPO Review at ' + opportunity.company})</span>
           </div>
         ) : opportunity.is_expired ? (
           <div className="space-y-2">
@@ -166,12 +204,22 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({
         ) : (
           <button
             onClick={handleAction}
-            className="w-full py-3 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs flex items-center justify-center gap-2 group"
+            disabled={isSubmitting}
+            className="w-full py-3 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs flex items-center justify-center gap-2 group disabled:opacity-60 cursor-pointer"
           >
-            <span>
-              {role === 'student' ? 'Submit Verified Credentials & Apply' : role === 'recruiter' ? 'Shortlist Candidate for Interview' : 'Adopt Module into Syllabus'}
-            </span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
+                <span>Submitting Verified Credentials...</span>
+              </>
+            ) : (
+              <>
+                <span>
+                  {role === 'student' ? 'Submit Verified Credentials & Apply' : role === 'recruiter' ? 'Shortlist Candidate for Interview' : 'Adopt Module into Syllabus'}
+                </span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
           </button>
         )}
       </div>

@@ -84,7 +84,7 @@ export const codeLabApi = {
             skills: ['Python', 'DSA', 'Problem Solving'],
             difficulty: 'Intermediate',
             estimated_time_minutes: 15,
-            starter_code: 'def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        diff = target - num\n        if diff in seen:\n            return [seen[diff], i]\n        seen[num] = i\n    return []',
+            starter_code: 'def two_sum(nums, target):\n    # TODO: Implement one-pass hash map in O(N) time and O(N) space\n    pass',
             visible_tests: [
               { test_case_id: 1, input: 'nums = [2, 7, 11, 15], target = 9', expected: '[0, 1]', is_hidden: false, category: 'visible', description: 'Standard positive integers' },
               { test_case_id: 2, input: 'nums = [3, 2, 4], target = 6', expected: '[1, 2]', is_hidden: false, category: 'visible', description: 'Non-consecutive indices' }

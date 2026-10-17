@@ -395,8 +395,29 @@ def get_opportunities(
     """
     student = get_or_create_student(student_id)
     ranked = matcher.rank_opportunities_for_student(student, OPPORTUNITIES, include_expired=include_expired)
+    
+    # Check applications from persistent store and memory
+    applied_map = {}
+    try:
+        persisted_apps = canonical_store.get_applications()
+        for a in persisted_apps:
+            if a.get("student_id") == student_id and not a.get("deleted_at"):
+                opp_key = a.get("opportunity_id")
+                if opp_key:
+                    applied_map[opp_key] = a.get("status", "Applied")
+    except Exception:
+        pass
+    for a in APPLICATIONS:
+        if a.get("student_id") == student_id:
+            opp_key = a.get("opportunity_id")
+            if opp_key:
+                applied_map[opp_key] = a.get("status", "Applied")
+
     for opp_res in ranked:
-        opp_obj = next((o for o in OPPORTUNITIES if o.get("id") == opp_res.get("id")), None)
+        opp_id = opp_res.get("opportunity_id") or opp_res.get("id")
+        opp_res["has_applied"] = bool(opp_id in applied_map)
+        opp_res["application_status"] = applied_map.get(opp_id)
+        opp_obj = next((o for o in OPPORTUNITIES if o.get("id") == opp_res.get("id") or o.get("id") == opp_id), None)
         if opp_obj:
             jd_res = analyze_student_for_opportunity(student, opp_obj)
             opp_res["jdFit"] = {
@@ -538,7 +559,7 @@ def get_profile_completion(student_id: str = Query("std_1")):
     Evaluates profile completion status against mandatory and recommended fields.
     """
     reg = STUDENT_REGISTRATIONS.get(student_id) or canonical_store.get_student_registration(student_id)
-    student = next((s for s in STUDENTS if s["id"] == student_id), None) or canonical_store.get_student(student_id) or STUDENTS[0]
+    student = get_or_create_student(student_id)
 
     conn = LINKEDIN_CONNECTIONS.get(student_id)
     is_li_connected = bool(conn and conn.get("connection_status") == "CONNECTED")
@@ -728,11 +749,21 @@ def apply_to_opportunity(req: ApplyOpportunityRequest):
     if not can_apply:
         raise HTTPException(status_code=400, detail=reason)
 
-    # 2. Check if student already applied (prevent duplicate applications!)
+    # 2. Check if student already applied (prevent duplicate applications across memory & canonical store)
     already_applied = any(
-        a["student_id"] == req.student_id and a["opportunity_id"] == req.opportunity_id
+        a.get("student_id") == req.student_id and a.get("opportunity_id") == req.opportunity_id
         for a in APPLICATIONS
     )
+    if not already_applied:
+        try:
+            persisted_apps = canonical_store.get_applications()
+            already_applied = any(
+                a.get("student_id") == req.student_id and a.get("opportunity_id") == req.opportunity_id and not a.get("deleted_at")
+                for a in persisted_apps
+            )
+        except Exception:
+            pass
+
     if already_applied:
         raise HTTPException(
             status_code=400,
@@ -740,7 +771,7 @@ def apply_to_opportunity(req: ApplyOpportunityRequest):
         )
 
     # 3. Find student
-    student = next((s for s in STUDENTS if s["id"] == req.student_id), STUDENTS[0])
+    student = get_or_create_student(req.student_id)
 
     # Calculate match percentage
     match_res = matcher.match_student_to_opportunity(student.get("skills", {}), opp)
@@ -770,6 +801,10 @@ def apply_to_opportunity(req: ApplyOpportunityRequest):
     }
 
     APPLICATIONS.append(new_application)
+    try:
+        canonical_store.create_application(new_application, actor_id=req.student_id)
+    except Exception:
+        pass
 
     if jd_analysis.get("verdict") == "STRONG_FIT":
         try:
@@ -794,14 +829,37 @@ def apply_to_opportunity(req: ApplyOpportunityRequest):
 @router.get("/applications")
 def get_student_applications(student_id: str = Query("std_1")):
     """
-    Returns all applications submitted by the given student.
+    Returns all applications submitted by the given student from memory and canonical store.
     """
-    student = next((s for s in STUDENTS if s["id"] == student_id), STUDENTS[0])
-    my_apps = [a for a in APPLICATIONS if a.get("student_id") == student_id or a.get("student_email") == student.get("email")]
+    student = get_or_create_student(student_id)
+    student_email = student.get("email")
+
+    seen_ids = set()
+    combined_apps = []
+
+    try:
+        persisted = canonical_store.get_applications(
+            lambda a: a.get("student_id") == student_id or (student_email and a.get("student_email") == student_email)
+        )
+        for a in persisted:
+            aid = a.get("id")
+            if aid and aid not in seen_ids:
+                seen_ids.add(aid)
+                combined_apps.append(a)
+    except Exception:
+        pass
+
+    for a in APPLICATIONS:
+        if (a.get("student_id") == student_id or (student_email and a.get("student_email") == student_email)):
+            aid = a.get("id")
+            if aid and aid not in seen_ids:
+                seen_ids.add(aid)
+                combined_apps.append(a)
+
     return {
         "status": "success",
-        "total": len(my_apps),
-        "applications": my_apps
+        "total": len(combined_apps),
+        "applications": combined_apps
     }
 
 @router.get("/course-recommendations")
@@ -883,7 +941,7 @@ def get_student_academician_recommendations(student_id: str = Query("std_1")):
     Clearly distinguishes 'Academician Recommendation' from 'AI / System Recommendation'.
     """
     from app.data.seed_data import ACADEMICIAN_RECOMMENDATIONS
-    student = next((s for s in STUDENTS if s["id"] == student_id), STUDENTS[0])
+    student = get_or_create_student(student_id)
     s_dept = student.get("department_id", "dept_comp")
     s_year = student.get("year", "3rd Year")
 
@@ -1281,7 +1339,7 @@ def get_student_recommended_projects(student_id: str = Query("std_1")):
     FEATURE 2: Student Project Discovery with AI Match Engine.
     Matches projects against student verified skills, gaps, and academic domain.
     """
-    student = next((s for s in STUDENTS if s["id"] == student_id), STUDENTS[0])
+    student = get_or_create_student(student_id)
     std_skills = student.get("skills", {})
     
     recommended = []

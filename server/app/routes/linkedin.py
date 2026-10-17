@@ -28,6 +28,7 @@ from pydantic import BaseModel
 from app.config import settings
 from app.data.seed_data import (
     STUDENTS,
+    get_or_create_student,
     log_audit_trail
 )
 from app.routes.student import STUDENT_REGISTRATIONS
@@ -239,9 +240,9 @@ def linkedin_oauth_callback(
     else:
         # Development fallback when credentials are not yet configured in local environment
         sub_id = f"li_sub_{code[:8] if len(code) >= 8 else 'std_1'}"
-        student = next((s for s in STUDENTS if s.get("id") == student_id), STUDENTS[0])
-        full_name = student.get("name", "Dhruv Patil")
-        email_addr = student.get("email", "dhruv.patil@rscoe.edu.in")
+        student = get_or_create_student(student_id)
+        full_name = student.get("name", "Student")
+        email_addr = student.get("email", "")
         is_email_verified = True
         picture_url = student.get("avatar", "")
         access_token = f"simulated_token_{code}"

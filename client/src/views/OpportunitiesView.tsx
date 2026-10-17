@@ -55,8 +55,18 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
   };
 
   // ATS Scanner state
-  const [resumeText, setResumeText] = useState<string>(
-    `Dhruv Patil | Computer Engineering, JSPM RSCOE Pune | CGPA: 8.92
+  const defaultResume = student?.name && student.name !== 'Dhruv Patil'
+    ? `${student.name} | ${student.department || 'Engineering'}, ${student.college || 'JSPM RSCOE'} | CGPA: ${student.cgpa || '8.0'}
+Email: ${student.email || 'student@rscoe.edu.in'}
+
+SUMMARY:
+Motivated engineering candidate focused on ${student.target_role || 'Software Engineering'} and technical systems.
+
+TECHNICAL SKILLS:
+${Object.keys(student.skills || {}).length > 0
+  ? Object.keys(student.skills).join(', ')
+  : 'Python, JavaScript, TypeScript, SQL, React, Node.js, Git, REST APIs'}`
+    : `Dhruv Patil | Computer Engineering, JSPM RSCOE Pune | CGPA: 8.92
 Email: dhruv.patil@rscoe.edu.in | GitHub: github.com/dhruv-patil
 
 SUMMARY:
@@ -76,8 +86,24 @@ PROJECTS:
 
 2. Distributed Microservices Task Engine
 • Developed an asynchronous event queue in FastAPI and Redis, reducing worker latency by 35%.
-• Deployed scalable services on Linux cloud servers with automated CI/CD pipelines.`
-  );
+• Deployed scalable services on Linux cloud servers with automated CI/CD pipelines.`;
+
+  const [resumeText, setResumeText] = useState<string>(defaultResume);
+
+  useEffect(() => {
+    if (student?.name && student.name !== 'Dhruv Patil' && (resumeText.startsWith('Dhruv Patil') || !resumeText)) {
+      setResumeText(`${student.name} | ${student.department || 'Engineering'}, ${student.college || 'JSPM RSCOE'} | CGPA: ${student.cgpa || '8.0'}
+Email: ${student.email || 'student@rscoe.edu.in'}
+
+SUMMARY:
+Motivated engineering candidate focused on ${student.target_role || 'Software Engineering'}.
+
+TECHNICAL SKILLS:
+${Object.keys(student.skills || {}).length > 0
+  ? Object.keys(student.skills).join(', ')
+  : 'Python, JavaScript, TypeScript, SQL, React, Node.js, Git'}`);
+    }
+  }, [student]);
 
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [scanResult, setScanResult] = useState<any>(null);
@@ -168,16 +194,6 @@ PROJECTS:
             }`}
           >
             ATS Scanner
-          </button>
-          <button
-            onClick={() => setActiveTab('funnel')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-              activeTab === 'funnel'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
-            }`}
-          >
-            Tracker
           </button>
           <button
             onClick={() => setActiveTab('tpo_noc')}
@@ -322,6 +338,12 @@ PROJECTS:
                           <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                             {opp.match_percentage}% Verified Match
                           </span>
+                          {opp.has_applied && (
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center gap-1">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                              <span>Applied ✓</span>
+                            </span>
+                          )}
                           {((opp as any).jdFit || (opp as any).jd_fit) && (
                             <span
                               className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border ${
@@ -511,7 +533,11 @@ PROJECTS:
                   </div>
                   <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
                     <span className="text-slate-500">Eligibility Status:</span>
-                    <span className="font-bold text-emerald-600 font-mono">Passed (TPO Signed)</span>
+                    {student?.verified_score && student.verified_score >= 70 ? (
+                      <span className="font-bold text-emerald-600 font-mono">Passed (TPO Signed)</span>
+                    ) : (
+                      <span className="font-bold text-amber-600 font-mono">Verification Pending ({student?.verified_score ? 'Score below 70%' : 'Skill Assessment Required'})</span>
+                    )}
                   </div>
                 </div>
 
@@ -541,6 +567,11 @@ PROJECTS:
                     >
                       Drive Closed on {selectedOpp.formatted_deadline || selectedOpp.deadline}
                     </button>
+                  ) : selectedOpp.has_applied ? (
+                    <div className="w-full py-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 text-xs font-bold border border-emerald-200 dark:border-emerald-800 flex items-center justify-center gap-1.5 font-mono">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                      <span>Application Submitted ✓ ({selectedOpp.application_status || 'Under TPO Review'})</span>
+                    </div>
                   ) : (
                     <button
                       onClick={() => onOpenOpportunityDetail(selectedOpp)}
@@ -677,69 +708,6 @@ PROJECTS:
       )}
 
       {/* Application Tracker Funnel Tab */}
-      {activeTab === 'funnel' && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-6">
-          <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">Active Placement Drive Pipeline</h3>
-            <p className="text-xs text-slate-500">Live progress across all registered campus recruitment drives.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="p-4 rounded-xl bg-indigo-50/40 dark:bg-indigo-950/20 border border-indigo-200/80 dark:border-indigo-800/40">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-indigo-700 dark:text-indigo-300">1. TPO Verified</span>
-                <span className="px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200/60">3</span>
-              </div>
-              <div className="space-y-2">
-                <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 text-xs shadow-xs border border-slate-200/60 dark:border-slate-800">
-                  <span className="font-bold block">Tata Technologies</span>
-                  <span className="text-[10px] text-slate-400">Software Trainee</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl bg-amber-50/40 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-800/40">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-amber-700 dark:text-amber-300">2. Aptitude Round</span>
-                <span className="px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200/60">1</span>
-              </div>
-              <div className="space-y-2">
-                <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 text-xs shadow-xs border border-slate-200/60 dark:border-slate-800">
-                  <span className="font-bold block">Persistent Systems</span>
-                  <span className="text-[10px] text-amber-600 font-semibold">Test Date: Oct 28, 2026</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl bg-purple-50/40 dark:bg-purple-950/20 border border-purple-200/80 dark:border-purple-800/40">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-purple-700 dark:text-purple-300">3. Technical Coding (AST)</span>
-                <span className="px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200/60">1</span>
-              </div>
-              <div className="space-y-2">
-                <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 text-xs shadow-xs border border-slate-200/60 dark:border-slate-800">
-                  <span className="font-bold block">Barclays Innovation</span>
-                  <span className="text-[10px] text-purple-600 font-semibold">Live Coding Round</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl bg-emerald-50/40 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-800/40">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">4. Offer Letter</span>
-                <span className="px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/60">1</span>
-              </div>
-              <div className="space-y-2">
-                <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 text-xs shadow-xs border border-slate-200/60 dark:border-slate-800">
-                  <span className="font-bold block">TechCorp Innovations</span>
-                  <span className="text-[10px] text-emerald-600 font-semibold">₹50,000/mo Stipend</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* 5. TPO No-Objection Certificate (NOC) Generator Tab */}
       {activeTab === 'tpo_noc' && (
         <div className="space-y-6">
@@ -956,7 +924,11 @@ PROJECTS:
                   <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700">
                     <span className="text-[10px] text-slate-400 uppercase font-bold block">Cutoff Eligibility</span>
                     <span className="text-lg font-black text-slate-900 dark:text-white block mt-0.5">80% HireX Score</span>
-                    <span className="text-[11px] text-emerald-600 font-semibold">Your Score: 88% (Eligible)</span>
+                    {student?.verified_score && student.verified_score >= 80 ? (
+                      <span className="text-[11px] text-emerald-600 font-semibold">Your Score: {student.verified_score}% (Eligible)</span>
+                    ) : (
+                      <span className="text-[11px] text-amber-600 font-semibold">Your Score: {student?.verified_score || 0}% ({student?.verified_score ? 'Under Cutoff' : 'Assessment Pending'})</span>
+                    )}
                   </div>
                   <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700">
                     <span className="text-[10px] text-slate-400 uppercase font-bold block">Selection Ratio</span>

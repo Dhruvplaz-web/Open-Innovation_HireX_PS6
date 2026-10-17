@@ -27,7 +27,8 @@ import {
   Layers,
   ChevronRight,
   Check,
-  RotateCcw
+  RotateCcw,
+  Upload
 } from 'lucide-react';
 import { getSkillQuestions, AssessmentQuestion } from '../data/skillQuestions';
 import { apiService } from '../services/api';
@@ -37,6 +38,8 @@ import { RoleSpecificSkillAnalysis } from '../components/RoleSpecificSkillAnalys
 interface SkillVerificationViewProps {
   studentId?: string;
   studentName?: string;
+  userProfile?: any;
+  student?: any;
   onNavigateTab?: (tab: string) => void;
 }
 
@@ -49,6 +52,8 @@ interface DetectedSkill {
 export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
   studentId = 'std_1',
   studentName = 'Dhruv Patil',
+  userProfile,
+  student,
   onNavigateTab
 }) => {
   const isDemo = studentId === 'std_1';
@@ -136,10 +141,48 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
   const examContainerRef = useRef<HTMLDivElement | null>(null);
   const multiPersonViolationCountRef = useRef<number>(0);
 
+  // Resume PDF upload state
+  const [isUploadingResume, setIsUploadingResume] = useState<boolean>(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Multi-violation tracking (Max 2 warnings -> 3rd disqualifies)
+  const violationCountRef = useRef<number>(0);
+  const [violationCount, setViolationCount] = useState<number>(0);
+  const [activeWarning, setActiveWarning] = useState<string | null>(null);
+
   // Pre-load and warm up face-api.js TinyFaceDetector models
   useEffect(() => {
     initFaceDetector().catch(() => {});
   }, []);
+
+  // Prefill extracted resume text and claimed skills from userProfile / student
+  useEffect(() => {
+    if (userProfile?.resumeText) {
+      setResumeText(userProfile.resumeText);
+    } else if (student?.bio && !isDemo) {
+      setResumeText(student.bio);
+    }
+    if (userProfile?.githubUrl) {
+      setGithubUrl(userProfile.githubUrl);
+    }
+    if (userProfile?.linkedinUrl) {
+      setLinkedinUrl(userProfile.linkedinUrl);
+    }
+    const claimed: string[] = userProfile?.claimedSkills || (student?.skills ? Object.keys(student.skills) : []);
+    if (claimed.length > 0 && detectedSkills.length === 0) {
+      const initialDetected: DetectedSkill[] = claimed.map((sk: string) => ({
+        name: sk,
+        sources: ['Manual', 'Resume'],
+        confidence: 85
+      }));
+      setDetectedSkills(initialDetected);
+      if (!selectedSkill && initialDetected.length > 0) {
+        setSelectedSkill(initialDetected[0].name);
+      }
+    }
+  }, [userProfile, student, isDemo]);
 
   // Verified Passport Items
   const [passportItems, setPassportItems] = useState<any[]>(
@@ -225,47 +268,67 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
     [studentId, stopAllMediaTracks]
   );
 
-  // Scan & detect skills from inputs
-  const handleScanInputs = () => {
-    const rawSkills = [
-      'Python',
-      'React',
-      'FastAPI',
-      'Machine Learning',
-      'SQL',
-      'Docker',
-      'Data Structures',
-      'TypeScript',
-      'PostgreSQL',
-      'Git',
-      'Linux',
-      'REST APIs'
-    ];
+  // Multi-violation handler: max 2 warnings -> 3rd disqualifies
+  const recordViolation = useCallback(
+    (reason: string) => {
+      violationCountRef.current++;
+      const currentCount = violationCountRef.current;
+      setViolationCount(currentCount);
 
+      // Log proctoring violation to backend audit engine
+      apiService
+        .logProctoringViolation(
+          'asmt_live_verification',
+          studentId,
+          currentCount >= 3 ? 'DISQUALIFICATION' : 'WARNING',
+          currentCount >= 3 ? 'CRITICAL' : 'HIGH',
+          'main_section',
+          'q_active',
+          `Violation ${currentCount}/3: ${reason}`
+        )
+        .catch(() => {});
+
+      if (currentCount >= 3) {
+        triggerDisqualification(`Disqualified: Max allowed violations exceeded (3/3) — ${reason}`);
+      } else {
+        setActiveWarning(`⚠️ Integrity Warning [${currentCount}/2]: ${reason}. A 3rd violation will result in immediate disqualification.`);
+        setTimeout(() => {
+          setActiveWarning(null);
+        }, 5000);
+      }
+    },
+    [studentId, triggerDisqualification]
+  );
+
+  // Helper for scanning with dynamic resume text
+  const handleScanInputsWithText = (textOverride?: string) => {
+    const rawSkills = [
+      'Python', 'React', 'FastAPI', 'Machine Learning', 'SQL',
+      'Docker', 'Data Structures', 'TypeScript', 'PostgreSQL',
+      'Git', 'Linux', 'REST APIs', 'Cloud Computing', 'AWS', 'Java'
+    ];
     const detected: DetectedSkill[] = [];
-    const lowerResume = resumeText.toLowerCase();
+    const lowerResume = (textOverride !== undefined ? textOverride : resumeText).toLowerCase();
     const lowerGithub = githubUrl.toLowerCase();
     const lowerLinkedin = linkedinUrl.toLowerCase();
 
     rawSkills.forEach((skill) => {
       const sLower = skill.toLowerCase();
       const sources: ('Resume' | 'GitHub' | 'LinkedIn' | 'Manual')[] = [];
-
       if (lowerResume.includes(sLower)) sources.push('Resume');
       if (lowerGithub.includes('python') || lowerGithub.includes('dhruv') || lowerGithub.includes(sLower)) {
-        if (['python', 'react', 'docker', 'fastapi', 'data structures'].includes(sLower)) {
+        if (['python', 'react', 'docker', 'fastapi', 'data structures', 'sql'].includes(sLower)) {
           sources.push('GitHub');
         }
       }
-      if (lowerLinkedin.includes('linkedin.com') && ['python', 'machine learning', 'react'].includes(sLower)) {
+      if (lowerLinkedin.includes('linkedin.com') && ['python', 'machine learning', 'react', 'cloud computing'].includes(sLower)) {
         sources.push('LinkedIn');
       }
-
       if (sources.length > 0) {
         detected.push({
           name: skill,
           sources,
-          confidence: Math.min(99, 70 + sources.length * 10 + Math.floor(Math.random() * 8))
+          confidence: Math.min(99, 75 + sources.length * 8)
         });
       }
     });
@@ -275,6 +338,37 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
       setSelectedSkill(detected[0].name);
     }
   };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingResume(true);
+    setUploadError(null);
+    setUploadedFileName(file.name);
+    try {
+      if (file.name.toLowerCase().endsWith('.pdf')) {
+        const result = await apiService.extractResumePdf(file);
+        if (result.text) {
+          setResumeText(result.text);
+          handleScanInputsWithText(result.text);
+        }
+      } else {
+        const text = await file.text();
+        setResumeText(text);
+        handleScanInputsWithText(text);
+      }
+    } catch (err: any) {
+      setUploadError(err.message || 'Failed to extract text from document');
+    } finally {
+      setIsUploadingResume(false);
+    }
+  };
+
+  // Scan & detect skills from inputs
+  const handleScanInputs = () => {
+    handleScanInputsWithText();
+  };
+
 
   // Add custom student entered skill
   const handleAddCustomSkill = () => {
@@ -381,35 +475,35 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
   useEffect(() => {
     if (examState !== 'active_exam') return;
 
-    // 1. Fullscreen change listener -> DISQUALIFY if exited
+    // 1. Fullscreen change listener -> record violation (warning 1 -> warning 2 -> 3rd terminates)
     const handleFullscreenChange = () => {
       if (!document.fullscreenElement) {
-        triggerDisqualification('Fullscreen mode was exited or minimized.');
+        recordViolation('Fullscreen mode was exited or minimized.');
       }
     };
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 
-    // 2. Escape key interceptor -> DISQUALIFY
+    // 2. Escape key interceptor -> record violation
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
-        triggerDisqualification('Escape key pressed during examination.');
+        recordViolation('Escape key pressed during examination.');
       }
     };
     window.addEventListener('keydown', handleKeyDown);
 
-    // 3. Tab switch / Visibility change -> DISQUALIFY
+    // 3. Tab switch / Visibility change -> record violation
     const handleVisibilityChange = () => {
       if (document.hidden || document.visibilityState === 'hidden') {
-        triggerDisqualification('Browser tab switched or assessment window hidden.');
+        recordViolation('Browser tab switched or assessment window hidden.');
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // 4. Window blur (lost focus) -> DISQUALIFY
+    // 4. Window blur (lost focus) -> record violation
     const handleBlur = () => {
-      triggerDisqualification('Assessment window lost focus (secondary application or tab switched).');
+      recordViolation('Assessment window lost focus (secondary application or tab switched).');
     };
     window.addEventListener('blur', handleBlur);
 
@@ -486,16 +580,17 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
             const report = await detectFaces(video, canvas);
             const detectedCount = report.faceCount;
 
-            // If more than 1 person (2 or more faces) detected -> TRIGGER DISQUALIFICATION
+            // If more than 1 person (2 or more faces) detected -> REQUIRE 3 CONSECUTIVE FRAMES (>2.5s)
             if (detectedCount > 1) {
               multiPersonViolationCountRef.current++;
               setDetectedPersonsCount(detectedCount);
 
-              // Disqualify if confirmed via deep-learning/shape-detection or verified over 2 frames:
-              if (report.source !== 'calibrated-cv' || multiPersonViolationCountRef.current >= 2) {
-                triggerDisqualification(
-                  `More than 1 person (${detectedCount} faces detected via ${report.source}) in camera view.`
+              // Require at least 3 consecutive frames (>2.5s duration) before recording violation
+              if (multiPersonViolationCountRef.current >= 3) {
+                recordViolation(
+                  `Multiple persons (${detectedCount} faces detected via ${report.source}) in camera view.`
                 );
+                multiPersonViolationCountRef.current = 0;
               }
             } else {
               multiPersonViolationCountRef.current = 0;
@@ -669,11 +764,11 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
               <span className="text-xs text-indigo-200/70 font-semibold">• Objective Employability Calibration</span>
             </div>
             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">
-              {studentName}'s Skill Verification
+              Complete your placement readiness
             </h2>
             <p className="text-sm text-indigo-200/80 max-w-2xl">
-              Detect skills from your Resume, GitHub, LinkedIn, or manual entry. Verify proficiency across Easy,
-              Intermediate, and Hard tiers under zero-tolerance browser and biometric proctoring.
+              Extract and calibrate your skills from your Resume, GitHub, LinkedIn, or proctored assessments.
+              Verify your proficiency across Easy, Intermediate, and Hard tiers under browser and camera integrity supervision.
             </p>
           </div>
 
@@ -933,6 +1028,19 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
       {/* ========================================================================= */}
       {examState === 'active_exam' && (
         <div className="relative rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden p-6 md:p-8 space-y-6">
+          {/* Active Integrity Warning Banner */}
+          {activeWarning && (
+            <div className="p-4 rounded-2xl bg-amber-500/10 border-2 border-amber-500/50 text-amber-900 dark:text-amber-200 flex items-center justify-between animate-pulse">
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
+                <span className="text-xs font-bold">{activeWarning}</span>
+              </div>
+              <span className="text-xs font-mono font-bold px-2 py-1 bg-amber-500/20 rounded">
+                Violations: {violationCount}/2
+              </span>
+            </div>
+          )}
+
           {/* Proctoring HUD Bar */}
           <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900 text-white">
             <div className="flex items-center gap-3">
@@ -1147,10 +1255,42 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
               <div className="space-y-4">
                 {/* Resume Ingestion */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                    <FileText className="w-3.5 h-3.5 text-indigo-500" />
-                    <span>Resume / CV Content (ATS Entity Parser)</span>
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5 text-indigo-500" />
+                      <span>Resume / CV Content (ATS Entity Parser)</span>
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                        accept=".pdf,.txt"
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        disabled={isUploadingResume}
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-2.5 py-1 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-xs font-semibold hover:bg-indigo-100 transition flex items-center gap-1.5 disabled:opacity-50"
+                      >
+                        <Upload className="w-3 h-3" />
+                        <span>{isUploadingResume ? 'Extracting...' : 'Upload PDF/TXT'}</span>
+                      </button>
+                    </div>
+                  </div>
+                  {uploadedFileName && (
+                    <div className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Uploaded: {uploadedFileName}</span>
+                    </div>
+                  )}
+                  {uploadError && (
+                    <div className="flex items-center gap-1.5 text-xs text-rose-500 font-medium">
+                      <AlertTriangle className="w-3.5 h-3.5" />
+                      <span>{uploadError}</span>
+                    </div>
+                  )}
                   <textarea
                     rows={3}
                     value={resumeText}

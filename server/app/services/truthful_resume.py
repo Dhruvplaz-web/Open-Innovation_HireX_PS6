@@ -8,7 +8,7 @@ the verified ATS competency section.
 import time
 import hashlib
 from typing import Dict, Any, List, Optional
-from app.data.seed_data import STUDENTS
+from app.data.seed_data import STUDENTS, get_or_create_student
 from app.services.evidence_mapper import evidence_mapper_service
 from app.ml.resume_scanner import resume_scanner
 
@@ -65,7 +65,7 @@ class TruthfulResumeService:
         populated strictly from student's verified records, AST compiler certifications,
         and Google XYZ formula bullet points.
         """
-        student = next((s for s in STUDENTS if s["id"] == student_id), None) or STUDENTS[0]
+        student = get_or_create_student(student_id)
         matrix = evidence_mapper_service.compute_student_matrix(student_id)
 
         # Pull strictly verified skills

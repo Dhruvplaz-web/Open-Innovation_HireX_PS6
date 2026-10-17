@@ -28,6 +28,7 @@ from app.ml.skill_intelligence import skill_intelligence, normalize_skill_name
 from app.routes.auth import require_roles
 from app.services.opportunity_lifecycle import parse_deadline, get_current_platform_date, filter_active_opportunities
 from app.services.jd_skill_analysis import analyze_student_for_opportunity, derive_requirements_from_opportunity
+from app.db.canonical_store import canonical_store
 
 router = APIRouter(prefix="/api/recruiter", tags=["Recruiter"])
 
@@ -275,7 +276,22 @@ def get_applicants(
     PART 18: Recruiter sees applicants for their jobs.
     Calculates explainable AI Match fit % from the Shared Skill Record with Strong-Skill rule.
     """
-    apps = list(APPLICATIONS)
+    seen_ids = set()
+    apps = []
+    try:
+        persisted = canonical_store.get_applications()
+        for a in persisted:
+            aid = a.get("id")
+            if aid and aid not in seen_ids:
+                seen_ids.add(aid)
+                apps.append(a)
+    except Exception:
+        pass
+    for a in APPLICATIONS:
+        aid = a.get("id")
+        if aid and aid not in seen_ids:
+            seen_ids.add(aid)
+            apps.append(a)
 
     if opportunity_id:
         apps = [a for a in apps if a.get("opportunity_id") == opportunity_id]
@@ -375,6 +391,14 @@ def update_application_status(
     """
     app_item = next((a for a in APPLICATIONS if a["id"] == req.application_id), None)
     if not app_item:
+        try:
+            persisted_app = canonical_store.get_application(req.application_id)
+            if persisted_app:
+                APPLICATIONS.append(persisted_app)
+                app_item = persisted_app
+        except Exception:
+            pass
+    if not app_item:
         raise HTTPException(status_code=404, detail="Application record not found.")
 
     valid_statuses = ["Applied", "Under Review", "Shortlisted", "Interview", "Selected", "Rejected"]
@@ -392,6 +416,16 @@ def update_application_status(
         "note": req.note or f"Status updated to '{matched_status}' by {RECRUITER_PROFILE.get('name', 'Recruiter')}."
     }
     app_item["status_history"].append(history_entry)
+
+    try:
+        canonical_store.update_application_status(
+            app_id=req.application_id,
+            new_status=matched_status,
+            note=req.note,
+            actor_id=email or "recruiter"
+        )
+    except Exception:
+        pass
 
     # Log audit trail (PART 39)
     log_audit_trail(
@@ -690,7 +724,12 @@ def get_incognito_talents(
                 continue
 
         # Check existing invitation status
-        invitation_sent = next((i for i in TALENT_INVITATIONS if i.get("student_id") == sid and i.get("recruiter_id") == rec_id and i.get("opportunity_id") == target_opp["id"]), None)
+        invitation_sent = next((i for i in TALENT_INVITATIONS if (i.get("student_id") == sid or i.get("talent_id") == talent_id) and i.get("recruiter_id") == rec_id and i.get("opportunity_id") == target_opp["id"]), None)
+        if not invitation_sent:
+            try:
+                invitation_sent = next((i for i in canonical_store.get_invitations() if (i.get("student_id") == sid or i.get("talent_id") == talent_id) and i.get("recruiter_id") == rec_id and i.get("opportunity_id") == target_opp["id"]), None)
+            except Exception:
+                pass
 
         talent_entry = {
             "talent_id": talent_id,
@@ -874,8 +913,13 @@ def send_talent_invitation(
     if not opp:
         raise HTTPException(status_code=404, detail="Opportunity not found.")
 
-    # Prevent duplicate pending invitations for same opportunity
-    dup = next((i for i in TALENT_INVITATIONS if i.get("student_id") == sid and i.get("opportunity_id") == req.opportunity_id and i.get("status") == "PENDING"), None)
+    # Prevent duplicate pending invitations for same opportunity across memory and store
+    dup = next((i for i in TALENT_INVITATIONS if i.get("student_id") == sid and i.get("opportunity_id") == req.opportunity_id and i.get("status") in ("PENDING", "INVITED")), None)
+    if not dup:
+        try:
+            dup = next((i for i in canonical_store.get_invitations() if i.get("student_id") == sid and i.get("opportunity_id") == req.opportunity_id and i.get("status") in ("PENDING", "INVITED")), None)
+        except Exception:
+            pass
     if dup:
         raise HTTPException(status_code=400, detail="An active invitation has already been sent to this talent for this opportunity.")
 
@@ -902,6 +946,10 @@ def send_talent_invitation(
     }
 
     TALENT_INVITATIONS.insert(0, new_inv)
+    try:
+        canonical_store.save_invitation(new_inv)
+    except Exception:
+        pass
 
     # Log audit trail
     log_audit_trail(
@@ -932,10 +980,27 @@ def get_recruiter_talent_invitations(
     rec_id = recruiter.get("id", "rec_1")
     rec_email = recruiter.get("email", "").lower()
 
-    sent_invs = [
-        i for i in TALENT_INVITATIONS 
-        if i.get("recruiter_id") == rec_id or (rec_email and i.get("recruiter_email", "").lower() == rec_email)
-    ]
+    seen_inv_ids = set()
+    sent_invs = []
+
+    try:
+        persisted = canonical_store.get_invitations(
+            lambda i: i.get("recruiter_id") == rec_id or (rec_email and i.get("recruiter_email", "").lower() == rec_email)
+        )
+        for i in persisted:
+            iid = i.get("id")
+            if iid and iid not in seen_inv_ids:
+                seen_inv_ids.add(iid)
+                sent_invs.append(i)
+    except Exception:
+        pass
+
+    for i in TALENT_INVITATIONS:
+        if i.get("recruiter_id") == rec_id or (rec_email and i.get("recruiter_email", "").lower() == rec_email):
+            iid = i.get("id")
+            if iid and iid not in seen_inv_ids:
+                seen_inv_ids.add(iid)
+                sent_invs.append(i)
 
     # Enrich with revealed identity if accepted
     enriched = []
