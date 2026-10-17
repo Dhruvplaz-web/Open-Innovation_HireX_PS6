@@ -25,7 +25,7 @@ const resolveApiBase = (): string => {
     return clean.endsWith('/api') ? clean : `${clean}/api`;
   }
   if (typeof window !== 'undefined' && window.location.hostname.includes('onrender.com')) {
-    return 'https://hirex-backend-r6by.onrender.com/api';
+    return 'https://hirex-backend-1p4a.onrender.com/api';
   }
   return '/api';
 };
@@ -784,6 +784,21 @@ export const apiService = {
     }
   },
 
+  // 3b. Extract Resume Plaintext from PDF/Document
+  async extractResumePdf(file: File): Promise<{ status: string; filename: string; text: string; char_count: number }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch(`${API_BASE}/resume/extract-pdf`, {
+      method: 'POST',
+      body: formData
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to extract resume text from document.");
+    }
+    return await res.json();
+  },
+
   // 4. Cryptographic Credential QR Verifier
   async verifyCredentialQR(qrData: string) {
     try {
@@ -1400,37 +1415,16 @@ export const apiService = {
   },
 
   async applyOpportunity(studentId: string, opportunityId: string) {
-    try {
-      const res = await fetch(`${API_BASE}/student/apply`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ student_id: studentId, opportunity_id: opportunityId })
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.detail || "Application submission failed");
-      }
-      return await res.json();
-    } catch (err: any) {
-      if (err.message && (
-        err.message.includes("Duplicate Application") || 
-        err.message.includes("Application Closed") || 
-        err.message.includes("Drive Closed")
-      )) {
-        throw err;
-      }
-      return {
-        status: "success",
-        message: "Application submitted successfully (offline recorded).",
-        application: {
-          id: `app_${Date.now()}`,
-          student_id: studentId,
-          opportunity_id: opportunityId,
-          status: "Applied",
-          applied_at: new Date().toISOString()
-        }
-      };
+    const res = await fetch(`${API_BASE}/student/apply`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ student_id: studentId, opportunity_id: opportunityId })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Application submission failed");
     }
+    return await res.json();
   },
 
   async getStudentApplications(studentId: string = "std_1") {
@@ -1441,19 +1435,8 @@ export const apiService = {
     } catch {
       return {
         status: "success",
-        total: 1,
-        applications: [
-          {
-            id: "app_1",
-            student_id: studentId,
-            student_name: "Dhruv Patil",
-            company: "Barclays India Innovation Centre",
-            title: "Full-Stack AI Developer Intern",
-            match_percentage: 92,
-            status: "Shortlisted",
-            applied_at: "2026-10-01T10:30:00Z"
-          }
-        ]
+        total: 0,
+        applications: []
       };
     }
   },
@@ -1590,19 +1573,12 @@ export const apiService = {
   },
 
   async getAcademicianStudentDetail(studentId: string) {
-    try {
-      const res = await fetch(`${API_BASE}/academician/student/${studentId}`);
-      if (!res.ok) throw new Error("Failed to fetch student details");
-      return await res.json();
-    } catch {
-      return {
-        status: "success",
-        student: FALLBACK_STUDENT,
-        shared_skill_record: FALLBACK_STUDENT.skills,
-        applications: [],
-        academician_recommendations: []
-      };
+    const res = await fetch(`${API_BASE}/academician/student/${studentId}`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to fetch student details");
     }
+    return await res.json();
   },
 
   async getAcademicianCohortSkillGaps(email?: string) {
@@ -2989,29 +2965,17 @@ export const apiService = {
   },
 
   async sendTalentInvitation(payload: { talent_id: string; opportunity_id: string; message: string }, email?: string) {
-    try {
-      const q = email ? `?email=${encodeURIComponent(email)}` : '';
-      const res = await fetch(`${API_BASE}/recruiter/talent-invitations${q}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", 'x-user-role': 'recruiter' },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) throw new Error("Failed to send talent invitation");
-      return await res.json();
-    } catch {
-      return {
-        status: "success",
-        message: `Invitation successfully sent to ${payload.talent_id}. Candidate will receive notification in their portal.`,
-        invitation: {
-          id: `inv_${Date.now().toString().slice(-6)}`,
-          talent_id: payload.talent_id,
-          opportunity_id: payload.opportunity_id,
-          message: payload.message,
-          status: "PENDING",
-          created_at: new Date().toISOString()
-        }
-      };
+    const q = email ? `?email=${encodeURIComponent(email)}` : '';
+    const res = await fetch(`${API_BASE}/recruiter/talent-invitations${q}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", 'x-user-role': 'recruiter' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to send talent invitation");
     }
+    return await res.json();
   },
 
   async getRecruiterTalentInvitations(email?: string) {

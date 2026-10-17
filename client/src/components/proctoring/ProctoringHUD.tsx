@@ -121,8 +121,12 @@ export const ProctoringHUD: React.FC<ProctoringHUDProps> = ({
     engine.stateMachine.transitionTo('ACTIVE');
     engineRef.current = engine;
 
-    // Start Webcam Feed
+    // Start Webcam Feed & Real AudioContext Analyser
     let stream: MediaStream | null = null;
+    let audioCtx: AudioContext | null = null;
+    let analyser: AnalyserNode | null = null;
+    let audioSource: MediaStreamAudioSourceNode | null = null;
+
     navigator.mediaDevices
       .getUserMedia({
         video: { width: { ideal: 320 }, height: { ideal: 240 }, facingMode: 'user' },
@@ -133,6 +137,34 @@ export const ProctoringHUD: React.FC<ProctoringHUDProps> = ({
         if (videoRef.current) {
           videoRef.current.srcObject = s;
           videoRef.current.play().catch(() => {});
+        }
+
+        // Connect real AudioContext analyser to microphone stream
+        try {
+          const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+          if (AudioContextClass && s.getAudioTracks().length > 0) {
+            audioCtx = new AudioContextClass();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256;
+            audioSource = audioCtx.createMediaStreamSource(s);
+            audioSource.connect(analyser);
+
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+            audioIntervalRef.current = setInterval(() => {
+              if (analyser) {
+                analyser.getByteFrequencyData(dataArray);
+                let sum = 0;
+                for (let i = 0; i < dataArray.length; i++) {
+                  sum += dataArray[i];
+                }
+                const avg = sum / dataArray.length;
+                const normalized = Math.min(100, Math.round((avg / 128) * 100));
+                setAudioLevel(normalized);
+              }
+            }, 250);
+          }
+        } catch (e) {
+          console.warn('[ProctoringHUD] AudioContext analyser init error:', e);
         }
       })
       .catch(() => {
@@ -160,11 +192,6 @@ export const ProctoringHUD: React.FC<ProctoringHUDProps> = ({
         }
       }
     }, 400);
-
-    // Audio Level Simulation / RMS poll
-    audioIntervalRef.current = setInterval(() => {
-      setAudioLevel(Math.floor(10 + Math.random() * 25));
-    }, 500);
 
     // Fullscreen Departure & Tab Visibility Listeners
     const handleVisibilityChange = () => {
@@ -208,6 +235,16 @@ export const ProctoringHUD: React.FC<ProctoringHUDProps> = ({
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('blur', handleWindowBlur);
       if (engineRef.current) engineRef.current.stop();
+      if (audioSource) {
+        try {
+          audioSource.disconnect();
+        } catch (_) {}
+      }
+      if (audioCtx && (audioCtx as any).state !== 'closed') {
+        try {
+          audioCtx.close();
+        } catch (_) {}
+      }
       if (stream) {
         stream.getTracks().forEach((t) => t.stop());
       }

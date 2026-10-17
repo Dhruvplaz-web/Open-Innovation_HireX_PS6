@@ -354,21 +354,9 @@ export class IntelligentProctoringEngine {
       const faceH = Math.max(10, maxSkinY - minSkinY);
       faceBoxes.push({ x: minSkinX, y: minSkinY, w: faceW, h: faceH, label: 'Candidate Face', confidence: faceConfidence });
 
-      const leftRatio = leftCluster.count / totalPixels;
-      const rightRatio = rightCluster.count / totalPixels;
-
-      if (leftRatio > 0.035 && rightRatio > 0.035) {
-        const leftCenterX = leftCluster.sumX / (leftCluster.count || 1);
-        const rightCenterX = rightCluster.sumX / (rightCluster.count || 1);
-        const clusterDist = Math.abs(rightCenterX - leftCenterX);
-
-        if (clusterDist > canvas.width * 0.38) {
-          faceCount = 2;
-          faceBoxes.length = 0;
-          faceBoxes.push({ x: leftCluster.minX, y: leftCluster.minY, w: leftCluster.maxX - leftCluster.minX, h: leftCluster.maxY - leftCluster.minY, label: 'Face #1', confidence: 0.93 });
-          faceBoxes.push({ x: rightCluster.minX, y: rightCluster.minY, w: rightCluster.maxX - rightCluster.minX, h: rightCluster.maxY - rightCluster.minY, label: 'Face #2', confidence: 0.91 });
-        }
-      }
+      // Note: Removed brittle left/right skin-pixel bimodal splitting (clusterDist > width * 0.38)
+      // which generated frequent false-positives from hand gestures and shoulders.
+      // Candidate face is tracked as faceCount = 1 when faceDetected.
     }
 
     // Centroid & Head Pose

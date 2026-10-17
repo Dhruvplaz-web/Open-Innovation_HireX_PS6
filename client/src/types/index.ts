@@ -176,6 +176,8 @@ export interface MatchedOpportunity {
   source_type?: 'ATS_DIRECT' | 'CAMPUS_TPO' | 'SCRAPED_EXTERNAL' | string;
   verified_source_badge?: string;
   risk_level?: 'LOW' | 'MEDIUM' | 'HIGH';
+  has_applied?: boolean;
+  application_status?: string;
   // Step 2 & 4 Additive JD Fit Fields
   skillRequirements?: SkillRequirement[];
   skill_requirements?: SkillRequirement[];
@@ -533,6 +535,9 @@ export interface CohortStudent {
   weak_skills: string[];
   application_status: string;
   target_role: string;
+  applied_for_what?: string;
+  readiness_pct?: number;
+  readiness_percentage?: number;
 }
 
 export interface CohortSkillGap {
@@ -879,7 +884,8 @@ export interface IncognitoTalentCandidate {
     }>;
     explanation: string;
   };
-  invitation_status?: 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'EXPIRED' | null;
+  invitation_status?: 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'EXPIRED' | 'INVITED' | string | null;
+  is_invited?: boolean;
   invitation_id?: string | null;
   identity_revealed: boolean;
   student_id?: string | null;

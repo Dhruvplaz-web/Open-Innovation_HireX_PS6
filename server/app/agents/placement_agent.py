@@ -15,7 +15,7 @@ to Gemini LLM reasoning when API key is provided.
 import json
 from typing import Dict, Any, List, Optional
 from app.config import settings
-from app.data.seed_data import STUDENTS, OPPORTUNITIES, COLLEGE_CURRICULUM
+from app.data.seed_data import STUDENTS, OPPORTUNITIES, COLLEGE_CURRICULUM, get_or_create_student
 from app.ml.job_matcher import matcher
 from app.ml.resume_scanner import resume_scanner
 from app.ml.code_auditor import code_auditor
@@ -53,7 +53,7 @@ class AutonomousPlacementAgent:
 
     def tool_audit_eligibility(self, student_id: str = "std_1", opportunity_id: str = "opp_1") -> Dict[str, Any]:
         """Tool 4: Checks student against college TPO eligibility criteria."""
-        student = next((s for s in STUDENTS if s["id"] == student_id), STUDENTS[0])
+        student = get_or_create_student(student_id)
         job = next((o for o in OPPORTUNITIES if o["id"] == opportunity_id), OPPORTUNITIES[0])
 
         criteria = job.get("eligibility", {
@@ -426,7 +426,7 @@ class AutonomousPlacementAgent:
         # 2. Intent: ATS Resume Scan
         elif "resume" in msg_lower or "ats" in msg_lower or "cv" in msg_lower:
             thought_process.append("Detected intent: ATS Resume Compatibility & Keyword Audit.")
-            student = next((s for s in STUDENTS if s["id"] == user_id), STUDENTS[0])
+            student = get_or_create_student(user_id)
             sample_resume = f"Full stack engineer proficient in {', '.join(student.get('skills', {}).keys())}. Deployed microservices with Docker on Linux."
             tool_used = "tool_scan_resume"
             tool_input = {"resume_text": sample_resume, "opportunity_id": "opp_1"}
@@ -522,7 +522,7 @@ class AutonomousPlacementAgent:
             }
 
         # 6. Default Student Fallback
-        student = next((s for s in STUDENTS if s["id"] == user_id), STUDENTS[0])
+        student = get_or_create_student(user_id)
         ranked = matcher.rank_opportunities_for_student(student, OPPORTUNITIES)
         top = ranked[0] if ranked else None
 

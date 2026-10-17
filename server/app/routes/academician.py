@@ -26,6 +26,7 @@ from app.ml.skill_intelligence import skill_intelligence, normalize_skill_name
 from app.routes.auth import require_roles
 from app.services.opportunity_lifecycle import filter_active_opportunities
 from app.services.jd_skill_analysis import analyze_student_for_opportunity
+from app.db.canonical_store import canonical_store
 
 router = APIRouter(prefix="/api/academician", tags=["Academician"])
 
@@ -110,6 +111,29 @@ def get_authorized_cohort_students(academician: Optional[Dict[str, Any]] = None)
                 cohort.append(s)
     return cohort
 
+def filter_cohort_by_year(cohort: List[Dict[str, Any]], year_str: Optional[str]) -> List[Dict[str, Any]]:
+    """Maps academic years ('3rd Year', '4th Year') and graduation cohorts ('2024'-'2027') bidirectionally."""
+    if not year_str or year_str.strip().lower() in ["all", "all years"]:
+        return cohort
+    clean = year_str.strip().lower()
+    year_map = {
+        "4th year": {"4th year", "2024", "2025", "final year", "4"},
+        "3rd year": {"3rd year", "2025", "2026", "third year", "3"},
+        "2nd year": {"2nd year", "2026", "2027", "second year", "2"},
+        "1st year": {"1st year", "2027", "2028", "first year", "1"},
+        "2024": {"2024", "4th year", "final year"},
+        "2025": {"2025", "3rd year", "4th year"},
+        "2026": {"2026", "2nd year", "3rd year"},
+        "2027": {"2027", "1st year", "2nd year"},
+    }
+    targets = year_map.get(clean, {clean})
+    return [
+        s for s in cohort
+        if str(s.get("year", "")).lower() in targets
+        or str(s.get("grad_year", "")).lower() in targets
+        or str(s.get("graduation_year", "")).lower() in targets
+    ]
+
 @router.get("/dashboard")
 def get_academician_dashboard(
     email: Optional[str] = Query(None),
@@ -186,8 +210,7 @@ def get_registered_students(
     cohort = get_authorized_cohort_students(academician)
 
     # Apply year filter
-    if year and year != "All":
-        cohort = [s for s in cohort if s.get("year", "").lower() == year.lower()]
+    cohort = filter_cohort_by_year(cohort, year)
 
     # Apply search filter
     if search:
@@ -213,7 +236,21 @@ def get_registered_students(
         weak = [sk for sk, val in skills_dict.items() if val.get("score", 0) < 60]
 
         student_apps = [a for a in APPLICATIONS if a.get("student_id") == s["id"]]
-        app_status = student_apps[0]["status"] if student_apps else "Not Applied"
+        try:
+            persisted = canonical_store.get_applications(lambda a: a.get("student_id") == s["id"])
+            for pa in persisted:
+                if not any(a.get("id") == pa.get("id") for a in student_apps):
+                    student_apps.append(pa)
+        except Exception:
+            pass
+
+        if student_apps:
+            latest_app = student_apps[-1]
+            applied_for_what = f"{latest_app.get('company', 'Company')} — {latest_app.get('title', 'Role')}"
+            app_status = latest_app.get("status", "Applied")
+        else:
+            applied_for_what = "None (Open to Campus Drives)"
+            app_status = "Not Applied"
 
         student_records.append({
             "id": s["id"],
@@ -231,6 +268,7 @@ def get_registered_students(
             "strong_skills": strong,
             "weak_skills": weak,
             "application_status": app_status,
+            "applied_for_what": applied_for_what,
             "target_role": s.get("target_role", "Software Engineer")
         })
 
@@ -379,6 +417,7 @@ def get_cohort_skill_gaps(
     """
     academician = resolve_current_academician(email, acad_id)
     cohort = get_authorized_cohort_students(academician)
+    cohort = filter_cohort_by_year(cohort, year)
 
     if not cohort:
         return {
@@ -1083,8 +1122,7 @@ def get_cohort_role_gaps(
     """
     academician = resolve_current_academician(email, acad_id)
     cohort = get_authorized_cohort_students(academician)
-    if year and year != "All":
-        cohort = [s for s in cohort if s.get("year", "").lower() == year.lower()]
+    cohort = filter_cohort_by_year(cohort, year)
 
     active_opps = filter_active_opportunities(OPPORTUNITIES, include_expired=False)
     if opportunity_id:

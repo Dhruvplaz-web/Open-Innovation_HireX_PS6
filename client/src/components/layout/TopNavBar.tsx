@@ -11,7 +11,10 @@ import {
   CheckCircle2,
   HelpCircle,
   X,
-  UserCheck
+  UserCheck,
+  Briefcase,
+  Building2,
+  Shield
 } from 'lucide-react';
 import { Role } from '../../types';
 
@@ -363,35 +366,83 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
               <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-[#131929] border border-slate-200 dark:border-slate-800 shadow-2xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 mb-2 border border-slate-200/50 dark:border-slate-700/50">
                   <p className="text-xs font-bold text-slate-900 dark:text-white">{userName}</p>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{userTitle}</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                    {currentRole === 'recruiter' ? 'Corporate Recruiter' : userTitle}
+                  </p>
                   <span className="mt-1 inline-block px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-                    Verified Institutional Identity
+                    {currentRole === 'recruiter' ? 'Verified Corporate Partner' : currentRole === 'admin' ? 'System Administrator' : currentRole === 'academician' ? 'College Placement Dean' : 'Verified Institutional Identity'}
                   </span>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsProfileMenuOpen(false);
-                    setActiveTab('profile');
-                  }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition"
-                >
-                  <UserCheck className="w-4 h-4 text-blue-500" />
-                  <span>My Student Profile & Dossier</span>
-                </button>
+                {currentRole === 'student' && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsProfileMenuOpen(false);
+                        setActiveTab('profile');
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition"
+                    >
+                      <UserCheck className="w-4 h-4 text-blue-500" />
+                      <span>My Student Profile & Dossier</span>
+                    </button>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsProfileMenuOpen(false);
-                    if (openModal) openModal('assessment');
-                  }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition"
-                >
-                  <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                  <span>Take Proctored Skill Assessment</span>
-                </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsProfileMenuOpen(false);
+                        if (openModal) openModal('assessment');
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition"
+                    >
+                      <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                      <span>Take Proctored Skill Assessment</span>
+                    </button>
+                  </>
+                )}
+
+                {currentRole === 'recruiter' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsProfileMenuOpen(false);
+                      setActiveTab('recruiter');
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition"
+                  >
+                    <Briefcase className="w-4 h-4 text-indigo-500" />
+                    <span>Recruiter Dashboard & Pipeline</span>
+                  </button>
+                )}
+
+                {currentRole === 'academician' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsProfileMenuOpen(false);
+                      setActiveTab('academician');
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition"
+                  >
+                    <Building2 className="w-4 h-4 text-sky-500" />
+                    <span>Academician Portal & Analytics</span>
+                  </button>
+                )}
+
+                {currentRole === 'admin' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsProfileMenuOpen(false);
+                      setActiveTab('admin');
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition"
+                  >
+                    <Shield className="w-4 h-4 text-purple-500" />
+                    <span>Admin System Controller</span>
+                  </button>
+                )}
 
                 <button
                   type="button"

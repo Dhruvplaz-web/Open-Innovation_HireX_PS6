@@ -93,6 +93,8 @@ class CanonicalStore:
         self.alumni_curriculum_feedback: List[dict] = []
         self.alumni_masterclasses: List[dict] = []
         self.teacher_alumni_endorsements: Dict[str, dict] = {}
+        self.invitations: Dict[str, dict] = {}
+        self.proctor_events: List[dict] = []
 
         self._load_or_bootstrap()
 
@@ -141,6 +143,8 @@ class CanonicalStore:
                     self.alumni_curriculum_feedback = data.get("alumni_curriculum_feedback", [])
                     self.alumni_masterclasses = data.get("alumni_masterclasses", [])
                     self.teacher_alumni_endorsements = data.get("teacher_alumni_endorsements", {})
+                    self.invitations = data.get("invitations", {})
+                    self.proctor_events = data.get("proctor_events", [])
 
                     if not self.curriculum_mappings or not self.academic_assignments or not self.academic_interventions:
                         self._bootstrap_intelligence_entities()
@@ -1056,7 +1060,9 @@ class CanonicalStore:
             "alumni_endorsements": self.alumni_endorsements,
             "alumni_curriculum_feedback": self.alumni_curriculum_feedback,
             "alumni_masterclasses": self.alumni_masterclasses,
-            "teacher_alumni_endorsements": self.teacher_alumni_endorsements
+            "teacher_alumni_endorsements": self.teacher_alumni_endorsements,
+            "invitations": self.invitations,
+            "proctor_events": self.proctor_events[-500:]
         }
         with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
@@ -1728,6 +1734,53 @@ class CanonicalStore:
 
             self._save_to_disk()
             return dict(app_item), prev_copy
+
+    # -------------------------------------------------------------
+    # TALENT INVITATIONS & PROCTOR EVENTS PERSISTENCE
+    # -------------------------------------------------------------
+    def get_invitations(self, filter_fn=None) -> List[dict]:
+        with self._lock:
+            res = list(self.invitations.values())
+            if filter_fn:
+                res = [i for i in res if filter_fn(i)]
+            return res
+
+    def save_invitation(self, inv_dict: dict) -> dict:
+        with self._lock:
+            inv_id = inv_dict.get("id") or f"inv_{uuid.uuid4().hex[:8]}"
+            inv_dict["id"] = inv_id
+            if "created_at" not in inv_dict:
+                inv_dict["created_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            self.invitations[inv_id] = inv_dict
+            self._save_to_disk()
+            return dict(inv_dict)
+
+    def update_invitation_status(self, inv_id: str, new_status: str) -> Optional[dict]:
+        with self._lock:
+            inv = self.invitations.get(inv_id)
+            if not inv:
+                return None
+            inv["status"] = new_status
+            inv["responded_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            self._save_to_disk()
+            return dict(inv)
+
+    def record_proctor_event(self, event_dict: dict) -> dict:
+        with self._lock:
+            event_id = event_dict.get("id") or f"pevt_{uuid.uuid4().hex[:8]}"
+            event_dict["id"] = event_id
+            if "timestamp" not in event_dict:
+                event_dict["timestamp"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            self.proctor_events.append(event_dict)
+            self._save_to_disk()
+            return dict(event_dict)
+
+    def get_proctor_events(self, filter_fn=None) -> List[dict]:
+        with self._lock:
+            res = list(self.proctor_events)
+            if filter_fn:
+                res = [e for e in res if filter_fn(e)]
+            return res
 
     # -------------------------------------------------------------
     # COURSE RECOMMENDATIONS (ACADEMICIAN -> STUDENT)

@@ -325,6 +325,29 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
     }
   };
 
+  const handleQuickRecommendCourse = async (skill: string, courseTitle: string, provider: string = 'NPTEL / Coursera') => {
+    try {
+      await apiService.academicianRecommendCourse({
+        target_type: 'cohort',
+        target_id: 'dept_comp',
+        target_label: 'Entire Computer Engineering Cohort',
+        skill,
+        course_title: courseTitle,
+        provider,
+        duration: '6 Weeks',
+        link: 'https://www.coursera.org',
+        note: `Targeted remediation recommended for cohort skill gap in ${skill}.`,
+        email: academicianEmail
+      });
+      setRecSuccessMessage(`Course recommendation for ${skill} successfully issued to cohort!`);
+      setTimeout(() => setRecSuccessMessage(null), 5000);
+      const updatedRecs = await apiService.getAcademicianRecommendations(academicianEmail);
+      setRecommendations(updatedRecs?.recommendations || []);
+    } catch (err) {
+      console.error('Quick recommend error:', err);
+    }
+  };
+
   const handleCreateIntervention = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsCreatingInt(true);
@@ -526,17 +549,6 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
             Industry Demand & Gap
           </button>
           <button
-            onClick={() => setActiveTab('interventions')}
-            className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
-              activeTab === 'interventions'
-                ? 'bg-white dark:bg-card-dark text-emerald-600 dark:text-emerald-400 shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <Award className="w-3.5 h-3.5" />
-            <span>Training Interventions ({interventions.length})</span>
-          </button>
-          <button
             onClick={() => setActiveTab('recommendations')}
             className={`px-3 py-1.5 rounded-xl transition ${
               activeTab === 'recommendations'
@@ -555,28 +567,6 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
             }`}
           >
             Placement Analytics
-          </button>
-          <button
-            onClick={() => setActiveTab('closed_loop')}
-            className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
-              activeTab === 'closed_loop'
-                ? 'bg-white dark:bg-card-dark text-purple-600 dark:text-purple-400 shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <TrendingUp className="w-3.5 h-3.5" />
-            <span>Closed-Loop Workflow</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('disputes')}
-            className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
-              activeTab === 'disputes'
-                ? 'bg-white dark:bg-card-dark text-amber-600 dark:text-amber-400 shadow-xs'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
-            <span>Appeals & Disputes {cohortDisputes.filter(d => d.status === 'PENDING_FACULTY_REVIEW').length > 0 && `(${cohortDisputes.filter(d => d.status === 'PENDING_FACULTY_REVIEW').length})`}</span>
           </button>
           <button
             onClick={() => onNavigateTab('collaboration')}
@@ -982,11 +972,11 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
           <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Year Filters */}
             <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto">
-              {['All', '2nd Year', '3rd Year', '4th Year'].map((yr) => (
+              {['All', '2024', '2025', '2026', '2027', '3rd Year', '4th Year'].map((yr) => (
                 <button
                   key={yr}
                   onClick={() => setYearFilter(yr)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
                     yearFilter === yr
                       ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs'
                       : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
@@ -1087,15 +1077,22 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
                         </span>
                       </td>
                       <td className="py-3 px-4">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
-                          std.application_status === 'Selected'
-                            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                            : std.application_status === 'Shortlisted'
-                            ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300'
-                            : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
-                        }`}>
-                          {std.application_status || 'Applied'}
-                        </span>
+                        <div className="space-y-1">
+                          <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                            std.application_status === 'Selected'
+                              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                              : std.application_status === 'Shortlisted'
+                              ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300'
+                              : std.application_status === 'Interview'
+                              ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300'
+                              : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                          }`}>
+                            {std.application_status || 'Applied'}
+                          </span>
+                          <span className="text-[11px] text-slate-600 dark:text-slate-300 block font-medium truncate max-w-[200px]" title={std.applied_for_what}>
+                            {std.applied_for_what || 'Open to Campus Drives'}
+                          </span>
+                        </div>
                       </td>
                       <td className="py-3 px-4 text-right">
                         <button
@@ -1211,60 +1208,63 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
               {(cohortIntelligence?.skills_readiness || [
-                { skill: "Python", readiness_percentage: 71, status: "READY", verified_students: 42 },
-                { skill: "SQL", readiness_percentage: 54, status: "MODERATE", verified_students: 31 },
-                { skill: "Cloud Computing", readiness_percentage: 38, status: "CRITICAL_GAP", verified_students: 19 },
-                { skill: "Machine Learning", readiness_percentage: 42, status: "MODERATE", verified_students: 23 },
-                { skill: "Docker", readiness_percentage: 21, status: "CRITICAL_GAP", verified_students: 12 }
-              ]).map((item: any) => (
-                <div
-                  key={item.skill}
-                  className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-900 dark:text-white text-sm">
-                      {item.skill} readiness
-                    </span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
-                      item.readiness_percentage >= 70
-                        ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                        : item.readiness_percentage >= 50
-                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
-                        : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
-                    }`}>
-                      {item.status ? item.status.replace('_', ' ') : `${item.readiness_percentage}%`}
-                    </span>
-                  </div>
-
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-xs font-mono">
-                      <span className="text-slate-500">Readiness Score</span>
-                      <span className="font-bold text-slate-900 dark:text-white">
-                        {item.readiness_percentage != null ? `${item.readiness_percentage}%` : "Insufficient data"}
+                { skill: "Python", readiness_pct: 71, status: "READY", verified_students: 42 },
+                { skill: "SQL", readiness_pct: 54, status: "MODERATE", verified_students: 31 },
+                { skill: "Cloud Computing", readiness_pct: 38, status: "CRITICAL_GAP", verified_students: 19 },
+                { skill: "Machine Learning", readiness_pct: 42, status: "MODERATE", verified_students: 23 },
+                { skill: "Docker", readiness_pct: 21, status: "CRITICAL_GAP", verified_students: 12 }
+              ]).map((item: any) => {
+                const readiness = item.readiness_pct ?? item.readiness_percentage ?? 0;
+                return (
+                  <div
+                    key={item.skill}
+                    className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-900 dark:text-white text-sm">
+                        {item.skill} readiness
+                      </span>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                        readiness >= 70
+                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                          : readiness >= 50
+                          ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                          : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+                      }`}>
+                        {item.status ? item.status.replace('_', ' ') : `${readiness}%`}
                       </span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
-                      <div
-                        className={`h-full rounded-full ${
-                          item.readiness_percentage >= 70
-                            ? 'bg-emerald-500'
-                            : item.readiness_percentage >= 50
-                            ? 'bg-amber-500'
-                            : 'bg-rose-500'
-                        }`}
-                        style={{ width: `${item.readiness_percentage || 0}%` }}
-                      />
+
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs font-mono">
+                        <span className="text-slate-500">Readiness Score</span>
+                        <span className="font-bold text-slate-900 dark:text-white">
+                          {readiness > 0 || item.readiness_pct != null || item.readiness_percentage != null ? `${readiness}%` : "Insufficient data"}
+                        </span>
+                      </div>
+                      <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                        <div
+                          className={`h-full rounded-full ${
+                            readiness >= 70
+                              ? 'bg-emerald-500'
+                              : readiness >= 50
+                              ? 'bg-amber-500'
+                              : 'bg-rose-500'
+                          }`}
+                          style={{ width: `${readiness || 0}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono pt-1 border-t border-slate-200/60 dark:border-slate-800">
+                      <span>Assessed Students:</span>
+                      <span className="font-bold text-slate-700 dark:text-slate-300">
+                        {item.verified_students || item.students_assessed || 0}
+                      </span>
                     </div>
                   </div>
-
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono pt-1 border-t border-slate-200/60 dark:border-slate-800">
-                    <span>Assessed Students:</span>
-                    <span className="font-bold text-slate-700 dark:text-slate-300">
-                      {item.verified_students || item.students_assessed || 0}
-                    </span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -1344,12 +1344,12 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
               </div>
 
               {/* Year Filter Buttons */}
-              <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-900 rounded-xl text-xs font-bold shrink-0">
-                {['All', '2nd Year', '3rd Year', '4th Year'].map((yr) => (
+              <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-900 rounded-xl text-xs font-bold shrink-0 overflow-x-auto">
+                {['All', '2024', '2025', '2026', '2027', '3rd Year', '4th Year'].map((yr) => (
                   <button
                     key={yr}
                     onClick={() => setYearFilter(yr)}
-                    className={`px-3 py-1.5 rounded-lg transition ${
+                    className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap ${
                       yearFilter === yr
                         ? 'bg-white dark:bg-card-dark text-slate-900 dark:text-white shadow-xs'
                         : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
@@ -1523,23 +1523,28 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
                     </div>
                   </div>
 
-                  {gap.gap_percentage > 0 && (
-                    <div className="flex items-center justify-between pt-1">
-                      <span className="text-[11px] text-rose-600 font-semibold">
-                        Δ Delta: -{gap.gap_percentage}% below hiring cutoff
+                  {/* Embedded Course Remediation Directly Beneath Gap Card */}
+                  <div className="mt-3 p-3 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono font-bold text-indigo-700 dark:text-indigo-400 uppercase tracking-wider flex items-center gap-1">
+                        <BookOpen className="w-3 h-3" />
+                        Remediation Course
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-medium">NPTEL / Coursera</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
+                        Mastering {gap.skill} - Industry Lab
                       </span>
                       <button
-                        onClick={() => {
-                          setRecSkill(gap.skill);
-                          setRecTitle(`Mastering ${gap.skill} - Industry Lab`);
-                          setActiveTab('recommendations');
-                        }}
-                        className="text-[11px] font-bold text-indigo-600 hover:underline"
+                        onClick={() => handleQuickRecommendCourse(gap.skill, `Mastering ${gap.skill} - Industry Acceleration Lab`)}
+                        className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold transition flex items-center gap-1 shrink-0 shadow-xs"
                       >
-                        Recommend Course →
+                        <Send className="w-3 h-3" />
+                        <span>Recommend</span>
                       </button>
                     </div>
-                  )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -1719,9 +1724,28 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
                 </p>
               </div>
 
-              <span className="px-3 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shrink-0">
-                Live Openings Analyzed: {dashboardData?.profile?.active_drives_count ?? 18}
-              </span>
+              <div className="flex items-center gap-2 flex-wrap shrink-0">
+                <button
+                  onClick={async () => {
+                    setIsLoading(true);
+                    try {
+                      const res = await apiService.getIndustryDemandGap(academicianEmail);
+                      setDemandGapData(res?.gap_analysis || res);
+                    } catch (e) {
+                      console.error(e);
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }}
+                  className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>⚡ Scan Active Job Listings</span>
+                </button>
+                <span className="px-3 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shrink-0">
+                  Live Openings Analyzed: {dashboardData?.profile?.active_drives_count ?? 18}
+                </span>
+              </div>
             </div>
 
             <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800">
@@ -1737,7 +1761,7 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                  {(demandGapData || [
+                  {( (Array.isArray(demandGapData) ? demandGapData : demandGapData?.gaps) || [
                     { skill: "Python", industry_demand_pct: 92, student_readiness_pct: 71, gap_percentage_points: 21, status: "MODERATE_GAP" },
                     { skill: "SQL", industry_demand_pct: 85, student_readiness_pct: 54, gap_percentage_points: 31, status: "CRITICAL_GAP" },
                     { skill: "Cloud Computing", industry_demand_pct: 76, student_readiness_pct: 38, gap_percentage_points: 38, status: "CRITICAL_GAP" },
@@ -2360,47 +2384,7 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
       {/* TAB: COHORT ASSESSMENT INTEGRITY REVIEW (Requirement 16 & 22) */}
       {/* ========================================================================= */}
       {activeTab === 'integrity' && (() => {
-        const rawAttempts = (integrityAudits?.attempts && integrityAudits.attempts.length > 0)
-          ? integrityAudits.attempts
-          : [
-              {
-                assessment_id: 'assmt_live_proctor_01',
-                student_id: 'std_1',
-                student_name: 'Dhruv Patil',
-                assessment_name: 'Python, React, FastAPI, SQL',
-                score: 85,
-                integrity_score: 96,
-                integrity_status: 'VALID',
-                total_warnings: 1,
-                total_violations: 0,
-                categories: { camera: 0, person: 0, phone: 0, audio: 0, browser: 1, fullscreen: 0 },
-                events: [
-                  { id: 'ev_01', eventType: 'ASSESSMENT_STARTED', severity: 'LOW', confidence: 1.0, durationSeconds: 0, timestamp: Date.now() - 600000, message: 'Assessment session initialized.' },
-                  { id: 'ev_02', eventType: 'CAMERA_CONNECTED', severity: 'LOW', confidence: 1.0, durationSeconds: 0, timestamp: Date.now() - 590000, message: 'Webcam feed established.' },
-                  { id: 'ev_03', eventType: 'MICROPHONE_CONNECTED', severity: 'LOW', confidence: 1.0, durationSeconds: 0, timestamp: Date.now() - 588000, message: 'Audio stream active.' },
-                  { id: 'ev_04', eventType: 'TAB_SWITCH', severity: 'LOW', confidence: 0.95, durationSeconds: 2, timestamp: Date.now() - 320000, message: 'Candidate switched tabs temporarily.' }
-                ],
-                disqualification_reason: null
-              },
-              {
-                assessment_id: 'assmt_flagged_demo_02',
-                student_id: 'std_2',
-                student_name: 'Rahul Sharma',
-                assessment_name: 'Python Core & Machine Learning',
-                score: 72,
-                integrity_score: 68,
-                integrity_status: 'FLAGGED_FOR_REVIEW',
-                total_warnings: 2,
-                total_violations: 2,
-                categories: { camera: 0, person: 1, phone: 0, audio: 1, browser: 1, fullscreen: 0 },
-                events: [
-                  { id: 'ev_11', eventType: 'ASSESSMENT_STARTED', severity: 'LOW', confidence: 1.0, durationSeconds: 0, timestamp: Date.now() - 900000, message: 'Assessment session initialized.' },
-                  { id: 'ev_12', eventType: 'MULTIPLE_PEOPLE_DETECTED', severity: 'MEDIUM', confidence: 0.88, durationSeconds: 4, timestamp: Date.now() - 600000, message: '2 persons detected in camera view for 4s.' },
-                  { id: 'ev_13', eventType: 'POSSIBLE_MULTIPLE_VOICES', severity: 'MEDIUM', confidence: 0.74, durationSeconds: 5, timestamp: Date.now() - 420000, message: 'Distinct voice frequencies detected in mic stream.' }
-                ],
-                disqualification_reason: null
-              }
-            ];
+        const rawAttempts = integrityAudits?.attempts || [];
 
         const filteredAttempts = rawAttempts.filter((att: any) => {
           if (integrityFilter === 'ALL') return true;
@@ -2514,7 +2498,16 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                    {filteredAttempts.map((att: any) => {
+                    {filteredAttempts.length === 0 ? (
+                      <tr>
+                        <td colSpan={8} className="py-12 text-center text-slate-500">
+                          <ShieldCheck className="w-8 h-8 text-slate-400 mx-auto mb-2 opacity-50" />
+                          <p className="font-bold text-sm">No proctored exam attempts recorded yet.</p>
+                          <p className="text-xs text-slate-400 mt-1">Student proctoring audit trails and integrity signals will appear here.</p>
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredAttempts.map((att: any) => {
                       const isDisq = att.integrity_status === 'DISQUALIFIED';
                       const isFlagged = att.integrity_status === 'FLAGGED_FOR_REVIEW';
                       const isWarn = att.integrity_status === 'WARNING';
@@ -2687,7 +2680,7 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
                           )}
                         </React.Fragment>
                       );
-                    })}
+                    }))}
                   </tbody>
                 </table>
               </div>

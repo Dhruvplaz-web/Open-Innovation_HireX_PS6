@@ -108,7 +108,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
   const [college, setCollege] = useState(userProfile?.college || 'JSPM RSCOE, Pune');
   const [department, setDepartment] = useState(userProfile?.department || 'Computer Engineering');
   const [year, setYear] = useState(userProfile?.year || '3rd Year');
-  const [cgpa, setCgpa] = useState<number>(userProfile?.cgpa || 8.5);
+  const [cgpa, setCgpa] = useState<number>(userProfile?.cgpa || 0);
   const [prn, setPrn] = useState(userProfile?.prn || '');
   const [targetRole, setTargetRole] = useState(userProfile?.targetRole || 'Full-Stack AI Engineer');
   const [companyName, setCompanyName] = useState(userProfile?.companyName || '');
@@ -117,7 +117,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
   // Resume & ATS Skill Ingestion State
   const [resumeText, setResumeText] = useState(userProfile?.resumeText || '');
   const [resumeFileName, setResumeFileName] = useState(userProfile?.resumeFileName || '');
-  const [githubUrl, setGithubUrl] = useState(userProfile?.githubUrl || 'https://github.com/dhruv-patil');
+  const [githubUrl, setGithubUrl] = useState(userProfile?.githubUrl || '');
   const [linkedinUrl, setLinkedinUrl] = useState(userProfile?.linkedinUrl || '');
   const [detectedSkills, setDetectedSkills] = useState<string[]>(() => {
     return userProfile?.detectedSkills || extractSkillsFromText(userProfile?.resumeText || '');
@@ -421,11 +421,11 @@ export const AuthView: React.FC<AuthViewProps> = ({
                   </label>
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                     {[
-                      { role: 'student' as Role, label: 'Student', icon: GraduationCap },
-                      { role: 'recruiter' as Role, label: 'Recruiter', icon: Briefcase },
-                      { role: 'academician' as Role, label: 'College', icon: Building2 },
-                      { role: 'admin' as Role, label: 'TPO Admin', icon: Shield },
-                      { role: 'alumni' as Role, label: 'Alumni', icon: Award }
+                      { role: 'student' as Role, label: 'Student', icon: GraduationCap, desc: 'Verify skills, take tests & unlock direct campus drives' },
+                      { role: 'recruiter' as Role, label: 'Recruiter', icon: Briefcase, desc: 'Source pre-vetted campus talent with integrity audit trails' },
+                      { role: 'academician' as Role, label: 'College', icon: Building2, desc: 'Track department readiness, skill gaps & drive clearances' },
+                      { role: 'admin' as Role, label: 'Admin', icon: Shield, desc: 'Institutional governance & system administration' },
+                      { role: 'alumni' as Role, label: 'Alumni', icon: Award, desc: 'Mentor junior students & provide verified company referrals' }
                     ].map((item) => {
                       const Icon = item.icon;
                       const isSelected = selectedRole === item.role;
@@ -434,7 +434,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                           key={item.role}
                           type="button"
                           onClick={() => setSelectedRole(item.role)}
-                          className={`p-2.5 rounded-xl border text-center transition flex flex-col items-center gap-1 ${
+                          className={`p-2.5 rounded-xl border text-center transition flex flex-col items-center gap-1.5 ${
                             isSelected
                               ? 'bg-indigo-600/20 border-indigo-500 text-indigo-400 font-bold shadow-xs'
                               : isDark
@@ -443,10 +443,18 @@ export const AuthView: React.FC<AuthViewProps> = ({
                           }`}
                         >
                           <Icon className="w-4 h-4" />
-                          <span className="text-xs">{item.label}</span>
+                          <span className="text-xs font-semibold">{item.label}</span>
                         </button>
                       );
                     })}
+                  </div>
+                  {/* Selected Persona One-Line Description */}
+                  <div className="mt-1 px-1 text-[11px] text-slate-400 dark:text-slate-400 text-center font-medium">
+                    {selectedRole === 'student' && 'Verify technical skills, take proctored tests, and unlock direct campus drives.'}
+                    {selectedRole === 'recruiter' && 'Source pre-vetted campus talent with tamper-proof integrity audit trails.'}
+                    {selectedRole === 'academician' && 'Track cohort readiness, analyze curriculum skill gaps, and grant drive clearances.'}
+                    {selectedRole === 'admin' && 'Institutional governance, system configuration, and master drive management.'}
+                    {selectedRole === 'alumni' && 'Mentor junior students and provide verified company job referrals.'}
                   </div>
                 </div>
 
@@ -1004,8 +1012,8 @@ export const AuthView: React.FC<AuthViewProps> = ({
                         }`}
                       >
                         <div>
-                          <span className="font-bold block group-hover:text-purple-400">TPO Admin</span>
-                          <span className="text-[10px] text-slate-400 font-mono">Placement Dir</span>
+                          <span className="font-bold block group-hover:text-purple-400">Admin</span>
+                          <span className="text-[10px] text-slate-400 font-mono">Controller</span>
                         </div>
                         <Shield className="w-3.5 h-3.5 text-purple-400" />
                       </button>

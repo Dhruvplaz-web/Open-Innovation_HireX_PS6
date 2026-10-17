@@ -7,7 +7,7 @@ import math
 from app.ml.skill_verifier import verifier
 from app.ml.job_matcher import matcher
 from app.ml.credential_verifier import credential_verifier
-from app.data.seed_data import STUDENTS, OPPORTUNITIES, COURSE_CATALOG, APPLICATIONS, log_audit_trail
+from app.data.seed_data import STUDENTS, OPPORTUNITIES, COURSE_CATALOG, APPLICATIONS, log_audit_trail, get_or_create_student
 from app.routes.auth import require_roles
 from app.services.jd_skill_analysis import analyze_student_for_opportunity
 from app.services.opportunity_lifecycle import filter_active_opportunities
@@ -1063,6 +1063,37 @@ def get_integrity_audit_logs(
         )
 
     attempts_list = []
+
+    # Synthesize from canonical store proctor events
+    try:
+        from app.db.canonical_store import canonical_store
+        stored_events = canonical_store.get_proctor_events()
+        grouped_by_aid = {}
+        for evt in stored_events:
+            aid = evt.get("assessmentAttemptId") or evt.get("assessment_id") or evt.get("attempt_id") or "asmt_live_verification"
+            if aid not in grouped_by_aid:
+                grouped_by_aid[aid] = []
+            grouped_by_aid[aid].append(evt)
+
+        for aid, evts in grouped_by_aid.items():
+            if aid not in ASSESSMENT_SESSIONS and aid not in INTEGRITY_SESSIONS:
+                first_evt = evts[0]
+                sid = first_evt.get("studentId") or first_evt.get("student_id") or "std_1"
+                is_disq = any(e.get("severity") == "DISQUALIFICATION" or e.get("type") == "DISQUALIFICATION" for e in evts)
+                ASSESSMENT_SESSIONS[aid] = {
+                    "assessment_id": aid,
+                    "student_id": sid,
+                    "skills": [first_evt.get("skill") or "Skill Verification"],
+                    "violations": evts,
+                    "violation_count": len(evts),
+                    "proctoring_status": "DISQUALIFIED" if is_disq else "FLAGGED_FOR_REVIEW",
+                    "disqualification_reason": "Excessive proctoring violations" if is_disq else None,
+                    "created_at": first_evt.get("timestamp"),
+                    "started_at": first_evt.get("timestamp")
+                }
+    except Exception as e:
+        print(f"[Integrity Audit Warning] Error loading canonical proctor events: {e}")
+
     all_sess_ids = set(list(ASSESSMENT_SESSIONS.keys()) + list(INTEGRITY_SESSIONS.keys()))
 
     for aid in all_sess_ids:
@@ -1570,6 +1601,12 @@ def log_violation(req: LogViolationRequest):
     session["violations"].append(event_record)
     PROCTORING_AUDIT_LOGS.append(event_record)
 
+    try:
+        from app.db.canonical_store import canonical_store
+        canonical_store.record_proctor_event(dict(event_record))
+    except Exception:
+        pass
+
     if is_disqualified:
         message = disqualify_reason
     elif counted:
@@ -1811,8 +1848,8 @@ def submit_multisection_assessment(sub: MultiSectionSubmission):
         recommended_courses.extend(courses)
 
     # Update Student Profile in memory with newly verified skills (only mutate matching student)
-    target_student = next((s for s in STUDENTS if s["id"] == sub.student_id), None)
-    student_record = target_student if target_student is not None else dict(STUDENTS[0])
+    target_student = get_or_create_student(sub.student_id)
+    student_record = target_student
     updated_student_skills = dict(student_record.get("skills", {}))
 
     practical_score = min(100.0, max(0.0, float(sub.practical_code_score if sub.practical_code_score is not None else 85.0)))
@@ -1990,7 +2027,7 @@ def submit_assessment(sub: AssessmentSubmission):
         code_complexity_score=sub.practical_code_score or 85.0
     )
     
-    student = next((s for s in STUDENTS if s["id"] == sub.student_id), STUDENTS[0])
+    student = get_or_create_student(sub.student_id)
     student["skills"][sub.skill] = {
         "score": ml_result["verified_score"],
         "level": ml_result["proficiency"],
@@ -2021,7 +2058,7 @@ def submit_assessment(sub: AssessmentSubmission):
 
 @router.post("/verify-certificate")
 def verify_certificate(req: CertificateVerificationRequest):
-    student = next((s for s in STUDENTS if s["id"] == req.student_id), STUDENTS[0])
+    student = get_or_create_student(req.student_id)
     result = credential_verifier.verify_credential(
         credential_url_or_code=req.credential_url_or_code,
         student_name=student["name"],
@@ -2041,7 +2078,7 @@ def verify_certificate(req: CertificateVerificationRequest):
 @router.post("/verify-qr")
 def verify_qr(req: VerifyQRRequest):
     student_id = req.student_id or "std_1"
-    student = next((s for s in STUDENTS if s["id"] == student_id), STUDENTS[0])
+    student = get_or_create_student(student_id)
     result = credential_verifier.verify_credential(
         credential_url_or_code=req.qr_payload,
         student_name=student.get("name", "Dhruv Patil"),
@@ -2071,8 +2108,8 @@ def scan_certificate_forensics(req: ForensicScanCertificateRequest):
     and returns verified skills with NCrF academic credit assignment.
     """
     from app.services.certificate_scanner import certificate_scanner_service
-    student = next((s for s in STUDENTS if s["id"] == req.student_id), STUDENTS[0])
-    kyc_name = req.student_kyc_name or student.get("name", "Dhruv Patil")
+    student = get_or_create_student(req.student_id)
+    kyc_name = req.student_kyc_name or student.get("name", "Student")
 
     result = certificate_scanner_service.parse_and_audit_certificate(
         raw_text=req.raw_text,
@@ -2119,7 +2156,7 @@ def commit_certificate_to_profile(req: CommitCertificateToProfileRequest):
             }
 
     # 3. Elevate verified composite score (+2 to +5)
-    student["verified_score"] = min(99, student.get("verified_score", 85) + 3)
+    student["verified_score"] = min(99, student.get("verified_score", 0) + 3)
 
     # 4. Broadcast live domain event
     sync_service.publish_event("CERTIFICATE_VERIFIED", {
@@ -2149,7 +2186,7 @@ def get_student_jd_analysis(
     sorted by overallFit descending.
     Strictly uses verified skills data; never uses personal PII attributes.
     """
-    student = next((s for s in STUDENTS if s["id"] == student_id), STUDENTS[0])
+    student = get_or_create_student(student_id)
     active_opps = filter_active_opportunities(OPPORTUNITIES, include_expired=False)
 
     analyses = []
