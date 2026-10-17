@@ -51,6 +51,8 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
   studentName = 'Dhruv Patil',
   onNavigateTab
 }) => {
+  const isDemo = studentId === 'std_1';
+
   // Main view navigation
   const [activeMainTab, setActiveMainTab] = useState<'assess' | 'passport'>('assess');
 
@@ -59,24 +61,28 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
 
   // Input sources
   const [resumeText, setResumeText] = useState<string>(
-    'Dhruv Patil — B.Tech Computer Engineering, JSPM RSCOE Pune.\nCore competencies: Python, React, FastAPI, Machine Learning, Docker, SQL, Data Structures, Scikit-Learn, PostgreSQL, REST APIs.'
+    isDemo
+      ? 'Dhruv Patil — B.Tech Computer Engineering, JSPM RSCOE Pune.\nCore competencies: Python, React, FastAPI, Machine Learning, Docker, SQL, Data Structures, Scikit-Learn, PostgreSQL, REST APIs.'
+      : ''
   );
-  const [githubUrl, setGithubUrl] = useState<string>('https://github.com/dhruvpatil');
-  const [linkedinUrl, setLinkedinUrl] = useState<string>('https://linkedin.com/in/dhruv-patil');
+  const [githubUrl, setGithubUrl] = useState<string>(isDemo ? 'https://github.com/dhruvpatil' : '');
+  const [linkedinUrl, setLinkedinUrl] = useState<string>(isDemo ? 'https://linkedin.com/in/dhruv-patil' : '');
   const [customSkillInput, setCustomSkillInput] = useState<string>('');
 
   // Detected skills
-  const [detectedSkills, setDetectedSkills] = useState<DetectedSkill[]>([
-    { name: 'Python', sources: ['Resume', 'GitHub'], confidence: 96 },
-    { name: 'React', sources: ['Resume', 'GitHub'], confidence: 92 },
-    { name: 'Machine Learning', sources: ['Resume', 'LinkedIn'], confidence: 89 },
-    { name: 'SQL', sources: ['Resume', 'Manual'], confidence: 85 },
-    { name: 'Docker', sources: ['GitHub'], confidence: 81 },
-    { name: 'Data Structures', sources: ['Resume', 'Manual'], confidence: 88 }
-  ]);
+  const [detectedSkills, setDetectedSkills] = useState<DetectedSkill[]>(
+    isDemo ? [
+      { name: 'Python', sources: ['Resume', 'GitHub'], confidence: 96 },
+      { name: 'React', sources: ['Resume', 'GitHub'], confidence: 92 },
+      { name: 'Machine Learning', sources: ['Resume', 'LinkedIn'], confidence: 89 },
+      { name: 'SQL', sources: ['Resume', 'Manual'], confidence: 85 },
+      { name: 'Docker', sources: ['GitHub'], confidence: 81 },
+      { name: 'Data Structures', sources: ['Resume', 'Manual'], confidence: 88 }
+    ] : []
+  );
 
   // Selected Skill & Difficulty
-  const [selectedSkill, setSelectedSkill] = useState<string>('Python');
+  const [selectedSkill, setSelectedSkill] = useState<string>(isDemo ? 'Python' : '');
   const [difficulty, setDifficulty] = useState<'easy' | 'intermediate' | 'hard'>('intermediate');
 
   // Active exam runtime questions & answers
@@ -136,32 +142,34 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
   }, []);
 
   // Verified Passport Items
-  const [passportItems, setPassportItems] = useState<any[]>([
-    {
-      skillName: 'Python',
-      assessmentScore: 92,
-      level: 'Hard',
-      verifiedDate: '2026-10-05',
-      sources: ['Resume', 'GitHub', 'Assessment'],
-      sha256Hash: 'a7c9f82d41b6e510839c4d921e1a539b708cf1948375928a01f654b9'
-    },
-    {
-      skillName: 'React',
-      assessmentScore: 88,
-      level: 'Intermediate',
-      verifiedDate: '2026-10-04',
-      sources: ['Resume', 'GitHub', 'Assessment'],
-      sha256Hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b'
-    },
-    {
-      skillName: 'FastAPI',
-      assessmentScore: 84,
-      level: 'Intermediate',
-      verifiedDate: '2026-10-02',
-      sources: ['Resume', 'GitHub', 'Assessment'],
-      sha256Hash: '4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fc'
-    }
-  ]);
+  const [passportItems, setPassportItems] = useState<any[]>(
+    isDemo ? [
+      {
+        skillName: 'Python',
+        assessmentScore: 92,
+        level: 'Hard',
+        verifiedDate: '2026-10-05',
+        sources: ['Resume', 'GitHub', 'Assessment'],
+        sha256Hash: 'a7c9f82d41b6e510839c4d921e1a539b708cf1948375928a01f654b9'
+      },
+      {
+        skillName: 'React',
+        assessmentScore: 88,
+        level: 'Intermediate',
+        verifiedDate: '2026-10-04',
+        sources: ['Resume', 'GitHub', 'Assessment'],
+        sha256Hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b'
+      },
+      {
+        skillName: 'FastAPI',
+        assessmentScore: 84,
+        level: 'Intermediate',
+        verifiedDate: '2026-10-02',
+        sources: ['Resume', 'GitHub', 'Assessment'],
+        sha256Hash: '4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fc'
+      }
+    ] : []
+  );
 
   // Clean up media streams and intervals
   const stopAllMediaTracks = useCallback(() => {
@@ -1223,40 +1231,46 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {detectedSkills.map((sk) => {
-                  const isSelected = selectedSkill.toLowerCase() === sk.name.toLowerCase();
-                  return (
-                    <div
-                      key={sk.name}
-                      onClick={() => setSelectedSkill(sk.name)}
-                      className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                        isSelected
-                          ? 'border-indigo-600 bg-indigo-50/80 dark:bg-indigo-950/40 shadow-xs ring-2 ring-indigo-600/20'
-                          : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 bg-white dark:bg-card-dark'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                          {sk.name}
-                        </span>
-                        {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600 shrink-0" />}
-                      </div>
-
-                      <div className="flex flex-wrap gap-1">
-                        {sk.sources.map((src) => (
-                          <span
-                            key={src}
-                            className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
-                          >
-                            {src}
+              {detectedSkills.length === 0 ? (
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-dashed border-slate-200 dark:border-slate-700 text-center text-xs text-slate-500">
+                  No skills detected yet. Type a skill name in Step 1 or parse your resume to extract candidate competencies.
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {detectedSkills.map((sk) => {
+                    const isSelected = selectedSkill.toLowerCase() === sk.name.toLowerCase();
+                    return (
+                      <div
+                        key={sk.name}
+                        onClick={() => setSelectedSkill(sk.name)}
+                        className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                          isSelected
+                            ? 'border-indigo-600 bg-indigo-50/80 dark:bg-indigo-950/40 shadow-xs ring-2 ring-indigo-600/20'
+                            : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 bg-white dark:bg-card-dark'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                            {sk.name}
                           </span>
-                        ))}
+                          {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600 shrink-0" />}
+                        </div>
+
+                        <div className="flex flex-wrap gap-1">
+                          {sk.sources.map((src) => (
+                            <span
+                              key={src}
+                              className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                            >
+                              {src}
+                            </span>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Step 3: Difficulty Level Selection (Easy, Intermediate, Hard) */}
@@ -1483,45 +1497,65 @@ export const SkillVerificationView: React.FC<SkillVerificationViewProps> = ({
           </div>
 
           {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {passportItems.map((item, idx) => (
-              <div
-                key={idx}
-                className="p-5 rounded-2xl border border-emerald-200/80 dark:border-emerald-800/40 bg-emerald-50/20 dark:bg-emerald-950/10 space-y-4"
+          {passportItems.length === 0 ? (
+            <div className="p-8 text-center rounded-2xl bg-slate-50/50 dark:bg-slate-800/30 border border-dashed border-slate-200 dark:border-slate-700">
+              <ShieldCheck className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No Verified Skills in Passport Yet</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+                Take a proctored assessment, complete a Code Lab challenge, or scan an authentic certificate to anchor your verified credentials.
+              </p>
+              <button
+                onClick={() => {
+                  setActiveMainTab('assess');
+                  setExamState('configure');
+                }}
+                className="mt-3 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition shadow-xs inline-flex items-center gap-1.5 cursor-pointer"
               >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="text-base font-black text-slate-900 dark:text-white">{item.skillName}</h4>
-                    <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                      Tier: {item.level || 'Mastery'}
-                    </span>
+                <Plus className="w-3.5 h-3.5" />
+                <span>Verify First Skill</span>
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {passportItems.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="p-5 rounded-2xl border border-emerald-200/80 dark:border-emerald-800/40 bg-emerald-50/20 dark:bg-emerald-950/10 space-y-4"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h4 className="text-base font-black text-slate-900 dark:text-white">{item.skillName}</h4>
+                      <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                        Tier: {item.level || 'Mastery'}
+                      </span>
+                    </div>
+
+                    <div className="text-right">
+                      <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                        {item.assessmentScore}%
+                      </span>
+                      <span className="block text-[9px] font-bold text-slate-400 uppercase">Verified Score</span>
+                    </div>
                   </div>
 
-                  <div className="text-right">
-                    <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
-                      {item.assessmentScore}%
-                    </span>
-                    <span className="block text-[9px] font-bold text-slate-400 uppercase">Verified Score</span>
+                  <div className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <div className="flex justify-between">
+                      <span>Date Verified:</span>
+                      <span className="font-semibold text-slate-800 dark:text-slate-200">{item.verifiedDate}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Integrity Guard:</span>
+                      <span className="font-semibold text-emerald-600">Audio/Cam Proctored</span>
+                    </div>
+                    <div className="flex justify-between font-mono text-[10px]">
+                      <span>SHA-256 Hash:</span>
+                      <span className="text-slate-400 truncate max-w-[120px]">{item.sha256Hash}</span>
+                    </div>
                   </div>
                 </div>
-
-                <div className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800">
-                  <div className="flex justify-between">
-                    <span>Date Verified:</span>
-                    <span className="font-semibold text-slate-800 dark:text-slate-200">{item.verifiedDate}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Integrity Guard:</span>
-                    <span className="font-semibold text-emerald-600">Audio/Cam Proctored</span>
-                  </div>
-                  <div className="flex justify-between font-mono text-[10px]">
-                    <span>SHA-256 Hash:</span>
-                    <span className="text-slate-400 truncate max-w-[120px]">{item.sha256Hash}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

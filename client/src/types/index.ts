@@ -1,4 +1,89 @@
-export type Role = 'student' | 'recruiter' | 'academician' | 'admin';
+export type Role = 'student' | 'recruiter' | 'academician' | 'admin' | 'alumni';
+
+export interface AlumniProfile {
+  id: string;
+  name: string;
+  email: string;
+  college: string;
+  department: string;
+  batch: string;
+  passing_year: number;
+  current_company: string;
+  designation: string;
+  city: string;
+  linkedin_url?: string;
+  github_url?: string;
+  avatar: string;
+  bio: string;
+  skills: string[];
+  is_verified_alumni: boolean;
+  verification_status: 'APPROVED' | 'PENDING' | 'DOCS_REQUESTED';
+  privacy_settings: {
+    show_company: boolean;
+    show_email_to_mentees: boolean;
+    show_phone: boolean;
+    allow_referral_requests: boolean;
+    allow_mentorship: boolean;
+  };
+  impact_score: number;
+  mentees_count: number;
+  referrals_count: number;
+  sessions_delivered: number;
+}
+
+export interface AlumniMentorshipRequest {
+  id: string;
+  alumni_id: string;
+  student_id: string;
+  student_name: string;
+  student_avatar?: string;
+  target_role: string;
+  topic: string;
+  message: string;
+  status: 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'COMPLETED';
+  scheduled_time?: string;
+  meeting_link?: string;
+  feedback_notes?: string;
+  created_at: string;
+}
+
+export interface AlumniReferralItem {
+  id: string;
+  alumni_id: string;
+  company: string;
+  role: string;
+  job_url?: string;
+  location: string;
+  experience_required: string;
+  status: 'OPEN' | 'CLOSED' | 'FILLED';
+  created_at: string;
+  student_referrals: {
+    student_id: string;
+    student_name: string;
+    status: 'SUBMITTED' | 'SHORTLISTED' | 'INTERVIEWING' | 'OFFERED' | 'REJECTED';
+    applied_at: string;
+    endorsement_note?: string;
+  }[];
+}
+
+export interface AlumniInsightItem {
+  id: string;
+  alumni_id: string;
+  alumni_name: string;
+  company: string;
+  designation: string;
+  role_interviewed: string;
+  rounds_breakdown: {
+    round_name: string;
+    focus: string;
+    sample_questions: string[];
+    difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+  }[];
+  skills_we_actually_use: string[];
+  tips_for_juniors: string;
+  upvotes: number;
+  created_at: string;
+}
 
 export interface VerifiedSkill {
   skill: string;

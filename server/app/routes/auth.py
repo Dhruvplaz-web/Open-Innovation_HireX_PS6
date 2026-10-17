@@ -51,6 +51,14 @@ DEMO_ACCOUNTS = [
         "title": "National Platform Lead",
         "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
         "id": "adm_1"
+    },
+    {
+        "role": "alumni",
+        "name": "Vikram Aditya",
+        "email": "vikram.aditya@google.com",
+        "title": "Staff Software Engineer, Google (JSPM RSCOE Batch 2021)",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Vikram",
+        "id": "alm_1"
     }
 ]
 
@@ -213,6 +221,11 @@ def login(req: LoginRequest):
         if std:
             inst_id = std.get("institution_id", "inst_rscoe")
             dept_id = std.get("department_id", "dept_comp")
+    elif user["role"] == "alumni":
+        is_verified = True
+        status = "APPROVED"
+        inst_id = "inst_rscoe"
+        dept_id = "dept_comp"
 
     token = create_token(user["id"], user["email"], user["role"])
     return {
@@ -239,7 +252,7 @@ def register(req: RegisterRequest):
         raise HTTPException(status_code=400, detail="Invalid email address.")
 
     role_clean = req.role.strip().lower()
-    valid_roles = ["student", "recruiter", "academician", "admin"]
+    valid_roles = ["student", "recruiter", "academician", "admin", "alumni"]
     if role_clean not in valid_roles:
         raise HTTPException(status_code=400, detail=f"Invalid role '{req.role}'. Must be one of {valid_roles}.")
 

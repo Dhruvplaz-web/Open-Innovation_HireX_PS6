@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { LeftIconRail } from './components/layout/LeftIconRail';
 import { TopNavBar } from './components/layout/TopNavBar';
+import { LeftIconRail } from './components/layout/LeftIconRail';
 import { HeroPerformanceCard } from './components/cards/HeroPerformanceCard';
 import { RightSidePanel } from './components/cards/RightSidePanel';
 import { StudentProgressCard } from './components/cards/StudentProgressCard';
@@ -41,6 +41,7 @@ import { VerifiedSkillPassport } from './components/passport/VerifiedSkillPasspo
 import { AcademicianPortalView } from './views/AcademicianPortalView';
 import { RecruiterPortalView } from './views/RecruiterPortalView';
 import { AdminPortalView } from './views/AdminPortalView';
+import { AlumniPortalView } from './views/AlumniPortalView';
 import { CollaborationHubView } from './views/CollaborationHubView';
 
 // Public Legal & Information Views
@@ -197,18 +198,135 @@ export const App: React.FC = () => {
     if (userProfile) {
       setCurrentRole(userProfile.role);
       localStorage.setItem('hirex_auth_role', userProfile.role);
+
+      const isDemoPersona = userProfile.uid === 'std_1' || userProfile.uid === 'rec_1' || userProfile.uid === 'acad_1' || userProfile.uid === 'adm_1' || userProfile.uid === 'alm_1';
+
       if (userProfile.role === 'student') {
-        setStudent(prev => ({
-          ...prev,
-          name: userProfile.displayName || prev.name,
-          email: userProfile.email || prev.email,
-          college: userProfile.college || prev.college,
-          department: userProfile.department || prev.department,
-          year: userProfile.year || prev.year,
-          cgpa: userProfile.cgpa || prev.cgpa,
-          target_role: userProfile.targetRole || prev.target_role,
-          avatar: userProfile.photoURL || prev.avatar,
-        }));
+        if (!isDemoPersona) {
+          // Real new user profile: zero verified stats, requires verification
+          setStudent(prev => {
+            const hasExistingSkills = prev.id === userProfile.uid && Object.keys(prev.skills).length > 0;
+            return {
+              id: userProfile.uid,
+              name: userProfile.displayName || userProfile.email?.split('@')[0] || 'New Student',
+              email: userProfile.email || '',
+              college: userProfile.college || 'JSPM RSCOE, Pune',
+              department: userProfile.department || 'Computer Engineering',
+              year: userProfile.year || '3rd Year',
+              cgpa: userProfile.cgpa || 8.0,
+              target_role: userProfile.targetRole || 'Full-Stack Developer',
+              avatar: userProfile.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.uid}`,
+              verified_score: userProfile.verifiedScore || (hasExistingSkills ? prev.verified_score : 0),
+              skills: hasExistingSkills ? prev.skills : {},
+              projects_count: prev.id === userProfile.uid ? prev.projects_count : 0,
+              assessments_completed: prev.id === userProfile.uid ? prev.assessments_completed : 0,
+              rank_in_college: prev.id === userProfile.uid ? prev.rank_in_college : 0,
+              bio: userProfile.bio || 'New member setting up verified skill passport.'
+            };
+          });
+
+          setPlacementReadiness({
+            overall_score: userProfile.verifiedScore || 0,
+            verified_score: userProfile.verifiedScore || 0,
+            percentile_rank: 'Not Calibrated',
+            target_role: userProfile.targetRole || 'Full-Stack Developer',
+            available_roles: [
+              'Cloud & DevOps Engineer',
+              'Full-Stack AI Developer',
+              'Autonomous AI Agent Engineer',
+              'Distributed Systems Architect'
+            ],
+            pillars: [
+              {
+                id: 'technical',
+                name: 'Technical Skills',
+                weight: '35% weight',
+                weight_numeric: 0.35,
+                score: userProfile.verifiedScore || 0,
+                status: userProfile.verifiedScore && userProfile.verifiedScore >= 75 ? ('Ready' as const) : ('Focus Gap' as const),
+                colorClass: 'bg-cyan-500 dark:bg-cyan-400',
+                badgeClass: userProfile.verifiedScore && userProfile.verifiedScore >= 75 ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+              },
+              {
+                id: 'aptitude',
+                name: 'Aptitude & Logic',
+                weight: '25% weight',
+                weight_numeric: 0.25,
+                score: 0,
+                status: 'Focus Gap' as const,
+                colorClass: 'bg-emerald-500 dark:bg-emerald-400',
+                badgeClass: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+              },
+              {
+                id: 'projects',
+                name: 'Projects & Experience',
+                weight: '20% weight',
+                weight_numeric: 0.20,
+                score: 0,
+                status: 'Focus Gap' as const,
+                colorClass: 'bg-blue-600 dark:bg-blue-500',
+                badgeClass: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+              },
+              {
+                id: 'credentials',
+                name: 'Profile & Credentials',
+                weight: '10% weight',
+                weight_numeric: 0.10,
+                score: 0,
+                status: 'Focus Gap' as const,
+                colorClass: 'bg-teal-500 dark:bg-teal-400',
+                badgeClass: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+              },
+              {
+                id: 'interview',
+                name: 'Interview & Communication',
+                weight: '10% weight',
+                weight_numeric: 0.10,
+                score: 0,
+                status: 'Focus Gap' as const,
+                colorClass: 'bg-amber-500 dark:bg-amber-400',
+                badgeClass: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+              }
+            ],
+            next_best_action: {
+              title: 'Verify Core Competencies',
+              description: 'Take a proctored assessment or solve an algorithmic lab to establish your baseline placement readiness score.',
+              target_tab: 'assessment'
+            }
+          });
+
+          setCampusBenchmarks(prev => prev.map(c => ({
+            ...c,
+            is_cleared: false
+          })));
+
+          setLearningStats({
+            verified_score: userProfile.verifiedScore || 0,
+            finished_lessons: 0,
+            ongoing_lessons: 0,
+            completed_assessments: 0,
+            rank: 0,
+            skills_breakdown: []
+          });
+        } else {
+          // Pre-populated demo student persona (Dhruv Patil)
+          setStudent(FALLBACK_STUDENT);
+          setPlacementReadiness(FALLBACK_READINESS);
+          setCampusBenchmarks(FALLBACK_BENCHMARKS);
+          setLearningStats({
+            verified_score: 88,
+            finished_lessons: 65,
+            ongoing_lessons: 38,
+            completed_assessments: 14,
+            rank: 4,
+            skills_breakdown: [
+              { skill: "Python", score: 92, level: "Advanced", verified: true },
+              { skill: "React", score: 89, level: "Advanced", verified: true },
+              { skill: "FastAPI", score: 84, level: "Intermediate", verified: true },
+              { skill: "Machine Learning", score: 82, level: "Intermediate", verified: true }
+            ]
+          });
+        }
       }
     }
   }, [userProfile]);
@@ -290,27 +408,92 @@ export const App: React.FC = () => {
     const fetchData = async () => {
       if (currentRole === 'student') {
         const studentId = userProfile?.uid || 'std_1';
+        const isDemoPersona = studentId === 'std_1' || studentId === 'rec_1' || studentId === 'acad_1' || studentId === 'adm_1' || studentId === 'alm_1';
         const data = await apiService.getStudentDashboard(studentId);
         if (data.student) {
-          setStudent(prev => ({
-            ...data.student,
-            name: userProfile?.displayName || prev.name || data.student.name,
-            email: userProfile?.email || prev.email || data.student.email,
-            college: userProfile?.college || prev.college || data.student.college,
-            department: userProfile?.department || prev.department || data.student.department,
-            year: userProfile?.year || prev.year || data.student.year,
-            cgpa: userProfile?.cgpa ?? prev.cgpa ?? data.student.cgpa,
-            target_role: userProfile?.targetRole || prev.target_role || data.student.target_role,
-            avatar: userProfile?.photoURL || prev.avatar || data.student.avatar,
-            bio: userProfile?.bio || prev.bio || data.student.bio
-          }));
+          setStudent(prev => {
+            const hasVerified = (data.student.verified_score || 0) > 0 || Object.keys(data.student.skills || {}).length > 0;
+            return {
+              ...data.student,
+              name: userProfile?.displayName || prev.name || data.student.name,
+              email: userProfile?.email || prev.email || data.student.email,
+              college: userProfile?.college || prev.college || data.student.college,
+              department: userProfile?.department || prev.department || data.student.department,
+              year: userProfile?.year || prev.year || data.student.year,
+              cgpa: userProfile?.cgpa ?? prev.cgpa ?? data.student.cgpa,
+              target_role: userProfile?.targetRole || prev.target_role || data.student.target_role,
+              avatar: userProfile?.photoURL || prev.avatar || data.student.avatar,
+              verified_score: isDemoPersona ? (data.student.verified_score || 88) : (hasVerified ? data.student.verified_score : 0),
+              skills: isDemoPersona ? (data.student.skills || prev.skills) : (hasVerified ? data.student.skills : {}),
+              projects_count: isDemoPersona ? data.student.projects_count : (data.student.projects_count || 0),
+              assessments_completed: isDemoPersona ? data.student.assessments_completed : (data.student.assessments_completed || 0),
+              rank_in_college: isDemoPersona ? data.student.rank_in_college : (data.student.rank_in_college || 0),
+              bio: userProfile?.bio || prev.bio || data.student.bio
+            };
+          });
         }
-        if (data.matched_opportunities) setOpportunities(data.matched_opportunities);
+        if (data.matched_opportunities) {
+          if (!isDemoPersona && (!userProfile?.verifiedScore || userProfile.verifiedScore === 0)) {
+            setOpportunities(data.matched_opportunities.map((o: any) => ({
+              ...o,
+              match_percentage: 0,
+              matched_skills: [],
+              missing_skills: (o.matched_skills || []).concat(o.missing_skills || []),
+              explanation: "Verification Required: Complete assessments or verify certificates to compute match."
+            })));
+          } else {
+            setOpportunities(data.matched_opportunities);
+          }
+        }
         if (data.chart_data) setChartData(data.chart_data);
         if (data.peer_scores) setPeers(data.peer_scores);
-        if (data.learning_stats) setLearningStats(data.learning_stats);
-        if (data.placement_readiness) setPlacementReadiness(data.placement_readiness);
-        if (data.campus_benchmarks) setCampusBenchmarks(data.campus_benchmarks);
+        if (data.learning_stats) {
+          if (!isDemoPersona && (!userProfile?.verifiedScore || userProfile.verifiedScore === 0)) {
+            setLearningStats({
+              verified_score: 0,
+              finished_lessons: 0,
+              ongoing_lessons: 0,
+              completed_assessments: 0,
+              rank: 0,
+              skills_breakdown: []
+            });
+          } else {
+            setLearningStats(data.learning_stats);
+          }
+        }
+        if (data.placement_readiness) {
+          if (!isDemoPersona && (!userProfile?.verifiedScore || userProfile.verifiedScore === 0)) {
+            setPlacementReadiness({
+              ...data.placement_readiness,
+              overall_score: 0,
+              verified_score: 0,
+              percentile: 0,
+              readiness_band: 'Needs Verification',
+              pillars: [
+                { id: 'technical', name: 'Verified Technical Skills', score: 0, weight: 0.35, status: 'Not Started' },
+                { id: 'aptitude', name: 'Cognitive Aptitude', score: 0, weight: 0.25, status: 'Not Started' },
+                { id: 'projects', name: 'AST Verified Projects', score: 0, weight: 0.20, status: 'Not Started' },
+                { id: 'academic', name: 'Academic Standing', score: userProfile?.cgpa ? Math.min(100, Math.round(userProfile.cgpa * 10)) : 80, weight: 0.20, status: 'Pending' }
+              ],
+              radar_dimensions: [
+                { dimension: 'Algorithms', candidate_score: 0, batch_avg: 72, industry_benchmark: 85 },
+                { dimension: 'System Design', candidate_score: 0, batch_avg: 65, industry_benchmark: 80 },
+                { dimension: 'Code Quality', candidate_score: 0, batch_avg: 70, industry_benchmark: 85 },
+                { dimension: 'Problem Solving', candidate_score: 0, batch_avg: 74, industry_benchmark: 88 },
+                { dimension: 'CS Fundamentals', candidate_score: 0, batch_avg: 68, industry_benchmark: 82 }
+              ]
+            });
+          } else {
+            setPlacementReadiness(data.placement_readiness);
+          }
+        }
+        if (data.campus_benchmarks) {
+          if (!isDemoPersona && (!userProfile?.verifiedScore || userProfile.verifiedScore === 0)) {
+            setCampusBenchmarks(data.campus_benchmarks.map((b: any) => ({ ...b, is_cleared: false })));
+          } else {
+            setCampusBenchmarks(data.campus_benchmarks);
+          }
+        }
       } else if (currentRole === 'recruiter') {
 
         const data = await apiService.getRecruiterDashboard();
@@ -371,6 +554,8 @@ export const App: React.FC = () => {
       ? 'Priya Sharma'
       : currentRole === 'academician'
       ? 'Dr. Rajesh Kulkarni'
+      : currentRole === 'alumni'
+      ? 'Vikram Aditya'
       : 'Admin Controller'
   );
 
@@ -381,6 +566,8 @@ export const App: React.FC = () => {
       ? 'Barclays Pune Campus Talent'
       : currentRole === 'academician'
       ? 'HOD Computer Engineering'
+      : currentRole === 'alumni'
+      ? 'Staff SWE, Google (Alumni 2021)'
       : 'System Administrator'
   );
 
@@ -391,6 +578,8 @@ export const App: React.FC = () => {
       ? 'https://api.dicebear.com/7.x/avataaars/svg?seed=Priya'
       : currentRole === 'academician'
       ? 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rajesh'
+      : currentRole === 'alumni'
+      ? 'https://api.dicebear.com/7.x/avataaars/svg?seed=Vikram'
       : 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin'
   );
 
@@ -531,10 +720,13 @@ export const App: React.FC = () => {
             />
           );
         case 'opportunities':
+        case 'applications':
+        case 'interviews':
           return (
             <OpportunitiesView
               opportunities={opportunities}
               student={student}
+              initialSubTab={activeTab === 'applications' || activeTab === 'interviews' ? 'funnel' : 'drives'}
               onOpenOpportunityDetail={(opp) => {
                 setSelectedOpportunity(opp);
                 setActiveModal('opportunity_detail');
@@ -556,6 +748,7 @@ export const App: React.FC = () => {
               initialTab="dossier"
               onOpenAssessment={() => setActiveModal('assessment')}
               onNavigateTab={handleNavigateTab}
+              onUpdateStudent={(updated) => setStudent(prev => ({ ...prev, ...updated }))}
             />
           );
         case 'incognito':
@@ -566,6 +759,7 @@ export const App: React.FC = () => {
               initialTab="incognito"
               onOpenAssessment={() => setActiveModal('assessment')}
               onNavigateTab={handleNavigateTab}
+              onUpdateStudent={(updated) => setStudent(prev => ({ ...prev, ...updated }))}
             />
           );
         default:
@@ -580,20 +774,30 @@ export const App: React.FC = () => {
 
     // 3. Academician / TPO Perspective
     if (currentRole === 'academician') {
+      const tabMap: Record<string, any> = {
+        opportunities: 'job_ingestion',
+        transcript: 'institutional_intelligence'
+      };
       return (
         <AcademicianPortalView
           onNavigateTab={handleNavigateTab}
           academicianEmail={userProfile?.email || 'dr.patil@jspmrscoe.edu.in'}
+          initialTab={tabMap[activeTab] || 'overview'}
         />
       );
     }
 
     // 4. Recruiter / Corporate Perspective
     if (currentRole === 'recruiter') {
+      const tabMap: Record<string, any> = {
+        opportunities: 'my-jobs',
+        incognito: 'incognito-talent'
+      };
       return (
         <RecruiterPortalView
           onNavigateTab={handleNavigateTab}
           recruiterEmail={userProfile?.email || 'priya.sharma@barclays.com'}
+          initialSubTab={tabMap[activeTab] || 'dashboard'}
         />
       );
     }
@@ -603,6 +807,20 @@ export const App: React.FC = () => {
       return (
         <AdminPortalView
           onNavigateTab={handleNavigateTab}
+        />
+      );
+    }
+
+    // 6. Distinguished Alumni Perspective
+    if (currentRole === 'alumni') {
+      const tabMap: Record<string, any> = {
+        opportunities: 'referrals'
+      };
+      return (
+        <AlumniPortalView
+          onNavigateTab={handleNavigateTab}
+          alumniEmail={userProfile?.email || 'vikram.aditya@google.com'}
+          initialTab={tabMap[activeTab] || 'overview'}
         />
       );
     }
@@ -617,11 +835,11 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-porcelain-100 dark:bg-porcelain-950 text-slate-800 dark:text-slate-100 selection:bg-brand-indigo/20 select-none">
+    <div className="flex h-screen w-screen overflow-hidden bg-transparent text-slate-800 dark:text-slate-100 selection:bg-blue-600/20 select-none">
       {/* Accessible Skip To Content Target */}
       <SkipToContent targetId="main-content" />
 
-      {/* 1. Left Icon Navigation Rail */}
+      {/* Modern Soft-Glassmorphic Vertical Role Navigation Rail */}
       <LeftIconRail
         activeTab={activeTab}
         setActiveTab={handleNavigateTab}
@@ -629,11 +847,11 @@ export const App: React.FC = () => {
         toggleDark={toggleDark}
         openModal={setActiveModal}
         currentRole={currentRole}
+        onSignOut={handleSignOut}
       />
 
-      {/* 2. Main Application Container */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden">
-        {/* Top Navbar */}
+      {/* Main Workspace Frame: Top Utility Bar + Scrollable Content */}
+      <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
         <TopNavBar
           currentRole={currentRole}
           setRole={(r) => handleEnterRoleFromLanding(r)}
@@ -643,12 +861,14 @@ export const App: React.FC = () => {
           userName={currentUserName}
           userAvatar={currentUserAvatar}
           userTitle={currentUserTitle}
+          isDark={isDark}
+          toggleDark={toggleDark}
           onGoToLanding={() => handleNavigateTab('landing')}
           onSignOut={handleSignOut}
         />
 
-        {/* Content Body with Error Boundary Isolation */}
-        <main id="main-content" tabIndex={-1} className="flex-1 px-4 md:px-8 pb-8 overflow-y-auto outline-none">
+        {/* Main Content Body */}
+        <main id="main-content" tabIndex={-1} className="flex-1 w-full px-4 md:px-8 py-5 outline-none overflow-y-auto">
           <ErrorBoundary>
             {renderMainView()}
             <GlobalFooter onNavigateTab={handleNavigateTab} />
@@ -699,6 +919,7 @@ export const App: React.FC = () => {
         isOpen={activeModal === 'profile'}
         onClose={() => setActiveModal('none')}
         student={student}
+        onNavigateTab={handleNavigateTab}
         onOpenAssessment={() => {
           setIsAssessmentActive(true);
           setActiveModal('assessment');

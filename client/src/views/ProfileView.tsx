@@ -26,7 +26,10 @@ import {
   AlertCircle,
   Fingerprint,
   Layers,
-  Lock
+  Lock,
+  Camera,
+  ShieldAlert,
+  Cpu
 } from 'lucide-react';
 import { StudentProfile, LinkedInConnectionProfile } from '../types';
 import { useAuth } from '../context/AuthContext';
@@ -35,34 +38,60 @@ import { TalentVisibilityCard } from '../components/profile/TalentVisibilityCard
 import { CertificateScannerModal } from '../components/modals/CertificateScannerModal';
 import { TruthfulResumeBuilderModal } from '../components/modals/TruthfulResumeBuilderModal';
 import { EvidenceMatrixDrawer } from '../components/evidence/EvidenceMatrixDrawer';
+import { AvatarCustomizerModal } from '../components/modals/AvatarCustomizerModal';
 
 interface ProfileViewProps {
   student: StudentProfile;
   initialTab?: 'dossier' | 'incognito' | 'collaboration';
   onOpenAssessment?: () => void;
   onNavigateTab?: (tab: string) => void;
+  onUpdateStudent?: (updated: Partial<StudentProfile>) => void;
 }
 
 export const ProfileView: React.FC<ProfileViewProps> = ({
   student,
   initialTab = 'dossier',
   onOpenAssessment,
-  onNavigateTab
+  onNavigateTab,
+  onUpdateStudent
 }) => {
-  const { userProfile, saveOnboardingProfile } = useAuth();
+  const { userProfile, saveOnboardingProfile, updateAvatar } = useAuth();
+  const isDemoPersona = (student.student_id === 'std_1' || student.id === 'std_1') && (student.verified_score || 0) > 0;
+
   const [profileTab, setProfileTab] = useState<'dossier' | 'incognito' | 'collaboration'>(initialTab);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [name, setName] = useState<string>(student.name || userProfile?.displayName || "Dhruv Patil");
-  const [college, setCollege] = useState<string>(student.college || userProfile?.college || "JSPM RSCOE, Pune");
-  const [department, setDepartment] = useState<string>(student.department || userProfile?.department || "Computer Engineering");
-  const [targetRole, setTargetRole] = useState<string>(student.target_role || userProfile?.targetRole || "Full-Stack AI Developer");
+  const [name, setName] = useState<string>(student.name || userProfile?.displayName || (isDemoPersona ? "Dhruv Patil" : "New Student"));
+  const [college, setCollege] = useState<string>(student.college || userProfile?.college || (isDemoPersona ? "JSPM RSCOE, Pune" : ""));
+  const [department, setDepartment] = useState<string>(student.department || userProfile?.department || (isDemoPersona ? "Computer Engineering" : ""));
+  const [targetRole, setTargetRole] = useState<string>(student.target_role || userProfile?.targetRole || (isDemoPersona ? "Full-Stack AI Developer" : ""));
+  const [year, setYear] = useState<string>(student.year || userProfile?.year || (isDemoPersona ? "3rd Year" : ""));
+  const [prn, setPrn] = useState<string>(student.student_id || userProfile?.prn || (isDemoPersona ? "72148291B" : ""));
+  const [cgpa, setCgpa] = useState<number>(student.cgpa || userProfile?.cgpa || (isDemoPersona ? 8.92 : 0.0));
+  const [githubUrl, setGithubUrl] = useState<string>(userProfile?.githubUrl || (isDemoPersona ? "https://github.com/dhruv-patil" : ""));
+  const [linkedinUrl, setLinkedinUrl] = useState<string>(userProfile?.linkedinUrl || (isDemoPersona ? "https://linkedin.com/in/dhruv-patil" : ""));
+  const [avatar, setAvatar] = useState<string>(student.avatar || userProfile?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${student.id || 'NewStudent'}`);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState<boolean>(false);
 
-  // New Modals State
   const [isScannerOpen, setIsScannerOpen] = useState<boolean>(false);
   const [isResumeModalOpen, setIsResumeModalOpen] = useState<boolean>(false);
   const [isEvidenceMatrixOpen, setIsEvidenceMatrixOpen] = useState<boolean>(false);
   const [liveSkills, setLiveSkills] = useState<Record<string, any>>(student.skills || {});
   const [committedCertificates, setCommittedCertificates] = useState<any[]>([]);
+
+  // Synchronize state when student prop or userProfile changes
+  useEffect(() => {
+    setName(student.name || userProfile?.displayName || (isDemoPersona ? "Dhruv Patil" : "New Student"));
+    setCollege(student.college || userProfile?.college || (isDemoPersona ? "JSPM RSCOE, Pune" : ""));
+    setDepartment(student.department || userProfile?.department || (isDemoPersona ? "Computer Engineering" : ""));
+    setTargetRole(student.target_role || userProfile?.targetRole || (isDemoPersona ? "Full-Stack AI Developer" : ""));
+    setYear(student.year || userProfile?.year || (isDemoPersona ? "3rd Year" : ""));
+    setPrn(student.student_id || userProfile?.prn || (isDemoPersona ? "72148291B" : ""));
+    setCgpa(student.cgpa || userProfile?.cgpa || (isDemoPersona ? 8.92 : 0.0));
+    setGithubUrl(userProfile?.githubUrl || (isDemoPersona ? "https://github.com/dhruv-patil" : ""));
+    setLinkedinUrl(userProfile?.linkedinUrl || (isDemoPersona ? "https://linkedin.com/in/dhruv-patil" : ""));
+    setAvatar(student.avatar || userProfile?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${student.id || 'NewStudent'}`);
+    setLiveSkills(student.skills || {});
+  }, [student, userProfile, isDemoPersona]);
 
   const handleCertificateCommitted = (result: any) => {
     if (!result) return;
@@ -84,9 +113,21 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       }
     }
   };
+
+  const handleSaveAvatar = async (newAvatarUrl: string) => {
+    setAvatar(newAvatarUrl);
+    await updateAvatar(newAvatarUrl);
+    if (onUpdateStudent) {
+      onUpdateStudent({ avatar: newAvatarUrl });
+    }
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 3000);
+  };
+
   const [bio, setBio] = useState<string>(
-    student.bio || userProfile?.bio ||
-    "Final year Computer Engineering student building autonomous agentic systems and high-throughput microservices in Python & TypeScript. Aiming for Tier-1 Product, R&D, and High-Frequency Tech roles across India."
+    student.bio || userProfile?.bio || (isDemoPersona
+      ? "Final year Computer Engineering student building autonomous agentic systems and high-throughput microservices in Python & TypeScript. Aiming for Tier-1 Product, R&D, and High-Frequency Tech roles across India."
+      : "")
   );
   const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -99,8 +140,28 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         college,
         department,
         targetRole,
-        bio
+        year,
+        prn,
+        cgpa,
+        githubUrl,
+        linkedinUrl,
+        bio,
+        photoURL: avatar
       });
+
+      if (onUpdateStudent) {
+        onUpdateStudent({
+          name,
+          college,
+          department,
+          target_role: targetRole,
+          year,
+          cgpa,
+          bio,
+          avatar
+        });
+      }
+
       setIsEditing(false);
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3500);
@@ -209,27 +270,41 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       <div className="p-6 md:p-8 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm relative overflow-hidden">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-            <div className="relative">
+            <div 
+              className="relative group cursor-pointer"
+              onClick={() => setIsAvatarModalOpen(true)}
+              title="Click to customize profile photo"
+            >
               <img
-                src={student.avatar}
-                alt={student.name}
-                className="w-24 h-24 rounded-2xl bg-slate-100 dark:bg-slate-800 object-cover border-2 border-slate-200/80 dark:border-slate-700 shadow-sm"
+                src={avatar}
+                alt={name}
+                className="w-24 h-24 rounded-2xl bg-slate-100 dark:bg-slate-800 object-cover border-2 border-slate-200/80 dark:border-slate-700 shadow-sm group-hover:opacity-90 transition"
               />
-              <span className="absolute -bottom-1.5 -right-1.5 p-1 rounded-md bg-emerald-500 text-white shadow-xs" title="Cryptographically Verified Profile">
-                <ShieldCheck className="w-3.5 h-3.5" />
+              <div className="absolute inset-0 rounded-2xl bg-black/50 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center text-white text-[10px] font-bold gap-1 backdrop-blur-xs">
+                <Camera className="w-5 h-5 text-white" />
+                <span>Change</span>
+              </div>
+              <span className={`absolute -bottom-1.5 -right-1.5 p-1 rounded-md text-white shadow-xs ${
+                (student.verified_score || 0) >= 75 ? 'bg-emerald-500' : 'bg-amber-500'
+              }`} title={(student.verified_score || 0) >= 75 ? "Cryptographically Verified Profile" : "Verification In Progress"}>
+                {(student.verified_score || 0) >= 75 ? <ShieldCheck className="w-3.5 h-3.5" /> : <ShieldAlert className="w-3.5 h-3.5" />}
               </span>
             </div>
 
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-                  {student.name}
+                  {name}
                 </h1>
                 <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                  Top 4% RSCOE
+                  {student.rank_in_college ? `Top ${student.rank_in_college}% RSCOE` : 'New Member (Unranked)'}
                 </span>
-                <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60">
-                  TPO Approved
+                <span className={`px-2 py-0.5 rounded-md text-xs font-semibold ${
+                  (student.verified_score || 0) >= 75
+                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60'
+                    : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60'
+                }`}>
+                  {(student.verified_score || 0) >= 75 ? 'TPO Approved' : 'Verification Required'}
                 </span>
               </div>
 
@@ -241,18 +316,26 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex flex-wrap items-center gap-3">
                 <span className="flex items-center gap-1">
                   <GraduationCap className="w-3.5 h-3.5" />
-                  <span>{student.college}</span>
+                  <span>{college}</span>
                 </span>
                 <span>•</span>
-                <span>{student.department}</span>
+                <span>{department}</span>
                 <span>•</span>
-                <span className="font-mono font-semibold">PRN: 72148291B</span>
+                <span className="font-mono font-semibold">PRN: {prn}</span>
               </p>
             </div>
           </div>
 
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-2.5 self-stretch sm:self-auto">
+            <button
+              onClick={() => setIsAvatarModalOpen(true)}
+              className="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700"
+            >
+              <Camera className="w-3.5 h-3.5 text-indigo-500" />
+              <span>Change Photo</span>
+            </button>
+
             <button
               onClick={() => setIsEvidenceMatrixOpen(true)}
               className="px-4 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs font-bold transition flex items-center gap-1.5 border border-indigo-200 dark:border-indigo-800/60"
@@ -279,26 +362,61 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           </div>
         </div>
 
-        {/* Bio Edit Section */}
+        {/* Profile Edit Section */}
         {isEditing ? (
-          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 space-y-3">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                Institutional Telemetry & Verified Credentials
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsAvatarModalOpen(true)}
+                className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+              >
+                <Camera className="w-3.5 h-3.5" />
+                <span>Customize Profile Photo</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
               <div>
                 <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Full Name</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none"
+                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">College / Institution</label>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Target Role Title</label>
+                <input
+                  type="text"
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Current CGPA (out of 10.0)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="10"
+                  value={cgpa}
+                  onChange={(e) => setCgpa(parseFloat(e.target.value) || 0)}
+                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">College / University</label>
                 <input
                   type="text"
                   value={college}
                   onChange={(e) => setCollege(e.target.value)}
-                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none"
+                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div>
@@ -307,37 +425,82 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   type="text"
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
-                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none"
+                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Academic Year</label>
+                <select
+                  value={year}
+                  onChange={(e) => setYear(e.target.value)}
+                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option value="1st Year">1st Year (FE)</option>
+                  <option value="2nd Year">2nd Year (SE)</option>
+                  <option value="3rd Year">3rd Year (TE)</option>
+                  <option value="Final Year">Final Year (BE)</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">University PRN / Roll No</label>
+                <input
+                  type="text"
+                  value={prn}
+                  onChange={(e) => setPrn(e.target.value)}
+                  placeholder="e.g. 72153921K"
+                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">GitHub Profile URL</label>
+                <input
+                  type="url"
+                  value={githubUrl}
+                  onChange={(e) => setGithubUrl(e.target.value)}
+                  placeholder="https://github.com/your-username"
+                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">LinkedIn Profile URL</label>
+                <input
+                  type="url"
+                  value={linkedinUrl}
+                  onChange={(e) => setLinkedinUrl(e.target.value)}
+                  placeholder="https://linkedin.com/in/your-profile"
+                  className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Target Role Title</label>
-              <input
-                type="text"
-                value={targetRole}
-                onChange={(e) => setTargetRole(e.target.value)}
-                className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none"
-              />
-            </div>
             <div>
               <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Professional Bio & Career Objective</label>
               <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
                 rows={3}
-                className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none"
+                className="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
-            <button
-              onClick={handleSave}
-              disabled={isSaving}
-              className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition disabled:opacity-50 flex items-center gap-1.5"
-            >
-              <Check className="w-3.5 h-3.5" />
-              <span>{isSaving ? "Syncing Across Database & Registry..." : "Save Profile Changes"}</span>
-            </button>
+
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={isSaving}
+                className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md transition disabled:opacity-50 flex items-center gap-1.5"
+              >
+                <Check className="w-3.5 h-3.5" />
+                <span>{isSaving ? "Syncing Across Database & Registry..." : "Save Profile Changes"}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         ) : (
 
@@ -400,15 +563,17 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           {/* 2. Academic & TPO Gatekeeper Dossier (The Core Metrics) */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/80 dark:border-slate-800 shadow-sm text-center">
-              <span className="text-2xl font-black text-indigo-600 dark:text-indigo-400 block">{student.verified_score}</span>
+              <span className="text-2xl font-black text-indigo-600 dark:text-indigo-400 block">{student.verified_score || 0}</span>
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">Skill Index</span>
-              <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">Top 4% RSCOE</span>
+              <span className={`text-[10px] font-semibold mt-1 block ${(student.verified_score || 0) >= 75 ? 'text-emerald-600' : 'text-slate-400'}`}>
+                {(student.verified_score || 0) >= 75 ? 'Top 4% RSCOE' : 'Not Verified Yet'}
+              </span>
             </div>
 
             <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/80 dark:border-slate-800 shadow-sm text-center">
-              <span className="text-2xl font-black text-slate-900 dark:text-white block">{student.cgpa}</span>
+              <span className="text-2xl font-black text-slate-900 dark:text-white block">{student.cgpa || 8.0}</span>
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">SPPU CGPA</span>
-              <span className="text-[10px] text-slate-500 mt-1 block">Computer Dept</span>
+              <span className="text-[10px] text-slate-500 mt-1 block">{department}</span>
             </div>
 
             <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/80 dark:border-slate-800 shadow-sm text-center">
@@ -418,21 +583,25 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </div>
 
             <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/80 dark:border-slate-800 shadow-sm text-center">
-              <span className="text-2xl font-black text-slate-900 dark:text-white block">86.4%</span>
+              <span className="text-2xl font-black text-slate-900 dark:text-white block">{(student.verified_score || 0) > 0 ? '86.4%' : 'Pending'}</span>
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">Attendance</span>
-              <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">Min 75% Met</span>
+              <span className="text-[10px] text-emerald-600 font-semibold mt-1 block">{(student.verified_score || 0) > 0 ? 'Min 75% Met' : 'Self-Reported'}</span>
             </div>
 
             <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/80 dark:border-slate-800 shadow-sm text-center">
-              <span className="text-2xl font-black text-purple-600 dark:text-purple-400 block">18.5</span>
+              <span className="text-2xl font-black text-purple-600 dark:text-purple-400 block">{(student.verified_score || 0) > 0 ? '18.5' : '0.0'}</span>
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">NCrF Credits</span>
               <span className="text-[10px] text-slate-500 mt-1 block">Out of 20 Target</span>
             </div>
 
             <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/80 dark:border-slate-800 shadow-sm text-center">
-              <span className="text-2xl font-black text-amber-500 block">#{student.rank_in_college}</span>
+              <span className="text-2xl font-black text-amber-500 block">
+                {student.rank_in_college ? `#${student.rank_in_college}` : '—'}
+              </span>
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">Batch Rank</span>
-              <span className="text-[10px] text-slate-500 mt-1 block">Of 420 Students</span>
+              <span className="text-[10px] text-slate-500 mt-1 block">
+                {student.rank_in_college ? 'Of 420 Students' : 'Assessment Pending'}
+              </span>
             </div>
           </div>
 
@@ -480,41 +649,82 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {Object.entries(liveSkills).map(([skill, val]) => (
-                <div
-                  key={skill}
-                  className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700 flex flex-col justify-between gap-2"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                      <span className="font-bold text-xs text-slate-900 dark:text-white">{skill}</span>
+            {Object.keys(liveSkills).length === 0 ? (
+              <div className="p-8 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 text-center space-y-3.5 bg-slate-50/50 dark:bg-slate-900/30">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/60 flex items-center justify-center mx-auto shadow-xs">
+                  <ShieldAlert className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">Zero Verified Skills (Clean Profile)</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-1 leading-relaxed">
+                    You are starting fresh! To earn your first verified skill badges, take a proctored assessment, solve an algorithmic challenge in the Code Lab, or scan an authentic NPTEL/AWS certificate.
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                  <button
+                    onClick={() => setIsScannerOpen(true)}
+                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5"
+                  >
+                    <Fingerprint className="w-3.5 h-3.5 text-indigo-200" />
+                    <span>Scan Certificate (OCR)</span>
+                  </button>
+                  {onOpenAssessment && (
+                    <button
+                      onClick={onOpenAssessment}
+                      className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5"
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5 text-pink-400" />
+                      <span>Take Proctored Test</span>
+                    </button>
+                  )}
+                  {onNavigateTab && (
+                    <button
+                      onClick={() => onNavigateTab('codelab')}
+                      className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700"
+                    >
+                      <Cpu className="w-3.5 h-3.5 text-purple-500" />
+                      <span>Solve in Code Lab</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {Object.entries(liveSkills).map(([skill, val]) => (
+                  <div
+                    key={skill}
+                    className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700 flex flex-col justify-between gap-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                        <span className="font-bold text-xs text-slate-900 dark:text-white">{skill}</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-slate-700 dark:text-slate-300 bg-slate-200/70 dark:bg-slate-700 px-2 py-0.5 rounded-md font-mono">
+                        {val.level}
+                      </span>
                     </div>
-                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-300 bg-slate-200/70 dark:bg-slate-700 px-2 py-0.5 rounded-md font-mono">
-                      {val.level}
+
+                    <div>
+                      <div className="flex justify-between text-[11px] font-mono text-slate-500 mb-1">
+                        <span>Proficiency:</span>
+                        <span className="font-bold text-slate-800 dark:text-slate-200">{val.score}%</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-sm overflow-hidden">
+                        <div
+                          className="h-full bg-slate-900 dark:bg-slate-100 rounded-sm"
+                          style={{ width: `${val.score}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <span className="text-[9px] font-mono text-slate-400 truncate">
+                      Proof: AST Unit Testsuite Certified
                     </span>
                   </div>
-
-                  <div>
-                    <div className="flex justify-between text-[11px] font-mono text-slate-500 mb-1">
-                      <span>Proficiency:</span>
-                      <span className="font-bold text-slate-800 dark:text-slate-200">{val.score}%</span>
-                    </div>
-                    <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-sm overflow-hidden">
-                      <div
-                        className="h-full bg-slate-900 dark:bg-slate-100 rounded-sm"
-                        style={{ width: `${val.score}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <span className="text-[9px] font-mono text-slate-400 truncate">
-                    Proof: AST Unit Testsuite Certified
-                  </span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Cryptographic Badges & National Credentials */}
@@ -547,39 +757,61 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 </div>
               ))}
 
-              <div className="p-3.5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/70 dark:border-indigo-800/40 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-900 dark:text-white">NPTEL Elite Certificate — Cloud Computing & Distributed Systems</span>
-                    <span className="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-                      Score: 84%
+              {isDemoPersona && (
+                <>
+                  <div className="p-3.5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/70 dark:border-indigo-800/40 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-slate-900 dark:text-white">NPTEL Elite Certificate — Cloud Computing & Distributed Systems</span>
+                        <span className="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                          Score: 84%
+                        </span>
+                      </div>
+                      <p className="font-mono text-[10px] text-slate-500 mt-0.5 truncate max-w-lg">
+                        SHA-256: a4f89d31b9e28f110c7e2b74051a96da438fbcd58269e8b15a6b0c20188941cf
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 shrink-0">
+                      +3 NCrF Credits Added
                     </span>
                   </div>
-                  <p className="font-mono text-[10px] text-slate-500 mt-0.5 truncate max-w-lg">
-                    SHA-256: a4f89d31b9e28f110c7e2b74051a96da438fbcd58269e8b15a6b0c20188941cf
-                  </p>
-                </div>
-                <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 shrink-0">
-                  +3 NCrF Credits Added
-                </span>
-              </div>
 
-              <div className="p-3.5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/70 dark:border-indigo-800/40 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-900 dark:text-white">HireX Certified Algorithmic Engineer — AST Linear O(N)</span>
-                    <span className="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-                      8 Labs Passed
+                  <div className="p-3.5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/70 dark:border-indigo-800/40 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-slate-900 dark:text-white">HireX Certified Algorithmic Engineer — AST Linear O(N)</span>
+                        <span className="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                          8 Labs Passed
+                        </span>
+                      </div>
+                      <p className="font-mono text-[10px] text-slate-500 mt-0.5 truncate max-w-lg">
+                        SHA-256: 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 shrink-0">
+                      +2 NCrF Credits Added
                     </span>
                   </div>
-                  <p className="font-mono text-[10px] text-slate-500 mt-0.5 truncate max-w-lg">
-                    SHA-256: 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
+                </>
+              )}
+
+              {!isDemoPersona && committedCertificates.length === 0 && (
+                <div className="p-6 rounded-2xl bg-slate-50/60 dark:bg-slate-800/40 border border-dashed border-slate-200 dark:border-slate-700 text-center">
+                  <ShieldCheck className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No Verified Credentials in Ledger Yet</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto">
+                    Scan an authentic certificate using the Optical Scanner or complete a proctored assessment to anchor your first SHA-256 cryptographic credential.
                   </p>
+                  <button
+                    type="button"
+                    onClick={() => setIsScannerOpen(true)}
+                    className="mt-3 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition shadow-xs inline-flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>Scan First Certificate</span>
+                  </button>
                 </div>
-                <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 shrink-0">
-                  +2 NCrF Credits Added
-                </span>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -595,22 +827,26 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             <div className="space-y-3 text-xs">
               <div>
                 <span className="text-slate-400 block text-[10px] font-bold uppercase">Target Role</span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200">{targetRole}</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200">{targetRole || (isDemoPersona ? "Full-Stack AI Developer" : "Role Not Set")}</span>
               </div>
 
               <div>
                 <span className="text-slate-400 block text-[10px] font-bold uppercase">Expected Package (CTC)</span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200">₹12.0 - ₹16.0 LPA</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200">{isDemoPersona ? "₹12.0 - ₹16.0 LPA" : "₹6.0 - ₹10.0 LPA"}</span>
               </div>
 
               <div>
                 <span className="text-slate-400 block text-[10px] font-bold uppercase">Preferred IT Locations</span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200">Bengaluru • Hyderabad • Pune • Delhi-NCR • Remote</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200">
+                  {isDemoPersona ? "Bengaluru • Hyderabad • Pune • Delhi-NCR • Remote" : "Open to All Pan-India Locations"}
+                </span>
               </div>
 
               <div>
                 <span className="text-slate-400 block text-[10px] font-bold uppercase">Internship Availability</span>
-                <span className="font-semibold text-emerald-600 dark:text-emerald-400">Immediate 6-Month Semester VI Waiver</span>
+                <span className={`font-semibold ${isDemoPersona ? "text-emerald-600 dark:text-emerald-400" : "text-slate-600 dark:text-slate-300"}`}>
+                  {isDemoPersona ? "Immediate 6-Month Semester VI Waiver" : "Eligible upon Core Skill Verification"}
+                </span>
               </div>
             </div>
           </div>
@@ -630,12 +866,23 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 <div className="flex items-center gap-2 font-semibold text-slate-800 dark:text-slate-200">
                   <Github className="w-4 h-4 text-slate-900 dark:text-slate-100" />
                   <span>GitHub</span>
-                  <span className="text-slate-400 font-normal">({student.name ? student.name.toLowerCase().replace(/\s+/g, '-') : 'dhruv-patil'})</span>
+                  {githubUrl ? (
+                    <span className="text-slate-400 font-normal">
+                      ({githubUrl.replace(/^https?:\/\/(www\.)?github\.com\/?/i, '').replace(/\/$/, '') || (student.name ? student.name.toLowerCase().replace(/\s+/g, '-') : 'account')})
+                    </span>
+                  ) : null}
                 </div>
-                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800/60">
-                  <Check className="w-3 h-3" />
-                  <span>✓ Connected</span>
-                </span>
+                {githubUrl ? (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800/60">
+                    <Check className="w-3 h-3" />
+                    <span>✓ Connected</span>
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700/60 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-600">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                    <span>○ Not connected</span>
+                  </span>
+                )}
               </div>
 
               {/* LinkedIn Connected Profile */}
@@ -723,26 +970,46 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               </div>
 
               {/* Other Handles */}
-              <a
-                href="https://leetcode.com"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
-              >
-                <div className="flex items-center gap-2 font-semibold">
-                  <Code2 className="w-4 h-4" />
-                  <span>LeetCode: 280+ Solved</span>
+              {isDemoPersona ? (
+                <a
+                  href="https://leetcode.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+                >
+                  <div className="flex items-center gap-2 font-semibold">
+                    <Code2 className="w-4 h-4" />
+                    <span>LeetCode: 280+ Solved</span>
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                </a>
+              ) : (
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800">
+                  <div className="flex items-center gap-2 font-semibold text-slate-600 dark:text-slate-400">
+                    <Code2 className="w-4 h-4" />
+                    <span>LeetCode Profile</span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-medium">○ Pending Verification</span>
                 </div>
-                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-              </a>
+              )}
 
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800">
-                <div className="flex items-center gap-2 font-semibold">
-                  <Globe className="w-4 h-4" />
-                  <span>APAAR ID: 9823-4412-8871</span>
+              {isDemoPersona ? (
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800">
+                  <div className="flex items-center gap-2 font-semibold">
+                    <Globe className="w-4 h-4" />
+                    <span>APAAR ID: 9823-4412-8871</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-600 font-bold">✓ Synced</span>
                 </div>
-                <span className="text-[10px] text-emerald-600 font-bold">✓ Synced</span>
-              </div>
+              ) : (
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800">
+                  <div className="flex items-center gap-2 font-semibold text-slate-600 dark:text-slate-400">
+                    <Globe className="w-4 h-4" />
+                    <span>APAAR / ABC Academic ID</span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-medium">○ Not Linked</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -774,6 +1041,15 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         onEvidenceAdded={() => {
           // Dynamic refresh
         }}
+      />
+
+      {/* 5. Sovereign Avatar Customizer & Photo Upload Engine */}
+      <AvatarCustomizerModal
+        isOpen={isAvatarModalOpen}
+        onClose={() => setIsAvatarModalOpen(false)}
+        currentAvatar={avatar}
+        userName={name}
+        onSaveAvatar={handleSaveAvatar}
       />
     </div>
   );

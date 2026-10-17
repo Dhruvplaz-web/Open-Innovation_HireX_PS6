@@ -83,6 +83,13 @@ class CanonicalStore:
         self.recruiter_assessment_results: Dict[str, dict] = {}
         self.candidate_feedbacks: Dict[str, dict] = {}
         self.skill_timelines: Dict[str, dict] = {}
+        self.student_evidence: Dict[str, List[dict]] = {}
+        self.human_review_disputes: List[dict] = []
+        self.alumni: Dict[str, dict] = {}
+        self.alumni_mentorship_requests: List[dict] = []
+        self.alumni_referrals: List[dict] = []
+        self.alumni_insights: List[dict] = []
+        self.alumni_endorsements: List[dict] = []
 
         self._load_or_bootstrap()
 
@@ -121,11 +128,21 @@ class CanonicalStore:
                     self.recruiter_assessment_results = data.get("recruiter_assessment_results", {})
                     self.candidate_feedbacks = data.get("candidate_feedbacks", {})
                     self.skill_timelines = data.get("skill_timelines", {})
+                    self.student_evidence = data.get("student_evidence", {})
+                    self.human_review_disputes = data.get("human_review_disputes", [])
+                    self.alumni = data.get("alumni", {})
+                    self.alumni_mentorship_requests = data.get("alumni_mentorship_requests", [])
+                    self.alumni_referrals = data.get("alumni_referrals", [])
+                    self.alumni_insights = data.get("alumni_insights", [])
+                    self.alumni_endorsements = data.get("alumni_endorsements", [])
 
                     if not self.curriculum_mappings or not self.academic_assignments or not self.academic_interventions:
                         self._bootstrap_intelligence_entities()
-                        self._save_to_disk()
 
+                    if not self.alumni or not self.alumni_mentorship_requests:
+                        self._bootstrap_alumni_entities()
+
+                    self._save_to_disk()
                     self._initialized = True
                     return
                 except Exception as e:
@@ -237,6 +254,7 @@ class CanonicalStore:
             }
 
         self._bootstrap_intelligence_entities()
+        self._bootstrap_alumni_entities()
 
     def _bootstrap_intelligence_entities(self):
         """Initializes canonical intelligence data structures if absent."""
@@ -665,6 +683,240 @@ class CanonicalStore:
                 ]
             }
 
+    def _bootstrap_alumni_entities(self):
+        """Initializes canonical alumni profiles, requests, referrals and insights if absent."""
+        now = time.time()
+        iso_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(now))
+
+        if not self.alumni:
+            self.alumni = {
+                "alm_1": {
+                    "id": "alm_1",
+                    "name": "Vikram Aditya",
+                    "email": "vikram.aditya@google.com",
+                    "college": "JSPM RSCOE, Pune",
+                    "department": "Computer Engineering",
+                    "batch": "2021",
+                    "passing_year": 2021,
+                    "current_company": "Google",
+                    "designation": "Staff Software Engineer (Cloud Infrastructure & AI)",
+                    "city": "Bengaluru / Pune",
+                    "linkedin_url": "https://linkedin.com/in/vikram-aditya-google",
+                    "github_url": "https://github.com/vikram-aditya",
+                    "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Vikram",
+                    "bio": "JSPM RSCOE Batch 2021 alumnus. Mentoring juniors on Distributed Systems, Cloud Architecture, and Career Pathways.",
+                    "skills": ["Distributed Systems", "Go", "Python", "Kubernetes", "GCP", "System Design"],
+                    "is_verified_alumni": True,
+                    "verification_status": "APPROVED",
+                    "privacy_settings": {
+                        "show_company": True,
+                        "show_email_to_mentees": True,
+                        "show_phone": False,
+                        "allow_referral_requests": True,
+                        "allow_mentorship": True
+                    },
+                    "impact_score": 480,
+                    "mentees_count": 14,
+                    "referrals_count": 6,
+                    "sessions_delivered": 18,
+                    "version": 1,
+                    "created_at": iso_now,
+                    "updated_at": iso_now
+                },
+                "alm_2": {
+                    "id": "alm_2",
+                    "name": "Sneha Rao",
+                    "email": "sneha.rao@microsoft.com",
+                    "college": "JSPM RSCOE, Pune",
+                    "department": "Computer Engineering",
+                    "batch": "2020",
+                    "passing_year": 2020,
+                    "current_company": "Microsoft",
+                    "designation": "Senior Software Engineer (Azure Core)",
+                    "city": "Hyderabad",
+                    "linkedin_url": "https://linkedin.com/in/sneha-rao-msft",
+                    "github_url": "https://github.com/sneharao",
+                    "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Sneha",
+                    "bio": "Passionate about enterprise backend architecture, C#/.NET internals, and helping juniors crack tier-1 engineering interviews.",
+                    "skills": ["C#", "Azure", "Distributed Cache", "Microservices", "SQL"],
+                    "is_verified_alumni": True,
+                    "verification_status": "APPROVED",
+                    "privacy_settings": {
+                        "show_company": True,
+                        "show_email_to_mentees": True,
+                        "show_phone": False,
+                        "allow_referral_requests": True,
+                        "allow_mentorship": True
+                    },
+                    "impact_score": 390,
+                    "mentees_count": 9,
+                    "referrals_count": 4,
+                    "sessions_delivered": 12,
+                    "version": 1,
+                    "created_at": iso_now,
+                    "updated_at": iso_now
+                },
+                "alm_3": {
+                    "id": "alm_3",
+                    "name": "Rohit Deshmukh",
+                    "email": "rohit.deshmukh@amazon.com",
+                    "college": "JSPM RSCOE, Pune",
+                    "department": "Information Technology",
+                    "batch": "2022",
+                    "passing_year": 2022,
+                    "current_company": "Amazon",
+                    "designation": "Machine Learning Engineer (AWS Bedrock)",
+                    "city": "Pune",
+                    "linkedin_url": "https://linkedin.com/in/rohit-deshmukh-aws",
+                    "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Rohit",
+                    "bio": "Building foundation model fine-tuning pipelines. Excited to help students build real ML systems and portfolio projects.",
+                    "skills": ["PyTorch", "AWS", "Python", "LLMs", "MLOps"],
+                    "is_verified_alumni": True,
+                    "verification_status": "APPROVED",
+                    "privacy_settings": {
+                        "show_company": True,
+                        "show_email_to_mentees": False,
+                        "show_phone": False,
+                        "allow_referral_requests": True,
+                        "allow_mentorship": True
+                    },
+                    "impact_score": 260,
+                    "mentees_count": 6,
+                    "referrals_count": 3,
+                    "sessions_delivered": 8,
+                    "version": 1,
+                    "created_at": iso_now,
+                    "updated_at": iso_now
+                }
+            }
+
+        if not self.alumni_mentorship_requests:
+            self.alumni_mentorship_requests = [
+                {
+                    "id": "req_alm_1",
+                    "alumni_id": "alm_1",
+                    "student_id": "std_1",
+                    "student_name": "Dhruv Patil",
+                    "student_avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
+                    "target_role": "Full-Stack AI Engineer",
+                    "topic": "Google Cloud Infrastructure & High-Performance Microservices",
+                    "message": "Hi Vikram Sir, I am building autonomous multi-signal placement verification systems. Would love your guidance on high-throughput microservices architecture and Google L3/L4 interview prep.",
+                    "status": "PENDING",
+                    "scheduled_time": "2026-10-24 18:30 IST",
+                    "meeting_link": "https://meet.google.com/hxr-alumni-guidance",
+                    "feedback_notes": "",
+                    "created_at": iso_now
+                },
+                {
+                    "id": "req_alm_2",
+                    "alumni_id": "alm_1",
+                    "student_id": "std_2",
+                    "student_name": "Yuvraj Kadam",
+                    "student_avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Yuvraj",
+                    "target_role": "Backend Engineer",
+                    "topic": "System Design & Distributed Cache Review",
+                    "message": "Hello Sir, I wanted feedback on my Redis queue implementation and DSA roadmaps for top product companies.",
+                    "status": "ACCEPTED",
+                    "scheduled_time": "2026-10-20 19:00 IST",
+                    "meeting_link": "https://meet.google.com/hxr-sys-design-review",
+                    "feedback_notes": "Strong algorithmic fundamentals. Focus on linear time complexity guarantees.",
+                    "created_at": iso_now
+                }
+            ]
+
+        if not self.alumni_referrals:
+            self.alumni_referrals = [
+                {
+                    "id": "ref_alm_1",
+                    "alumni_id": "alm_1",
+                    "company": "Google",
+                    "role": "Software Engineer II - Cloud Backend",
+                    "job_url": "https://careers.google.com/jobs/results/1092812",
+                    "location": "Bengaluru / Pune (Hybrid)",
+                    "experience_required": "0-2 Years",
+                    "status": "OPEN",
+                    "created_at": iso_now,
+                    "student_referrals": [
+                        {
+                            "student_id": "std_1",
+                            "student_name": "Dhruv Patil",
+                            "status": "SHORTLISTED",
+                            "applied_at": iso_now,
+                            "endorsement_note": "Verified 88% skill score. High integrity AST clean code score and strong distributed systems portfolio."
+                        }
+                    ]
+                },
+                {
+                    "id": "ref_alm_2",
+                    "alumni_id": "alm_2",
+                    "company": "Microsoft",
+                    "role": "Software Engineer - Azure Distributed Systems",
+                    "job_url": "https://careers.microsoft.com/us/en/job/182910",
+                    "location": "Hyderabad / Remote",
+                    "experience_required": "0-1 Years (Campus / Freshers)",
+                    "status": "OPEN",
+                    "created_at": iso_now,
+                    "student_referrals": []
+                }
+            ]
+
+        if not self.alumni_insights:
+            self.alumni_insights = [
+                {
+                    "id": "ins_alm_1",
+                    "alumni_id": "alm_1",
+                    "alumni_name": "Vikram Aditya",
+                    "company": "Google",
+                    "designation": "Staff Software Engineer",
+                    "role_interviewed": "Software Engineer (L3/L4)",
+                    "rounds_breakdown": [
+                        {
+                            "round_name": "Round 1: DSA & Graph Traversal",
+                            "focus": "DFS/BFS, Dijkstra, dynamic array allocation",
+                            "sample_questions": ["Shortest path in weighted DAG with negative edge constraints", "Implement LRU with O(1) eviction"],
+                            "difficulty": "HARD"
+                        },
+                        {
+                            "round_name": "Round 2: Algorithmic Optimization & DP",
+                            "focus": "Interval scheduling, 2D dynamic programming",
+                            "sample_questions": ["Max non-overlapping task intervals with dependencies", "Subarray sum divisible by K"],
+                            "difficulty": "HARD"
+                        },
+                        {
+                            "round_name": "Round 3: System Design & Microservices",
+                            "focus": "Rate limiters, caching strategies, horizontal partitioning",
+                            "sample_questions": ["Design high-throughput distributed URL shortener with analytics", "Message broker idempotency"],
+                            "difficulty": "MEDIUM"
+                        },
+                        {
+                            "round_name": "Round 4: Googleyness & Collaborative Leadership",
+                            "focus": "Handling technical disagreements, ownership, ethical AI",
+                            "sample_questions": ["Tell me about a time you pushed back on a product requirement with engineering data"],
+                            "difficulty": "MEDIUM"
+                        }
+                    ],
+                    "skills_we_actually_use": ["Go", "Kubernetes", "gRPC", "Protobuf", "Distributed Tracing", "Cloud Spanner"],
+                    "tips_for_juniors": "Don't jump straight into code during technical rounds. Clarify corner cases (empty inputs, concurrency, scale limits). Write clean, modular functions with self-documenting names.",
+                    "upvotes": 48,
+                    "created_at": iso_now
+                }
+            ]
+
+        if not self.alumni_endorsements:
+            self.alumni_endorsements = [
+                {
+                    "id": "end_alm_1",
+                    "alumni_id": "alm_1",
+                    "alumni_name": "Vikram Aditya",
+                    "student_id": "std_1",
+                    "student_name": "Dhruv Patil",
+                    "skill": "Python",
+                    "weight": 1.25,
+                    "context": "Reviewed HireX sovereign AST auditor implementation and verified linear O(N) algorithmic guarantees.",
+                    "created_at": iso_now
+                }
+            ]
+
     def _save_to_disk(self):
         """Thread-safe, atomic write using temporary swap file."""
         os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
@@ -699,7 +951,14 @@ class CanonicalStore:
             "recruiter_assessments": self.recruiter_assessments,
             "recruiter_assessment_results": self.recruiter_assessment_results,
             "candidate_feedbacks": self.candidate_feedbacks,
-            "skill_timelines": self.skill_timelines
+            "skill_timelines": self.skill_timelines,
+            "student_evidence": self.student_evidence,
+            "human_review_disputes": self.human_review_disputes,
+            "alumni": self.alumni,
+            "alumni_mentorship_requests": self.alumni_mentorship_requests,
+            "alumni_referrals": self.alumni_referrals,
+            "alumni_insights": self.alumni_insights,
+            "alumni_endorsements": self.alumni_endorsements
         }
         with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
@@ -2311,6 +2570,368 @@ class CanonicalStore:
 
             self._save_to_disk()
             return dict(updated_skill_record)
+
+    # -------------------------------------------------------------
+    # EVIDENCE & DISPUTE LEDGER OPERATIONS
+    # -------------------------------------------------------------
+    def save_evidence_item(self, student_id: str, evidence_item: dict) -> dict:
+        with self._lock:
+            if student_id not in self.student_evidence:
+                self.student_evidence[student_id] = []
+            ev_id = evidence_item.get("id") or f"ev_{uuid.uuid4().hex[:8]}"
+            evidence_item["id"] = ev_id
+            evidence_item["saved_at"] = time.time()
+            self.student_evidence[student_id].append(evidence_item)
+            self._save_to_disk()
+            return evidence_item
+
+    def get_student_evidence(self, student_id: str) -> List[dict]:
+        with self._lock:
+            return list(self.student_evidence.get(student_id, []))
+
+    def record_human_review_dispute(self, dispute_dict: dict) -> dict:
+        with self._lock:
+            disp_id = dispute_dict.get("id") or f"disp_{uuid.uuid4().hex[:8]}"
+            dispute_dict["id"] = disp_id
+            dispute_dict["status"] = dispute_dict.get("status", "PENDING_FACULTY_REVIEW")
+            dispute_dict["created_at"] = dispute_dict.get("created_at") or time.time()
+            self.human_review_disputes.insert(0, dispute_dict)
+            self._save_to_disk()
+            return dispute_dict
+
+    def get_human_review_disputes(self, status: Optional[str] = None) -> List[dict]:
+        with self._lock:
+            if status and status != "ALL":
+                return [d for d in self.human_review_disputes if d.get("status") == status]
+            return list(self.human_review_disputes)
+
+    def resolve_human_review_dispute(
+        self,
+        dispute_id: str,
+        resolution: str,
+        actor_id: str,
+        new_score: Optional[int] = None,
+        notes: Optional[str] = None
+    ) -> dict:
+        with self._lock:
+            dispute = next((d for d in self.human_review_disputes if d.get("id") == dispute_id), None)
+            if not dispute:
+                raise HTTPException(status_code=404, detail=f"Dispute '{dispute_id}' not found.")
+            
+            dispute["status"] = resolution
+            dispute["resolved_at"] = time.time()
+            dispute["resolved_by"] = actor_id
+            dispute["resolution_notes"] = notes or ""
+            if new_score is not None:
+                dispute["overridden_score"] = new_score
+
+            self.record_audit_log(
+                actor_id=actor_id,
+                action="DISPUTE_RESOLVED",
+                entity_type="human_review_dispute",
+                entity_id=dispute_id,
+                from_value={"status": "PENDING_FACULTY_REVIEW"},
+                to_value={"status": resolution, "overridden_score": new_score}
+            )
+            self._save_to_disk()
+            return dict(dispute)
+
+    # -------------------------------------------------------------
+    # ALUMNI PORTAL PERSISTENCE METHODS
+    # -------------------------------------------------------------
+    def get_alumni_profile(self, identifier: str) -> Optional[dict]:
+        with self._lock:
+            # Match by ID or Email
+            ident_clean = identifier.strip().lower()
+            for alm in self.alumni.values():
+                if alm.get("id") == identifier or alm.get("email", "").lower() == ident_clean:
+                    return dict(alm)
+            # Default fallback to primary demo alumni
+            if "alm_1" in self.alumni:
+                return dict(self.alumni["alm_1"])
+            return None
+
+    def update_alumni_profile(self, alumni_id: str, updates: dict) -> dict:
+        with self._lock:
+            alm = self.alumni.get(alumni_id)
+            if not alm:
+                # If not found by ID, try finding by email
+                for k, v in self.alumni.items():
+                    if v.get("email", "").lower() == alumni_id.lower():
+                        alm = v
+                        alumni_id = k
+                        break
+            if not alm:
+                raise HTTPException(status_code=404, detail=f"Alumni profile '{alumni_id}' not found.")
+            
+            # Apply allowed updates
+            for key in ["bio", "skills", "current_company", "designation", "city", "linkedin_url", "github_url", "privacy_settings"]:
+                if key in updates:
+                    alm[key] = updates[key]
+            alm["updated_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time()))
+            alm["version"] = alm.get("version", 1) + 1
+            self._save_to_disk()
+            return dict(alm)
+
+    def get_alumni_dashboard(self, alumni_id: str) -> dict:
+        with self._lock:
+            alm = self.get_alumni_profile(alumni_id) or (list(self.alumni.values())[0] if self.alumni else {})
+            actual_id = alm.get("id", "alm_1")
+            
+            # Filter requests for this alumni
+            requests = [r for r in self.alumni_mentorship_requests if r.get("alumni_id") == actual_id]
+            pending_requests = [r for r in requests if r.get("status") == "PENDING"]
+            accepted_requests = [r for r in requests if r.get("status") == "ACCEPTED"]
+            
+            # Filter referrals posted by this alumni
+            referrals = [r for r in self.alumni_referrals if r.get("alumni_id") == actual_id]
+            total_students_referred = sum(len(r.get("student_referrals", [])) for r in referrals)
+            
+            # Insights
+            insights = [i for i in self.alumni_insights if i.get("alumni_id") == actual_id]
+
+            return {
+                "profile": alm,
+                "stats": {
+                    "impact_score": alm.get("impact_score", 480),
+                    "mentees_helped": alm.get("mentees_count", 14),
+                    "referrals_made": len(referrals),
+                    "students_referred_count": total_students_referred,
+                    "sessions_delivered": alm.get("sessions_delivered", 18),
+                    "pending_requests_count": len(pending_requests),
+                    "accepted_sessions_count": len(accepted_requests),
+                    "insights_shared": len(insights)
+                },
+                "pending_requests": pending_requests,
+                "upcoming_sessions": accepted_requests,
+                "active_referrals": referrals,
+                "college_announcements": [
+                    {
+                        "id": "ann_1",
+                        "title": "JSPM RSCOE Annual Alumni Conclave & Hackathon 2026",
+                        "date": "2026-11-15",
+                        "desc": "Inviting industry alumni for project evaluations and keynote addresses on AI Systems."
+                    },
+                    {
+                        "id": "ann_2",
+                        "title": "NAAC & NBA Accreditation Academic Feedback Cycle",
+                        "date": "2026-10-30",
+                        "desc": "Placement cell request: Share industry tools survey to calibrate Computer Engineering syllabus."
+                    }
+                ]
+            }
+
+    def get_alumni_mentorship_requests(self, alumni_id: Optional[str] = None, status: Optional[str] = None) -> List[dict]:
+        with self._lock:
+            reqs = list(self.alumni_mentorship_requests)
+            if alumni_id:
+                reqs = [r for r in reqs if r.get("alumni_id") == alumni_id]
+            if status and status != "ALL":
+                reqs = [r for r in reqs if r.get("status") == status]
+            return reqs
+
+    def create_alumni_mentorship_request(self, payload: dict) -> dict:
+        with self._lock:
+            iso_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time()))
+            req_id = payload.get("id") or f"req_alm_{uuid.uuid4().hex[:6]}"
+            new_req = {
+                "id": req_id,
+                "alumni_id": payload.get("alumni_id", "alm_1"),
+                "student_id": payload.get("student_id", "std_1"),
+                "student_name": payload.get("student_name", "Dhruv Patil"),
+                "student_avatar": payload.get("student_avatar", "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv"),
+                "target_role": payload.get("target_role", "Software Engineer"),
+                "topic": payload.get("topic", "Career & Technical Guidance"),
+                "message": payload.get("message", "Requesting mentorship session."),
+                "status": "PENDING",
+                "scheduled_time": payload.get("scheduled_time", "To be determined"),
+                "meeting_link": payload.get("meeting_link", "https://meet.google.com/hxr-new-mentorship"),
+                "feedback_notes": "",
+                "created_at": iso_now
+            }
+            self.alumni_mentorship_requests.insert(0, new_req)
+            self._save_to_disk()
+            return new_req
+
+    def action_alumni_mentorship_request(
+        self,
+        request_id: str,
+        action: str,
+        scheduled_time: Optional[str] = None,
+        meeting_link: Optional[str] = None,
+        feedback_notes: Optional[str] = None
+    ) -> dict:
+        with self._lock:
+            req = next((r for r in self.alumni_mentorship_requests if r.get("id") == request_id), None)
+            if not req:
+                raise HTTPException(status_code=404, detail=f"Mentorship request '{request_id}' not found.")
+            
+            action_upper = action.strip().upper()
+            if action_upper not in ["ACCEPTED", "DECLINED", "COMPLETED"]:
+                raise HTTPException(status_code=400, detail="Invalid action. Must be ACCEPTED, DECLINED, or COMPLETED.")
+            
+            req["status"] = action_upper
+            if scheduled_time:
+                req["scheduled_time"] = scheduled_time
+            if meeting_link:
+                req["meeting_link"] = meeting_link
+            if feedback_notes:
+                req["feedback_notes"] = feedback_notes
+
+            # Award impact points to alumni on session acceptance/completion
+            alm = self.alumni.get(req.get("alumni_id", ""))
+            if alm:
+                if action_upper == "ACCEPTED":
+                    alm["impact_score"] = alm.get("impact_score", 0) + 20
+                elif action_upper == "COMPLETED":
+                    alm["impact_score"] = alm.get("impact_score", 0) + 30
+                    alm["sessions_delivered"] = alm.get("sessions_delivered", 0) + 1
+
+            self._save_to_disk()
+            return dict(req)
+
+    def get_alumni_referrals(self, alumni_id: Optional[str] = None) -> List[dict]:
+        with self._lock:
+            if alumni_id:
+                return [r for r in self.alumni_referrals if r.get("alumni_id") == alumni_id]
+            return list(self.alumni_referrals)
+
+    def post_alumni_referral(self, payload: dict) -> dict:
+        with self._lock:
+            iso_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time()))
+            ref_id = payload.get("id") or f"ref_alm_{uuid.uuid4().hex[:6]}"
+            new_ref = {
+                "id": ref_id,
+                "alumni_id": payload.get("alumni_id", "alm_1"),
+                "company": payload.get("company", "Google"),
+                "role": payload.get("role", "Software Engineer"),
+                "job_url": payload.get("job_url", ""),
+                "location": payload.get("location", "Hybrid / Remote"),
+                "experience_required": payload.get("experience_required", "0-2 Years"),
+                "status": "OPEN",
+                "created_at": iso_now,
+                "student_referrals": []
+            }
+            self.alumni_referrals.insert(0, new_ref)
+
+            # Mirror into placement cell opportunities pipeline as ALUMNI_REFERRAL
+            opp_id = f"opp_alumni_{ref_id}"
+            if opp_id not in self.opportunities:
+                self.opportunities[opp_id] = {
+                    "opportunity_id": opp_id,
+                    "title": new_ref["role"],
+                    "company": new_ref["company"],
+                    "location": new_ref["location"],
+                    "duration": "Full-Time",
+                    "stipend": "Industry Competitive",
+                    "deadline": "2026-12-31",
+                    "matched_skills": ["Python", "Algorithms", "System Design"],
+                    "match_percentage": 90,
+                    "color_theme": "emerald",
+                    "explanation": f"Alumni Direct Referral posted by {payload.get('alumni_name', 'Google Staff SWE Vikram Aditya')}.",
+                    "source_type": "ALUMNI_REFERRAL",
+                    "alumni_referral_id": ref_id,
+                    "version": 1,
+                    "created_at": iso_now
+                }
+
+            # Award impact points to alumni
+            alm = self.alumni.get(new_ref["alumni_id"])
+            if alm:
+                alm["impact_score"] = alm.get("impact_score", 0) + 50
+                alm["referrals_count"] = alm.get("referrals_count", 0) + 1
+
+            self._save_to_disk()
+            return new_ref
+
+    def apply_to_alumni_referral(self, referral_id: str, student_id: str, student_name: str, endorsement_note: Optional[str] = None) -> dict:
+        with self._lock:
+            iso_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time()))
+            ref = next((r for r in self.alumni_referrals if r.get("id") == referral_id), None)
+            if not ref:
+                raise HTTPException(status_code=404, detail=f"Referral opening '{referral_id}' not found.")
+            
+            # Check if student already applied
+            for sr in ref.get("student_referrals", []):
+                if sr.get("student_id") == student_id:
+                    return {"status": "already_applied", "referral": ref}
+
+            ref_app = {
+                "student_id": student_id,
+                "student_name": student_name,
+                "status": "SHORTLISTED",
+                "applied_at": iso_now,
+                "endorsement_note": endorsement_note or "Student requested verified alumni referral."
+            }
+            ref["student_referrals"].append(ref_app)
+            self._save_to_disk()
+            return {"status": "success", "referral": ref}
+
+    def get_alumni_insights(self) -> List[dict]:
+        with self._lock:
+            return list(self.alumni_insights)
+
+    def post_alumni_insight(self, payload: dict) -> dict:
+        with self._lock:
+            iso_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time()))
+            ins_id = payload.get("id") or f"ins_alm_{uuid.uuid4().hex[:6]}"
+            new_ins = {
+                "id": ins_id,
+                "alumni_id": payload.get("alumni_id", "alm_1"),
+                "alumni_name": payload.get("alumni_name", "Vikram Aditya"),
+                "company": payload.get("company", "Google"),
+                "designation": payload.get("designation", "Staff Software Engineer"),
+                "role_interviewed": payload.get("role_interviewed", "Software Engineer"),
+                "rounds_breakdown": payload.get("rounds_breakdown", []),
+                "skills_we_actually_use": payload.get("skills_we_actually_use", []),
+                "tips_for_juniors": payload.get("tips_for_juniors", ""),
+                "upvotes": 0,
+                "created_at": iso_now
+            }
+            self.alumni_insights.insert(0, new_ins)
+
+            alm = self.alumni.get(new_ins["alumni_id"])
+            if alm:
+                alm["impact_score"] = alm.get("impact_score", 0) + 40
+
+            self._save_to_disk()
+            return new_ins
+
+    def submit_alumni_endorsement(self, payload: dict) -> dict:
+        with self._lock:
+            iso_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time()))
+            end_id = payload.get("id") or f"end_alm_{uuid.uuid4().hex[:6]}"
+            new_end = {
+                "id": end_id,
+                "alumni_id": payload.get("alumni_id", "alm_1"),
+                "alumni_name": payload.get("alumni_name", "Vikram Aditya"),
+                "student_id": payload.get("student_id", "std_1"),
+                "student_name": payload.get("student_name", "Dhruv Patil"),
+                "skill": payload.get("skill", "Python"),
+                "weight": 1.25,
+                "context": payload.get("context", "Verified student project repository and algorithmic rigor."),
+                "created_at": iso_now
+            }
+            self.alumni_endorsements.insert(0, new_end)
+
+            alm = self.alumni.get(new_end["alumni_id"])
+            if alm:
+                alm["impact_score"] = alm.get("impact_score", 0) + 25
+
+            self._save_to_disk()
+            return new_end
+
+    def get_alumni_directory(self, query: Optional[str] = None, department: Optional[str] = None, company: Optional[str] = None) -> List[dict]:
+        with self._lock:
+            results = list(self.alumni.values())
+            if query:
+                q = query.lower()
+                results = [a for a in results if q in a.get("name", "").lower() or q in a.get("current_company", "").lower() or q in a.get("skills", []) or any(q in s.lower() for s in a.get("skills", []))]
+            if department and department != "All":
+                results = [a for a in results if a.get("department") == department]
+            if company and company != "All":
+                results = [a for a in results if a.get("current_company", "").lower() == company.lower()]
+            return results
 
 
 # Global singleton canonical store

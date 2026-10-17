@@ -106,7 +106,7 @@ export const VerifiedSkillPassport: React.FC<VerifiedSkillPassportProps> = ({
           <div className="flex items-center gap-3">
             <div className="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 text-center min-w-[90px]">
               <div className="text-2xl font-black text-indigo-300">
-                {passportData?.verified_score || 88}%
+                {passportData?.verified_score !== undefined ? `${passportData.verified_score}%` : '0%'}
               </div>
               <div className="text-[10px] font-bold uppercase tracking-wider text-indigo-200/70">
                 Verified Index

@@ -9,6 +9,14 @@ interface PortfolioTranscriptViewProps {
 
 export const PortfolioTranscriptView: React.FC<PortfolioTranscriptViewProps> = ({ student }) => {
   const [activeTab, setActiveTab] = useState<'transcript' | 'mock_interview'>('transcript');
+  const [showHashVerified, setShowHashVerified] = useState<boolean>(false);
+
+  const handleVerifyHash = () => {
+    const hash = 'b892d9f4c391aa82c0f72671e7240c1692ec1734a94a55bbec047d7c6d6919a';
+    navigator.clipboard?.writeText(hash);
+    setShowHashVerified(true);
+    setTimeout(() => setShowHashVerified(false), 4000);
+  };
 
   // Mock Interview State
   const [targetCompany, setTargetCompany] = useState<string>('Barclays');
@@ -129,7 +137,9 @@ export const PortfolioTranscriptView: React.FC<PortfolioTranscriptViewProps> = (
             </div>
             <div>
               <span className="text-slate-400 block text-[10px]">Total NCrF Credits</span>
-              <span className="font-black text-brand-indigo text-base">4.0 Credits (160h)</span>
+              <span className="font-black text-brand-indigo text-base">
+                {(student.verified_score || 0) > 0 ? "4.0 Credits (160h)" : "0.0 Credits (0h)"}
+              </span>
             </div>
           </div>
 
@@ -150,27 +160,37 @@ export const PortfolioTranscriptView: React.FC<PortfolioTranscriptViewProps> = (
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300 font-mono">
-                  <tr>
-                    <td className="p-3 font-sans font-bold">Python Microservices & AST Analysis</td>
-                    <td className="p-3 font-sans">AST Static Complexity Engine</td>
-                    <td className="p-3">40 Hours</td>
-                    <td className="p-3 font-bold text-emerald-600">1.0 Credit</td>
-                    <td className="p-3 text-[10px] text-slate-400">sha256:8f2a...19e0</td>
-                  </tr>
-                  <tr>
-                    <td className="p-3 font-sans font-bold">Deep Learning & PyTorch (NPTEL)</td>
-                    <td className="p-3 font-sans">National Registry Public Key</td>
-                    <td className="p-3">80 Hours</td>
-                    <td className="p-3 font-bold text-emerald-600">2.0 Credits</td>
-                    <td className="p-3 text-[10px] text-slate-400">sha256:a4f8...41cf</td>
-                  </tr>
-                  <tr>
-                    <td className="p-3 font-sans font-bold">React & State Architecture</td>
-                    <td className="p-3 font-sans">In-Browser Code Lab Runner</td>
-                    <td className="p-3">40 Hours</td>
-                    <td className="p-3 font-bold text-emerald-600">1.0 Credit</td>
-                    <td className="p-3 text-[10px] text-slate-400">sha256:c14d...88b2</td>
-                  </tr>
+                  {(student.verified_score || 0) > 0 ? (
+                    <>
+                      <tr>
+                        <td className="p-3 font-sans font-bold">Python Microservices & AST Analysis</td>
+                        <td className="p-3 font-sans">AST Static Complexity Engine</td>
+                        <td className="p-3">40 Hours</td>
+                        <td className="p-3 font-bold text-emerald-600">1.0 Credit</td>
+                        <td className="p-3 text-[10px] text-slate-400">sha256:8f2a...19e0</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 font-sans font-bold">Deep Learning & PyTorch (NPTEL)</td>
+                        <td className="p-3 font-sans">National Registry Public Key</td>
+                        <td className="p-3">80 Hours</td>
+                        <td className="p-3 font-bold text-emerald-600">2.0 Credits</td>
+                        <td className="p-3 text-[10px] text-slate-400">sha256:a4f8...41cf</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 font-sans font-bold">React & State Architecture</td>
+                        <td className="p-3 font-sans">In-Browser Code Lab Runner</td>
+                        <td className="p-3">40 Hours</td>
+                        <td className="p-3 font-bold text-emerald-600">1.0 Credit</td>
+                        <td className="p-3 text-[10px] text-slate-400">sha256:c14d...88b2</td>
+                      </tr>
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="p-8 text-center font-sans text-slate-500 dark:text-slate-400">
+                        No verified practical coursework or accredited certifications on record yet. Complete an AST Code Lab challenge or verify a certificate to accrue transferable NCrF credits.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -191,7 +211,7 @@ export const PortfolioTranscriptView: React.FC<PortfolioTranscriptViewProps> = (
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 relative">
               <button
                 onClick={() => window.print()}
                 className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1.5"
@@ -200,12 +220,23 @@ export const PortfolioTranscriptView: React.FC<PortfolioTranscriptViewProps> = (
                 <span>Print PDF</span>
               </button>
               <button
-                onClick={() => alert(`Transcript SHA-256: b892d9f4c391aa82c0f72671e... Cryptographically verified on national ledger.`)}
-                className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5"
+                onClick={handleVerifyHash}
+                className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 active:scale-98"
+                title="Click to copy and verify cryptographic hash"
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Verify Hash</span>
+                <span>{showHashVerified ? 'Hash Verified!' : 'Verify Hash'}</span>
               </button>
+
+              {showHashVerified && (
+                <div className="absolute right-0 bottom-full mb-2 p-2.5 rounded-xl bg-slate-900/95 dark:bg-slate-950/95 backdrop-blur-md border border-emerald-500/30 text-white shadow-xl text-xs flex items-center gap-2 z-20 animate-in fade-in slide-in-from-bottom-1 whitespace-nowrap">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <div>
+                    <span className="font-semibold text-emerald-300">Ledger Hash Verified</span>
+                    <span className="text-[10px] text-slate-400 ml-1.5 font-mono">SHA-256 copied to clipboard</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

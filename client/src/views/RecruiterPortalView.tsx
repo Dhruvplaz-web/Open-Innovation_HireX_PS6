@@ -15,17 +15,27 @@ import { analyzeStudentForOpportunity } from '../services/jdSkillAnalysis';
 import { CandidatePassportModal } from '../components/modals/CandidatePassportModal';
 import { OutcomeFeedbackModal } from '../components/modals/OutcomeFeedbackModal';
 
+type RecruiterSubTab = 'dashboard' | 'incognito-talent' | 'talent-invitations' | 'project-talent' | 'post-job' | 'my-jobs' | 'applicants' | 'matching' | 'industry-demand';
+
 interface RecruiterPortalViewProps {
   onNavigateTab?: (tab: string) => void;
   recruiterEmail?: string;
+  initialSubTab?: RecruiterSubTab;
 }
 
 export const RecruiterPortalView: React.FC<RecruiterPortalViewProps> = ({ 
   onNavigateTab,
-  recruiterEmail = 'priya.sharma@barclays.com'
+  recruiterEmail = 'priya.sharma@barclays.com',
+  initialSubTab
 }) => {
   // Navigation Tabs within Recruiter Portal
-  const [activeSubTab, setActiveSubTab] = useState<'dashboard' | 'incognito-talent' | 'talent-invitations' | 'project-talent' | 'post-job' | 'my-jobs' | 'applicants' | 'matching' | 'industry-demand'>('dashboard');
+  const [activeSubTab, setActiveSubTab] = useState<RecruiterSubTab>(initialSubTab || 'dashboard');
+
+  useEffect(() => {
+    if (initialSubTab) {
+      setActiveSubTab(initialSubTab);
+    }
+  }, [initialSubTab]);
 
   // Recruiter Dashboard Data States
   const [loading, setLoading] = useState<boolean>(true);

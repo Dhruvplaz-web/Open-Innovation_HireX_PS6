@@ -46,6 +46,7 @@ import { PasteJobModal } from '../components/modals/PasteJobModal';
 interface AcademicianPortalViewProps {
   onNavigateTab: (tab: string) => void;
   academicianEmail?: string;
+  initialTab?: AcademicianTab;
 }
 
 type AcademicianTab =
@@ -59,13 +60,21 @@ type AcademicianTab =
   | 'interventions'
   | 'recommendations'
   | 'placement_outcomes'
-  | 'closed_loop';
+  | 'closed_loop'
+  | 'disputes';
 
 export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
   onNavigateTab,
-  academicianEmail = 'hod.comp@rscoe.edu.in'
+  academicianEmail = 'hod.comp@rscoe.edu.in',
+  initialTab
 }) => {
-  const [activeTab, setActiveTab] = useState<AcademicianTab>('overview');
+  const [activeTab, setActiveTab] = useState<AcademicianTab>(initialTab || 'overview');
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Dashboard & Verification State
@@ -148,6 +157,48 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
     }
   };
 
+  // Match Score Disputes & Student Appeals (Upgrade 2)
+  const [cohortDisputes, setCohortDisputes] = useState<any[]>([]);
+  const [loadingDisputes, setLoadingDisputes] = useState<boolean>(false);
+  const [disputeFilter, setDisputeFilter] = useState<string>('ALL');
+  const [selectedDispute, setSelectedDispute] = useState<any | null>(null);
+  const [disputeNotes, setDisputeNotes] = useState<string>('');
+  const [disputeOverrideScore, setDisputeOverrideScore] = useState<number>(85);
+  const [isResolvingDispute, setIsResolvingDispute] = useState<boolean>(false);
+
+  const loadDisputes = async () => {
+    setLoadingDisputes(true);
+    try {
+      const res = await apiService.getCohortDisputes(disputeFilter !== 'ALL' ? disputeFilter : undefined);
+      if (res && res.disputes) {
+        setCohortDisputes(res.disputes);
+      }
+    } catch (e) {
+      console.warn("Failed to load disputes:", e);
+    } finally {
+      setLoadingDisputes(false);
+    }
+  };
+
+  const handleResolveDispute = async (disputeId: string, resolution: 'OVERRIDDEN_APPROVED' | 'UPHELD') => {
+    setIsResolvingDispute(true);
+    try {
+      await apiService.resolveCohortDispute(disputeId, {
+        resolution,
+        notes: disputeNotes || (resolution === 'OVERRIDDEN_APPROVED' ? "Manual verification approved by department TPO coordinator after reviewing repository evidence." : "Automated match score upheld. Additional proof required."),
+        new_score: resolution === 'OVERRIDDEN_APPROVED' ? disputeOverrideScore : undefined,
+        reviewer_email: academicianEmail
+      });
+      setSelectedDispute(null);
+      setDisputeNotes('');
+      await loadDisputes();
+    } catch (e) {
+      console.warn("Error resolving dispute:", e);
+    } finally {
+      setIsResolvingDispute(false);
+    }
+  };
+
   const loadAllData = async () => {
     setIsLoading(true);
     try {
@@ -188,6 +239,7 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
       setInterventions(intRes?.interventions || []);
       setCohortAnalysis(cAnRes?.analysis || null);
       setIntegrityAudits(integRes || null);
+      await loadDisputes();
     } catch (err) {
       console.error("Failed to load academician portal data:", err);
     } finally {
@@ -198,6 +250,12 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
   useEffect(() => {
     loadAllData();
   }, [yearFilter, academicianEmail]);
+
+  useEffect(() => {
+    if (activeTab === 'disputes') {
+      loadDisputes();
+    }
+  }, [activeTab, disputeFilter]);
 
   const handleSearchSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -508,6 +566,17 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
           >
             <TrendingUp className="w-3.5 h-3.5" />
             <span>Closed-Loop Workflow</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('disputes')}
+            className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
+              activeTab === 'disputes'
+                ? 'bg-white dark:bg-card-dark text-amber-600 dark:text-amber-400 shadow-xs'
+                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
+          >
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+            <span>Appeals & Disputes {cohortDisputes.filter(d => d.status === 'PENDING_FACULTY_REVIEW').length > 0 && `(${cohortDisputes.filter(d => d.status === 'PENDING_FACULTY_REVIEW').length})`}</span>
           </button>
           <button
             onClick={() => onNavigateTab('collaboration')}
@@ -2626,6 +2695,316 @@ export const AcademicianPortalView: React.FC<AcademicianPortalViewProps> = ({
           </div>
         );
       })()}
+
+      {/* ========================================================================= */}
+      {/* STUDENT MATCH APPEALS & DISPUTES BOARD (Upgrade 2) */}
+      {/* ========================================================================= */}
+      {activeTab === 'disputes' && (
+        <div className="space-y-6">
+          {/* Hero Header */}
+          <div className="p-6 rounded-3xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-400 border border-amber-200 text-[10px] font-mono font-bold uppercase tracking-wider">
+                  Human-in-the-Loop AI Governance & Dispute Resolution
+                </span>
+                <h2 className="text-xl font-black text-slate-900 dark:text-white mt-1">
+                  Student Placement Match Appeals & Verification Queue
+                </h2>
+                <p className="text-xs text-slate-500 max-w-3xl">
+                  Enables college TPO and faculty coordinators to adjudicate student appeals against algorithmic cutoff rejections. Review student-submitted repository evidence, examine counterfactual reasoning, and approve manual overrides with tamper-evident audit logging.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={loadDisputes}
+                  className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1.5 shrink-0"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${loadingDisputes ? 'animate-spin' : ''}`} />
+                  <span>Refresh Queue</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Quick KPI Row */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Total Appeals Filed</span>
+                <span className="text-2xl font-black font-mono text-slate-900 dark:text-white">{cohortDisputes.length}</span>
+                <span className="text-[10px] text-slate-500 font-semibold block mt-1">Cohort lifetime</span>
+              </div>
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Pending Faculty Review</span>
+                <span className="text-2xl font-black font-mono text-amber-600 dark:text-amber-400">
+                  {cohortDisputes.filter(d => d.status === 'PENDING_FACULTY_REVIEW').length}
+                </span>
+                <span className="text-[10px] text-amber-600 font-semibold block mt-1">Action required</span>
+              </div>
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Overridden & Approved</span>
+                <span className="text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400">
+                  {cohortDisputes.filter(d => d.status === 'OVERRIDDEN_APPROVED').length}
+                </span>
+                <span className="text-[10px] text-emerald-600 font-semibold block mt-1">Manual score awarded</span>
+              </div>
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Upheld (Algorithm Valid)</span>
+                <span className="text-2xl font-black font-mono text-slate-700 dark:text-slate-300">
+                  {cohortDisputes.filter(d => d.status === 'UPHELD').length}
+                </span>
+                <span className="text-[10px] text-slate-500 font-semibold block mt-1">Deficit validated</span>
+              </div>
+            </div>
+
+            {/* Status Filter Buttons */}
+            <div className="flex items-center gap-1.5 flex-wrap pt-2">
+              <span className="text-xs font-bold text-slate-400 mr-2 flex items-center gap-1">
+                <Filter className="w-3.5 h-3.5" /> Filter by Status:
+              </span>
+              {[
+                { id: 'ALL', label: 'All Appeals' },
+                { id: 'PENDING_FACULTY_REVIEW', label: 'Pending Review' },
+                { id: 'OVERRIDDEN_APPROVED', label: 'Approved Overrides' },
+                { id: 'UPHELD', label: 'Upheld' }
+              ].map(f => (
+                <button
+                  key={f.id}
+                  onClick={() => setDisputeFilter(f.id)}
+                  className={`px-3 py-1 rounded-xl text-xs font-bold transition ${
+                    disputeFilter === f.id
+                      ? 'bg-amber-500 text-white shadow-xs'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Disputes Cards List */}
+          {cohortDisputes.length === 0 ? (
+            <div className="p-12 text-center rounded-3xl bg-white dark:bg-card-dark border border-slate-200/80 dark:border-slate-800 space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+              <h4 className="text-base font-bold text-slate-900 dark:text-white">
+                Zero Pending Student Appeals
+              </h4>
+              <p className="text-xs text-slate-500 max-w-md mx-auto">
+                All placement match evaluations are operating with complete student alignment. When a student files a dispute on an automated match score, it will immediately appear here.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {cohortDisputes.map((disp: any) => {
+                const isPending = disp.status === 'PENDING_FACULTY_REVIEW';
+                const isApproved = disp.status === 'OVERRIDDEN_APPROVED';
+                return (
+                  <div
+                    key={disp.dispute_id || disp.id}
+                    className="p-5 rounded-3xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-4"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-sm font-black text-slate-900 dark:text-white">
+                              {disp.student_name} ({disp.student_id})
+                            </h4>
+                            <span className="text-[10px] text-slate-400 font-mono">
+                              #{disp.dispute_id || disp.id}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-500 mt-0.5">
+                            Target Opening: <strong className="text-slate-700 dark:text-slate-300">{disp.opportunity_id}</strong>
+                          </p>
+                        </div>
+
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                          isPending
+                            ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300'
+                            : isApproved
+                            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300'
+                            : 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300'
+                        }`}>
+                          {disp.status?.replace(/_/g, ' ')}
+                        </span>
+                      </div>
+
+                      {/* Disputed Skill Badge */}
+                      <div className="p-3 rounded-2xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/40 space-y-1.5">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
+                            <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+                            Disputed Competency: <u>{disp.disputed_skill}</u>
+                          </span>
+                          {disp.overridden_score && (
+                            <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-mono font-bold text-[10px]">
+                              Override Awarded: {disp.overridden_score}%
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-slate-700 dark:text-slate-300 italic leading-relaxed">
+                          "{disp.student_argument}"
+                        </p>
+                      </div>
+
+                      {/* Supporting Evidence Link */}
+                      {disp.supporting_evidence_url && (
+                        <div className="flex items-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400">
+                          <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                          <a
+                            href={disp.supporting_evidence_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:underline truncate font-semibold"
+                          >
+                            Supporting Proof: {disp.supporting_evidence_url}
+                          </a>
+                        </div>
+                      )}
+
+                      {/* Resolution Notes if Resolved */}
+                      {disp.resolution_notes && (
+                        <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400">
+                          <strong>Faculty Resolution:</strong> {disp.resolution_notes}
+                          <span className="block text-[10px] text-slate-400 mt-1 font-mono">
+                            Adjudicated by {disp.resolved_by || 'TPO Coordinator'} on {disp.resolved_at?.split('T')[0] || 'Today'}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Bar for Pending Disputes */}
+                    {isPending && (
+                      <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
+                        <button
+                          onClick={() => setSelectedDispute(disp)}
+                          className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs"
+                        >
+                          <ShieldCheck className="w-3.5 h-3.5" />
+                          <span>Adjudicate Appeal</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Adjudication Modal Dialog */}
+          {selectedDispute && (
+            <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white dark:bg-card-dark rounded-3xl max-w-lg w-full p-6 space-y-4 border border-slate-200 dark:border-slate-800 shadow-2xl">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
+                      <AlertTriangle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                        Adjudicate Student Match Dispute
+                      </h3>
+                      <p className="text-xs text-slate-400">
+                        {selectedDispute.student_name} • Skill: {selectedDispute.disputed_skill}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSelectedDispute(null)}
+                    className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600"
+                  >
+                    <XCircle className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1 text-xs">
+                  <span className="font-bold text-slate-700 dark:text-slate-300 block">Student Argument:</span>
+                  <p className="text-slate-600 dark:text-slate-400 italic">
+                    "{selectedDispute.student_argument}"
+                  </p>
+                  {selectedDispute.supporting_evidence_url && (
+                    <a
+                      href={selectedDispute.supporting_evidence_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-1 mt-1 hover:underline"
+                    >
+                      <ExternalLink className="w-3 h-3" /> Inspect Attached Evidence
+                    </a>
+                  )}
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                      Faculty Resolution Notes:
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={disputeNotes}
+                      onChange={(e) => setDisputeNotes(e.target.value)}
+                      placeholder="Explain rationale for approval or why additional objective evidence is required..."
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                      If Approving Override, Assign Verified Score (%):
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="range"
+                        min={65}
+                        max={98}
+                        value={disputeOverrideScore}
+                        onChange={(e) => setDisputeOverrideScore(parseInt(e.target.value))}
+                        className="flex-1 accent-indigo-600"
+                      />
+                      <span className="font-mono font-black text-sm text-indigo-600 dark:text-indigo-400 w-12 text-right">
+                        {disputeOverrideScore}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => handleResolveDispute(selectedDispute.dispute_id || selectedDispute.id, 'UPHELD')}
+                    disabled={isResolvingDispute}
+                    className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition"
+                  >
+                    Uphold AI Cutoff
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleResolveDispute(selectedDispute.dispute_id || selectedDispute.id, 'OVERRIDDEN_APPROVED')}
+                    disabled={isResolvingDispute}
+                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-xs"
+                  >
+                    {isResolvingDispute ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Saving...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>Approve Override & Award {disputeOverrideScore}%</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ========================================================================= */}
       {/* STUDENT DETAIL MODAL (Read-only verified record - Part 9) */}

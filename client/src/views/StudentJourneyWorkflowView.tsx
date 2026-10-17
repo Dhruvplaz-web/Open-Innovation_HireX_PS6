@@ -72,37 +72,42 @@ export const StudentJourneyWorkflowView: React.FC<StudentJourneyWorkflowViewProp
   onOpenOpportunityDetail
 }) => {
   const studentId = student.student_id || student.id || 'std_1';
+  const isDemo = (student.student_id === 'std_1' || student.id === 'std_1') && (student.verified_score || 0) > 0;
 
   // Active workflow step
   const [currentStep, setCurrentStep] = useState<WorkflowStep>('personal_info');
 
   // STEP 1: Personal & College Info
-  const [firstName, setFirstName] = useState(student.name.split(' ')[0] || 'Dhruv');
-  const [lastName, setLastName] = useState(student.name.split(' ')[1] || 'Patil');
-  const [emailUsername, setEmailUsername] = useState(student.email || 'dhruv.patil@rscoe.edu.in');
-  const [phone, setPhone] = useState('+91 98765 43210');
-  const [collegeName, setCollegeName] = useState(student.college || 'JSPM Rajarshi Shahu College of Engineering, Pune');
-  const [degreeStream, setDegreeStream] = useState(student.department || 'B.Tech Computer Engineering');
-  const [gradYear, setGradYear] = useState('2026');
-  const [city, setCity] = useState('Pune');
-  const [stateRegion, setStateRegion] = useState('Maharashtra');
+  const [firstName, setFirstName] = useState(student.name ? student.name.split(' ')[0] : (isDemo ? 'Dhruv' : ''));
+  const [lastName, setLastName] = useState(
+    student.name && student.name.split(' ').length > 1
+      ? student.name.split(' ').slice(1).join(' ')
+      : (isDemo ? 'Patil' : '')
+  );
+  const [emailUsername, setEmailUsername] = useState(student.email || (isDemo ? 'dhruv.patil@rscoe.edu.in' : ''));
+  const [phone, setPhone] = useState(isDemo ? '+91 98765 43210' : '');
+  const [collegeName, setCollegeName] = useState(student.college || (isDemo ? 'JSPM Rajarshi Shahu College of Engineering, Pune' : ''));
+  const [degreeStream, setDegreeStream] = useState(student.department || (isDemo ? 'B.Tech Computer Engineering' : ''));
+  const [gradYear, setGradYear] = useState(student.year || '2026');
+  const [city, setCity] = useState(isDemo ? 'Pune' : '');
+  const [stateRegion, setStateRegion] = useState(isDemo ? 'Maharashtra' : '');
   const [country, setCountry] = useState('India');
 
   // STEP 2: College ID & Aadhaar Demo Sandbox
-  const [collegeIdFile, setCollegeIdFile] = useState<string | null>('college_id_card_sample.png');
+  const [collegeIdFile, setCollegeIdFile] = useState<string | null>(isDemo ? 'college_id_card_sample.png' : null);
   const [collegeIdPreview, setCollegeIdPreview] = useState<string | null>(
-    'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=400&q=80'
+    isDemo ? 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=400&q=80' : null
   );
-  const [aadhaarRaw, setAadhaarRaw] = useState('4567-8901-1234');
-  const [aadhaarMasked, setAadhaarMasked] = useState('XXXX-XXXX-1234');
+  const [aadhaarRaw, setAadhaarRaw] = useState(isDemo ? '4567-8901-1234' : '');
+  const [aadhaarMasked, setAadhaarMasked] = useState(isDemo ? 'XXXX-XXXX-1234' : '');
   const [aadhaarStatus, setAadhaarStatus] = useState<
     'NOT_VERIFIED' | 'PENDING' | 'VERIFYING' | 'VERIFIED' | 'FAILED' | 'MANUAL_REVIEW' | 'UNAVAILABLE'
-  >('VERIFIED');
-  const [aadhaarTxId, setAadhaarTxId] = useState<string | null>('UIDAI-SANDBOX-89104-PUNE');
+  >(isDemo ? 'VERIFIED' : 'NOT_VERIFIED');
+  const [aadhaarTxId, setAadhaarTxId] = useState<string | null>(isDemo ? 'UIDAI-SANDBOX-89104-PUNE' : null);
 
   // STEP 3: Resume, Links, Projects & Multi-file Documentation
   const [resumeText, setResumeText] = useState<string>(
-    `Dhruv Patil | Computer Engineering, JSPM RSCOE Pune
+    isDemo ? `Dhruv Patil | Computer Engineering, JSPM RSCOE Pune
 Email: dhruv.patil@rscoe.edu.in | GitHub: github.com/dhruv-patil | LinkedIn: linkedin.com/in/dhruv-patil
 
 TECHNICAL SKILLS:
@@ -112,10 +117,10 @@ Databases & Tools: PostgreSQL, Docker, Git, Machine Learning, REST APIs
 
 PROJECTS:
 1. HireX Placement Platform: Built full-stack platform using React, FastAPI, and PostgreSQL with AI skill evaluation.
-2. Cloud Microservices Engine: Designed microservice architecture with Docker and Redis queue.`
+2. Cloud Microservices Engine: Designed microservice architecture with Docker and Redis queue.` : ''
   );
-  const [githubUrl, setGithubUrl] = useState('https://github.com/dhruv-patil');
-  const [linkedinUrl, setLinkedinUrl] = useState('https://linkedin.com/in/dhruv-patil');
+  const [githubUrl, setGithubUrl] = useState(isDemo ? 'https://github.com/dhruv-patil' : '');
+  const [linkedinUrl, setLinkedinUrl] = useState(isDemo ? 'https://linkedin.com/in/dhruv-patil' : '');
 
   // LinkedIn OAuth 2.0 / OpenID Connect State
   const [isLinkedInConnected, setIsLinkedInConnected] = useState<boolean>(false);
@@ -124,58 +129,62 @@ PROJECTS:
   const [isConnectingLinkedIn, setIsConnectingLinkedIn] = useState<boolean>(false);
   const [linkedInError, setLinkedInError] = useState<string | null>(null);
   const [linkedInSuccessMsg, setLinkedInSuccessMsg] = useState<string | null>(null);
-  const [projects, setProjects] = useState<ProjectItem[]>([
-    {
-      id: 'proj_1',
-      title: 'HireX - Autonomous Placement Engine',
-      description: 'End-to-end talent calibration platform with FastAPI backend and React frontend.',
-      github_repo_url: 'https://github.com/dhruv-patil/hirex-core',
-      technologies: ['React', 'FastAPI', 'Python', 'PostgreSQL', 'Tailwind CSS'],
-      documentation_files: [
-        {
-          id: 'doc_1_1',
-          file_name: 'README.md',
-          file_type: 'README.md',
-          content: `# HireX Core\n\nAI-powered campus recruitment and automated skill assessment system.\n\n## Stack\n- Frontend: React 18, TypeScript, Tailwind CSS\n- Backend: FastAPI, Python, SQLAlchemy\n- ML: Ridge Regression Skill Calibrator\n- Database: PostgreSQL`
-        },
-        {
-          id: 'doc_1_2',
-          file_name: 'ARCHITECTURE.md',
-          file_type: 'ARCHITECTURE.md',
-          content: `## Architecture\nMicroservices communication using REST API with JWT authentication and RBAC for Student, Recruiter, Academician, and Admin.`
-        }
-      ]
-    },
-    {
-      id: 'proj_2',
-      title: 'Distributed Cloud Task Queue',
-      description: 'High throughput asynchronous task dispatcher in Python and Redis.',
-      github_repo_url: 'https://github.com/dhruv-patil/async-task-engine',
-      technologies: ['Python', 'Docker', 'SQL', 'FastAPI'],
-      documentation_files: [
-        {
-          id: 'doc_2_1',
-          file_name: 'README.md',
-          file_type: 'README.md',
-          content: `# Async Task Engine\n\nScalable event processing queue built with Redis and Docker.`
-        }
-      ]
-    }
-  ]);
+  const [projects, setProjects] = useState<ProjectItem[]>(
+    isDemo ? [
+      {
+        id: 'proj_1',
+        title: 'HireX - Autonomous Placement Engine',
+        description: 'End-to-end talent calibration platform with FastAPI backend and React frontend.',
+        github_repo_url: 'https://github.com/dhruv-patil/hirex-core',
+        technologies: ['React', 'FastAPI', 'Python', 'PostgreSQL', 'Tailwind CSS'],
+        documentation_files: [
+          {
+            id: 'doc_1_1',
+            file_name: 'README.md',
+            file_type: 'README.md',
+            content: `# HireX Core\n\nAI-powered campus recruitment and automated skill assessment system.\n\n## Stack\n- Frontend: React 18, TypeScript, Tailwind CSS\n- Backend: FastAPI, Python, SQLAlchemy\n- ML: Ridge Regression Skill Calibrator\n- Database: PostgreSQL`
+          },
+          {
+            id: 'doc_1_2',
+            file_name: 'ARCHITECTURE.md',
+            file_type: 'ARCHITECTURE.md',
+            content: `## Architecture\nMicroservices communication using REST API with JWT authentication and RBAC for Student, Recruiter, Academician, and Admin.`
+          }
+        ]
+      },
+      {
+        id: 'proj_2',
+        title: 'Distributed Cloud Task Queue',
+        description: 'High throughput asynchronous task dispatcher in Python and Redis.',
+        github_repo_url: 'https://github.com/dhruv-patil/async-task-engine',
+        technologies: ['Python', 'Docker', 'SQL', 'FastAPI'],
+        documentation_files: [
+          {
+            id: 'doc_2_1',
+            file_name: 'README.md',
+            file_type: 'README.md',
+            content: `# Async Task Engine\n\nScalable event processing queue built with Redis and Docker.`
+          }
+        ]
+      }
+    ] : []
+  );
 
   // STEP 5: Skill Extraction
   const [isExtracting, setIsExtracting] = useState(false);
-  const [extractedSkills, setExtractedSkills] = useState<ExtractedSkill[]>([
-    { skill: 'Python', sources: ['Resume', 'Project 1 (HireX)', 'Project 2 (Task Queue)'], state: 'DETECTED', is_verified: false },
-    { skill: 'React', sources: ['Resume', 'Project 1 (README.md)', 'Project 1 (HireX)'], state: 'DETECTED', is_verified: false },
-    { skill: 'FastAPI', sources: ['Resume', 'Project 1 (ARCHITECTURE.md)', 'Project 2 (Task Queue)'], state: 'DETECTED', is_verified: false },
-    { skill: 'SQL', sources: ['Resume', 'Project 2 (Task Queue)'], state: 'DETECTED', is_verified: false },
-    { skill: 'Docker', sources: ['Resume', 'Project 2 (README.md)'], state: 'DETECTED', is_verified: false },
-    { skill: 'Machine Learning', sources: ['Resume', 'Project 1 (README.md)'], state: 'DETECTED', is_verified: false }
-  ]);
+  const [extractedSkills, setExtractedSkills] = useState<ExtractedSkill[]>(
+    isDemo ? [
+      { skill: 'Python', sources: ['Resume', 'Project 1 (HireX)', 'Project 2 (Task Queue)'], state: 'DETECTED', is_verified: false },
+      { skill: 'React', sources: ['Resume', 'Project 1 (README.md)', 'Project 1 (HireX)'], state: 'DETECTED', is_verified: false },
+      { skill: 'FastAPI', sources: ['Resume', 'Project 1 (ARCHITECTURE.md)', 'Project 2 (Task Queue)'], state: 'DETECTED', is_verified: false },
+      { skill: 'SQL', sources: ['Resume', 'Project 2 (Task Queue)'], state: 'DETECTED', is_verified: false },
+      { skill: 'Docker', sources: ['Resume', 'Project 2 (README.md)'], state: 'DETECTED', is_verified: false },
+      { skill: 'Machine Learning', sources: ['Resume', 'Project 1 (README.md)'], state: 'DETECTED', is_verified: false }
+    ] : []
+  );
 
   // STEP 6: Skill Confirmation
-  const [confirmedSkills, setConfirmedSkills] = useState<string[]>(['Python', 'React', 'FastAPI', 'SQL']);
+  const [confirmedSkills, setConfirmedSkills] = useState<string[]>(isDemo ? ['Python', 'React', 'FastAPI', 'SQL'] : []);
   const [skillSearchQuery, setSkillSearchQuery] = useState('');
   const [newSkillInput, setNewSkillInput] = useState('');
   const [skillAddError, setSkillAddError] = useState('');

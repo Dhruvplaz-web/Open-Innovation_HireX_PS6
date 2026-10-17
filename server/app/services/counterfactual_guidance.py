@@ -22,8 +22,9 @@ class CounterfactualGuidanceService:
         Generates full explainability and counterfactual guidance for a student
         against a specific campus placement opportunity.
         """
-        student = next((s for s in STUDENTS if s["id"] == student_id), None) or STUDENTS[0]
-        opportunity = next((o for o in OPPORTUNITIES if o.get("id") == opportunity_id), None) or OPPORTUNITIES[0]
+        from app.db.canonical_store import canonical_store
+        student = next((s for s in STUDENTS if s["id"] == student_id), None) or canonical_store.get_student(student_id) or STUDENTS[0]
+        opportunity = next((o for o in OPPORTUNITIES if o.get("id") == opportunity_id or o.get("opportunity_id") == opportunity_id), None) or OPPORTUNITIES[0]
 
         # Analyze current fit
         matrix = evidence_mapper_service.compute_student_matrix(student_id)
@@ -168,6 +169,11 @@ class CounterfactualGuidanceService:
         }
 
         HUMAN_REVIEW_DISPUTES.append(dispute_record)
+        try:
+            from app.db.canonical_store import canonical_store
+            canonical_store.record_human_review_dispute(dispute_record)
+        except Exception as e:
+            print(f"[CounterfactualGuidance] Warning persisting dispute to canonical store: {e}")
 
         log_audit_trail(
             actor=std_name,
@@ -185,8 +191,51 @@ class CounterfactualGuidanceService:
             "record": dispute_record
         }
 
-    def get_pending_disputes(self) -> List[Dict[str, Any]]:
+    def get_pending_disputes(self, status: Optional[str] = None) -> List[Dict[str, Any]]:
+        try:
+            from app.db.canonical_store import canonical_store
+            store_disputes = canonical_store.get_human_review_disputes(status)
+            if store_disputes:
+                return store_disputes
+        except Exception:
+            pass
+        if status and status != "ALL":
+            return [d for d in HUMAN_REVIEW_DISPUTES if d.get("status") == status]
         return HUMAN_REVIEW_DISPUTES
+
+    def resolve_dispute(
+        self,
+        dispute_id: str,
+        resolution: str,
+        actor_id: str = "tpo_coordinator",
+        new_score: Optional[int] = None,
+        notes: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Allows TPO or academic coordinator to resolve a dispute:
+        'UPHELD' (AI score maintained) or 'OVERRIDDEN_APPROVED' (Manual verification approved).
+        """
+        target = next((d for d in HUMAN_REVIEW_DISPUTES if d.get("dispute_id") == dispute_id or d.get("id") == dispute_id), None)
+        if target:
+            target["status"] = resolution
+            target["resolved_by"] = actor_id
+            target["resolved_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            target["resolution_notes"] = notes or ""
+            if new_score is not None:
+                target["overridden_score"] = new_score
+
+        try:
+            from app.db.canonical_store import canonical_store
+            return canonical_store.resolve_human_review_dispute(
+                dispute_id=dispute_id,
+                resolution=resolution,
+                actor_id=actor_id,
+                new_score=new_score,
+                notes=notes
+            )
+        except Exception as e:
+            print(f"[CounterfactualGuidance] Warning resolving in canonical store: {e}")
+            return target or {"status": resolution, "dispute_id": dispute_id}
 
 
 counterfactual_guidance_service = CounterfactualGuidanceService()

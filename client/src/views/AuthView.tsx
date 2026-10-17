@@ -18,11 +18,13 @@ import {
   Check, 
   ChevronRight, 
   X,
-  ExternalLink
+  ExternalLink,
+  Award
 } from 'lucide-react';
 import { Role } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { SEOHead } from '../components/common/SEOHead';
+import { ResumeOnboardingSection, extractSkillsFromText } from '../components/auth/ResumeOnboardingSection';
 
 interface AuthViewProps {
   onEnterRole: (role: Role) => void;
@@ -45,7 +47,8 @@ export const AuthView: React.FC<AuthViewProps> = ({
     loginWithEmail, 
     registerWithEmail, 
     saveOnboardingProfile, 
-    switchDemoRole 
+    switchDemoRole,
+    sendPasswordReset
   } = useAuth();
 
   // Mode: 'signin' | 'signup'
@@ -66,12 +69,28 @@ export const AuthView: React.FC<AuthViewProps> = ({
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(true);
+  const [resetSentNotice, setResetSentNotice] = useState('');
+
+  const handleForgotPassword = async () => {
+    if (!email || !email.includes('@')) {
+      setErrorMsg('Please enter your email address in the field above to receive a password reset link.');
+      return;
+    }
+    setErrorMsg('');
+    try {
+      await sendPasswordReset(email);
+      setResetSentNotice(`Password reset instructions sent to ${email}. Check your inbox!`);
+      setTimeout(() => setResetSentNotice(''), 6000);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to dispatch password reset email.');
+    }
+  };
 
   // Role Selection (Default: Student)
   const [selectedRole, setSelectedRole] = useState<Role>(() => {
     const params = new URLSearchParams(window.location.search);
     const roleParam = params.get('role') as Role;
-    if (['student', 'recruiter', 'academician', 'admin'].includes(roleParam)) {
+    if (['student', 'recruiter', 'academician', 'admin', 'alumni'].includes(roleParam)) {
       return roleParam;
     }
     return userProfile?.role || 'student';
@@ -94,6 +113,15 @@ export const AuthView: React.FC<AuthViewProps> = ({
   const [targetRole, setTargetRole] = useState(userProfile?.targetRole || 'Full-Stack AI Engineer');
   const [companyName, setCompanyName] = useState(userProfile?.companyName || '');
   const [designation, setDesignation] = useState(userProfile?.designation || '');
+
+  // Resume & ATS Skill Ingestion State
+  const [resumeText, setResumeText] = useState(userProfile?.resumeText || '');
+  const [resumeFileName, setResumeFileName] = useState(userProfile?.resumeFileName || '');
+  const [githubUrl, setGithubUrl] = useState(userProfile?.githubUrl || 'https://github.com/dhruv-patil');
+  const [linkedinUrl, setLinkedinUrl] = useState(userProfile?.linkedinUrl || '');
+  const [detectedSkills, setDetectedSkills] = useState<string[]>(() => {
+    return userProfile?.detectedSkills || extractSkillsFromText(userProfile?.resumeText || '');
+  });
 
   // Synchronize URL query params (?mode=...&role=...)
   useEffect(() => {
@@ -139,8 +167,12 @@ export const AuthView: React.FC<AuthViewProps> = ({
     setErrorMsg('');
     setIsSubmitting(true);
     try {
-      await loginWithGoogle();
-      setShowOnboarding(true);
+      const profile = await loginWithGoogle();
+      if (!profile?.isOnboarded) {
+        setShowOnboarding(true);
+      } else {
+        onEnterRole(profile?.role || 'student');
+      }
     } catch (err: any) {
       setErrorMsg(err.message || 'Google sign-in encountered an issue. Please verify browser popup settings.');
     } finally {
@@ -160,23 +192,44 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
     try {
       if (authMode === 'signin') {
-        await loginWithEmail(email, password);
-        onEnterRole(userProfile?.role || 'student');
+        const profile = await loginWithEmail(email, password);
+        // If a new user signs in without having completed their resume onboarding, direct them to Onboarding
+        if (!profile?.isOnboarded) {
+          setShowOnboarding(true);
+        } else {
+          onEnterRole(profile?.role || 'student');
+        }
       } else {
         const fullName = `${firstName} ${lastName}`.trim() || 'New Member';
         await registerWithEmail(email, password, fullName);
         setShowOnboarding(true);
       }
     } catch (err: any) {
-      setErrorMsg(err.message || 'Authentication error. Please verify credentials.');
+      if (err?.code === 'auth/invalid-credential' || err?.code === 'auth/user-not-found') {
+        if (authMode === 'signin') {
+          setErrorMsg('Account not found with these credentials. If you are new, switch to "Sign up" to create your account in 1 click.');
+        } else {
+          setErrorMsg('Invalid registration credentials. Please verify your email and password.');
+        }
+      } else if (err?.code === 'auth/email-already-in-use') {
+        setErrorMsg('This email is already registered. Switch to "Log in" to sign in.');
+      } else if (err?.code === 'auth/weak-password') {
+        setErrorMsg('Password is too short. Please use at least 6 characters.');
+      } else {
+        setErrorMsg(err.message || 'Authentication error. Please verify credentials.');
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Onboarding Step 2 Save Handler
+  // Onboarding Step 2 Save Handler (Includes Resume & Detected Skills)
   const handleCompleteOnboarding = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (selectedRole === 'student' && !resumeText.trim()) {
+      setErrorMsg('Please upload your resume file or paste your resume text to complete onboarding.');
+      return;
+    }
     setIsSubmitting(true);
     try {
       await saveOnboardingProfile({
@@ -188,7 +241,12 @@ export const AuthView: React.FC<AuthViewProps> = ({
         prn,
         targetRole,
         companyName,
-        designation
+        designation,
+        resumeText,
+        resumeFileName,
+        githubUrl,
+        linkedinUrl,
+        detectedSkills
       });
       onEnterRole(selectedRole);
     } catch (err: any) {
@@ -205,20 +263,18 @@ export const AuthView: React.FC<AuthViewProps> = ({
   };
 
   return (
-    <div className={`min-h-screen w-full flex items-center justify-center p-3 sm:p-6 lg:p-10 select-none font-sans transition-colors duration-200 ${
-      isDark ? 'bg-[#0f1019] text-slate-100' : 'bg-[#f1f3f9] text-slate-900'
-    }`}>
+    <div className="min-h-screen w-full flex items-center justify-center p-3 sm:p-6 lg:p-10 select-none font-sans transition-colors duration-200 bg-gradient-to-br from-[#f0f4fd] via-[#f4f2ff] to-[#edf3fe] dark:from-[#0b0f19] dark:via-[#0d1326] dark:to-[#0a0d18] text-slate-900 dark:text-slate-100">
       <SEOHead
         title={authMode === 'signup' ? 'Create an Account | HireX' : 'Sign In | HireX'}
         description="Join the AI-native campus talent intelligence platform to verify skills and access campus drives."
         path="/login"
       />
 
-      {/* Main Container Card (Modeled after user's reference screenshot) */}
-      <div className={`w-full max-w-5xl rounded-[32px] overflow-hidden border shadow-2xl transition-colors duration-200 relative ${
+      {/* Main Container Card (Soft Glassmorphic Elevated Panel) */}
+      <div className={`w-full max-w-5xl rounded-[32px] overflow-hidden border shadow-2xl transition-colors duration-200 relative backdrop-blur-xl ${
         isDark 
-          ? 'bg-[#181926] border-slate-800/90 shadow-black/60' 
-          : 'bg-white border-slate-200/90 shadow-slate-300/40'
+          ? 'bg-[#121829]/95 border-slate-800/80 shadow-black/60' 
+          : 'bg-white/95 border-blue-200/70 shadow-xl shadow-blue-500/10'
       }`}>
         <div className="grid grid-cols-1 lg:grid-cols-12 p-3 sm:p-4 lg:p-6 gap-6 lg:gap-8 items-stretch">
           
@@ -361,12 +417,13 @@ export const AuthView: React.FC<AuthViewProps> = ({
                   <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                     Select Your Persona
                   </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                     {[
                       { role: 'student' as Role, label: 'Student', icon: GraduationCap },
                       { role: 'recruiter' as Role, label: 'Recruiter', icon: Briefcase },
                       { role: 'academician' as Role, label: 'College', icon: Building2 },
-                      { role: 'admin' as Role, label: 'TPO Admin', icon: Shield }
+                      { role: 'admin' as Role, label: 'TPO Admin', icon: Shield },
+                      { role: 'alumni' as Role, label: 'Alumni', icon: Award }
                     ].map((item) => {
                       const Icon = item.icon;
                       const isSelected = selectedRole === item.role;
@@ -393,50 +450,121 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
                 {/* Role-Specific Form Fields */}
                 {selectedRole === 'student' ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                    <div className="sm:col-span-2 space-y-1">
-                      <label className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>College / University</label>
-                      <input
-                        type="text"
-                        value={college}
-                        onChange={(e) => setCollege(e.target.value)}
-                        placeholder="e.g. IIT Bombay, BITS Pilani, RVCE Bengaluru, or COEP Tech"
-                        className={`w-full px-3 py-2.5 rounded-xl border outline-none text-xs ${
-                          isDark 
-                            ? 'bg-[#202236] border-slate-700/70 text-white placeholder-slate-500 focus:border-indigo-500' 
-                            : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600'
-                        }`}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Department</label>
-                      <input
-                        type="text"
-                        value={department}
-                        onChange={(e) => setDepartment(e.target.value)}
-                        placeholder="Computer Engineering"
-                        className={`w-full px-3 py-2.5 rounded-xl border outline-none text-xs ${
-                          isDark 
-                            ? 'bg-[#202236] border-slate-700/70 text-white placeholder-slate-500 focus:border-indigo-500' 
-                            : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600'
-                        }`}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Current CGPA</label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        max="10"
-                        value={cgpa}
-                        onChange={(e) => setCgpa(parseFloat(e.target.value) || 0)}
-                        className={`w-full px-3 py-2.5 rounded-xl border outline-none text-xs ${
-                          isDark 
-                            ? 'bg-[#202236] border-slate-700/70 text-white placeholder-slate-500 focus:border-indigo-500' 
-                            : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600'
-                        }`}
-                      />
+                  <div className="space-y-4">
+                    {/* Resume Upload & Telemetry Ingestion */}
+                    <ResumeOnboardingSection
+                      resumeText={resumeText}
+                      setResumeText={setResumeText}
+                      resumeFileName={resumeFileName}
+                      setResumeFileName={setResumeFileName}
+                      detectedSkills={detectedSkills}
+                      setDetectedSkills={setDetectedSkills}
+                      githubUrl={githubUrl}
+                      setGithubUrl={setGithubUrl}
+                      linkedinUrl={linkedinUrl}
+                      setLinkedinUrl={setLinkedinUrl}
+                      isDark={isDark}
+                    />
+
+                    {/* Academic & Institutional Records */}
+                    <div className="pt-3 border-t border-slate-700/40">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-indigo-400' : 'text-indigo-600'}`}>
+                          Academic & Institutional Records
+                        </h4>
+                        <span className="text-[10px] text-emerald-400 font-mono">TPO Gatekeeper Verification</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div className="sm:col-span-2 space-y-1">
+                          <label className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>College / University</label>
+                          <input
+                            type="text"
+                            value={college}
+                            onChange={(e) => setCollege(e.target.value)}
+                            placeholder="e.g. JSPM RSCOE Pune, IIT Bombay, COEP Tech"
+                            className={`w-full px-3 py-2.5 rounded-xl border outline-none text-xs ${
+                              isDark 
+                                ? 'bg-[#202236] border-slate-700/70 text-white placeholder-slate-500 focus:border-indigo-500' 
+                                : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600'
+                            }`}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Department / Branch</label>
+                          <input
+                            type="text"
+                            value={department}
+                            onChange={(e) => setDepartment(e.target.value)}
+                            placeholder="Computer Engineering"
+                            className={`w-full px-3 py-2.5 rounded-xl border outline-none text-xs ${
+                              isDark 
+                                ? 'bg-[#202236] border-slate-700/70 text-white placeholder-slate-500 focus:border-indigo-500' 
+                                : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600'
+                            }`}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Academic Year</label>
+                          <select
+                            value={year}
+                            onChange={(e) => setYear(e.target.value)}
+                            className={`w-full px-3 py-2.5 rounded-xl border outline-none text-xs ${
+                              isDark 
+                                ? 'bg-[#202236] border-slate-700/70 text-white focus:border-indigo-500' 
+                                : 'bg-slate-50 border-slate-300 text-slate-900 focus:border-indigo-600'
+                            }`}
+                          >
+                            <option value="1st Year">1st Year (FE)</option>
+                            <option value="2nd Year">2nd Year (SE)</option>
+                            <option value="3rd Year">3rd Year (TE)</option>
+                            <option value="4th Year">Final Year (BE)</option>
+                          </select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Current CGPA (out of 10.0)</label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            max="10"
+                            value={cgpa}
+                            onChange={(e) => setCgpa(parseFloat(e.target.value) || 0)}
+                            className={`w-full px-3 py-2.5 rounded-xl border outline-none text-xs ${
+                              isDark 
+                                ? 'bg-[#202236] border-slate-700/70 text-white placeholder-slate-500 focus:border-indigo-500' 
+                                : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600'
+                            }`}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Target Career Role</label>
+                          <input
+                            type="text"
+                            value={targetRole}
+                            onChange={(e) => setTargetRole(e.target.value)}
+                            placeholder="Full-Stack AI Engineer"
+                            className={`w-full px-3 py-2.5 rounded-xl border outline-none text-xs ${
+                              isDark 
+                                ? 'bg-[#202236] border-slate-700/70 text-white placeholder-slate-500 focus:border-indigo-500' 
+                                : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600'
+                            }`}
+                          />
+                        </div>
+                        <div className="sm:col-span-2 space-y-1">
+                          <label className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>University PRN / Roll No (Optional)</label>
+                          <input
+                            type="text"
+                            value={prn}
+                            onChange={(e) => setPrn(e.target.value)}
+                            placeholder="e.g. 72153921K (SPPU PRN)"
+                            className={`w-full px-3 py-2.5 rounded-xl border outline-none text-xs ${
+                              isDark 
+                                ? 'bg-[#202236] border-slate-700/70 text-white placeholder-slate-500 focus:border-indigo-500' 
+                                : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600'
+                            }`}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -518,6 +646,20 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     )}
                   </div>
                 </div>
+
+                {/* Feedback Banners */}
+                {errorMsg && (
+                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs flex items-start gap-2 animate-in fade-in">
+                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                    <span>{errorMsg}</span>
+                  </div>
+                )}
+                {resetSentNotice && (
+                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs flex items-start gap-2 animate-in fade-in">
+                    <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+                    <span>{resetSentNotice}</span>
+                  </div>
+                )}
 
                 {/* Form Elements */}
                 <form onSubmit={handleSubmit} className="space-y-3.5">
@@ -628,8 +770,9 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     {authMode === 'signin' && (
                       <button
                         type="button"
-                        onClick={() => alert('Password reset link will be sent to your email.')}
-                        className="text-xs text-indigo-500 hover:text-indigo-400 font-semibold"
+                        onClick={handleForgotPassword}
+                        className="text-xs text-indigo-500 hover:text-indigo-400 font-semibold transition hover:underline"
+                        title="Send password reset link to your email"
                       >
                         Forgot password?
                       </button>
@@ -800,6 +943,22 @@ export const AuthView: React.FC<AuthViewProps> = ({
                           <span className="text-[10px] text-slate-400 font-mono">Placement Dir</span>
                         </div>
                         <Shield className="w-3.5 h-3.5 text-purple-400" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleSelectDemoPersona('alumni')}
+                        className={`p-2 rounded-xl border text-left transition flex items-center justify-between group col-span-2 sm:col-span-1 ${
+                          isDark 
+                            ? 'bg-[#202236] border-slate-700 hover:border-amber-500' 
+                            : 'bg-white border-slate-200 hover:border-amber-500'
+                        }`}
+                      >
+                        <div>
+                          <span className="font-bold block group-hover:text-amber-400">Alumni Lead</span>
+                          <span className="text-[10px] text-slate-400 font-mono">Vikram (Google)</span>
+                        </div>
+                        <Award className="w-3.5 h-3.5 text-amber-400" />
                       </button>
                     </div>
                   </div>

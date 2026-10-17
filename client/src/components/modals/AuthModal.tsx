@@ -13,10 +13,12 @@ import {
   School,
   Building2,
   Sparkles,
-  AlertCircle
+  AlertCircle,
+  Award
 } from 'lucide-react';
 import { Role } from '../../types';
 import { useAuth } from '../../context/AuthContext';
+import { ResumeOnboardingSection, extractSkillsFromText } from '../auth/ResumeOnboardingSection';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -58,6 +60,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSelectR
   const [companyName, setCompanyName] = useState(userProfile?.companyName || '');
   const [designation, setDesignation] = useState(userProfile?.designation || '');
 
+  // Resume & ATS Skill Ingestion State
+  const [resumeText, setResumeText] = useState(userProfile?.resumeText || '');
+  const [resumeFileName, setResumeFileName] = useState(userProfile?.resumeFileName || '');
+  const [githubUrl, setGithubUrl] = useState(userProfile?.githubUrl || 'https://github.com/dhruv-patil');
+  const [linkedinUrl, setLinkedinUrl] = useState(userProfile?.linkedinUrl || '');
+  const [detectedSkills, setDetectedSkills] = useState<string[]>(() => {
+    return userProfile?.detectedSkills || extractSkillsFromText(userProfile?.resumeText || '');
+  });
+
   // Step 2 profile setup screen flag
   const [showProfileSetup, setShowProfileSetup] = useState(!userProfile?.isOnboarded && !!currentUser);
 
@@ -67,8 +78,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSelectR
     setErrorMsg('');
     setIsSubmitting(true);
     try {
-      await loginWithGoogle();
-      setShowProfileSetup(true);
+      const profile = await loginWithGoogle();
+      if (!profile?.isOnboarded) {
+        setShowProfileSetup(true);
+      } else {
+        onSelectRole(profile.role);
+        onClose();
+      }
     } catch (err: any) {
       setErrorMsg(err.message || 'Failed to sign in with Google. Check popup permissions.');
     } finally {
@@ -83,8 +99,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSelectR
 
     try {
       if (authMode === 'signin') {
-        await loginWithEmail(email, password);
-        onClose();
+        const profile = await loginWithEmail(email, password);
+        if (!profile?.isOnboarded) {
+          setShowProfileSetup(true);
+        } else {
+          onSelectRole(profile.role);
+          onClose();
+        }
       } else {
         await registerWithEmail(email, password, name);
         setShowProfileSetup(true);
@@ -98,6 +119,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSelectR
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (selectedRole === 'student' && !resumeText.trim()) {
+      setErrorMsg('Please upload your resume file or paste your resume text to complete onboarding.');
+      return;
+    }
     setIsSubmitting(true);
     try {
       await saveOnboardingProfile({
@@ -109,7 +134,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSelectR
         prn,
         targetRole,
         companyName,
-        designation
+        designation,
+        resumeText,
+        resumeFileName,
+        githubUrl,
+        linkedinUrl,
+        detectedSkills
       });
       onSelectRole(selectedRole);
       setShowProfileSetup(false);
@@ -157,12 +187,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSelectR
       avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin',
       badge: 'System Admin',
       score: 'Master Access'
+    },
+    {
+      role: 'alumni' as Role,
+      name: 'Vikram Aditya',
+      title: 'Staff Software Engineer • Google (JSPM RSCOE 2021)',
+      icon: Award,
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Vikram',
+      badge: 'Distinguished Alumni',
+      score: '480 Impact Pts'
     }
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-card-dark w-full max-w-xl rounded-2xl shadow-2xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 relative max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
+      <div className="hub-card w-full max-w-xl shadow-2xl p-6 md:p-8 relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
           className="absolute top-5 right-5 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
@@ -253,7 +292,31 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSelectR
 
             {/* Student Specific Fields */}
             {selectedRole === 'student' && (
-              <>
+              <div className="space-y-4">
+                {/* Resume Upload & Live ATS Telemetry Section */}
+                <ResumeOnboardingSection
+                  resumeText={resumeText}
+                  setResumeText={setResumeText}
+                  resumeFileName={resumeFileName}
+                  setResumeFileName={setResumeFileName}
+                  detectedSkills={detectedSkills}
+                  setDetectedSkills={setDetectedSkills}
+                  githubUrl={githubUrl}
+                  setGithubUrl={setGithubUrl}
+                  linkedinUrl={linkedinUrl}
+                  setLinkedinUrl={setLinkedinUrl}
+                  isDark={true}
+                />
+
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-700/60">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      Academic & Institutional Credentials
+                    </span>
+                    <span className="text-[10px] text-emerald-500 font-mono">TPO Clearance</span>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
@@ -366,7 +429,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSelectR
                     <option value="Data Analytics Associate">Data Analyst</option>
                   </select>
                 </div>
-              </>
+              </div>
             )}
 
             {/* Recruiter Specific Fields */}

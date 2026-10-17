@@ -175,9 +175,16 @@ class EvidenceMapperService:
         Builds the complete Skill-to-Evidence Matrix for a student, showing linked proof,
         canonical ESCO taxonomy alignment, and verified vs unsupported breakdown.
         """
-        student = next((s for s in STUDENTS if s["id"] == student_id), None)
+        from app.db.canonical_store import canonical_store
+        student = next((s for s in STUDENTS if s["id"] == student_id), None) or canonical_store.get_student(student_id)
         base_skills = student.get("skills", {}) if student else {}
-        evidence_items = STUDENT_EVIDENCE_REGISTRY.get(student_id, [])
+        evidence_items = list(STUDENT_EVIDENCE_REGISTRY.get(student_id, []))
+        # Merge persistent disk evidence from canonical_store
+        disk_items = canonical_store.get_student_evidence(student_id)
+        existing_ids = {e.get("id") for e in evidence_items}
+        for di in disk_items:
+            if di.get("id") not in existing_ids:
+                evidence_items.append(di)
 
         # Group evidence by extracted skills
         skill_evidence_map: Dict[str, List[Dict[str, Any]]] = {}
@@ -318,6 +325,11 @@ class EvidenceMapperService:
         }
 
         STUDENT_EVIDENCE_REGISTRY[student_id].append(new_item)
+        try:
+            from app.db.canonical_store import canonical_store
+            canonical_store.save_evidence_item(student_id, new_item)
+        except Exception as e:
+            print(f"[EvidenceMapper] Warning persisting evidence to canonical store: {e}")
 
         log_audit_trail(
             actor=student_id,

@@ -1335,5 +1335,60 @@ def get_academician_jobs():
     }
 
 
+class ResolveDisputeRequest(BaseModel):
+    resolution: str  # 'OVERRIDDEN_APPROVED' or 'UPHELD'
+    notes: Optional[str] = None
+    new_score: Optional[int] = None
+    reviewer_email: Optional[str] = "dr.patil@jspmrscoe.edu.in"
 
 
+@router.get("/disputes")
+def get_cohort_student_disputes(
+    status: Optional[str] = Query(None, description="Filter by status: PENDING_FACULTY_REVIEW, OVERRIDDEN_APPROVED, UPHELD, or ALL")
+):
+    """
+    Returns all match score disputes and appeals filed by students across the college cohort.
+    Enables TPO/faculty to review the student argument and attached external evidence.
+    """
+    from app.services.counterfactual_guidance import counterfactual_guidance_service
+    disputes = counterfactual_guidance_service.get_pending_disputes(status=status)
+    return {
+        "status": "success",
+        "total": len(disputes),
+        "disputes": disputes
+    }
+
+
+@router.post("/disputes/{dispute_id}/resolve")
+def resolve_student_dispute(
+    dispute_id: str,
+    req: ResolveDisputeRequest
+):
+    """
+    TPO / Faculty reviews and resolves a student's match score appeal.
+    Logs an audit event and broadcasts real-time SSE update to the student.
+    """
+    from app.services.counterfactual_guidance import counterfactual_guidance_service
+    from app.services.sync_service import sync_service
+
+    result = counterfactual_guidance_service.resolve_dispute(
+        dispute_id=dispute_id,
+        resolution=req.resolution,
+        actor_id=req.reviewer_email or "tpo_coordinator",
+        new_score=req.new_score,
+        notes=req.notes
+    )
+
+    # Broadcast live SSE update
+    sync_service.publish_event("DISPUTE_RESOLVED", {
+        "dispute_id": dispute_id,
+        "resolution": req.resolution,
+        "notes": req.notes,
+        "overridden_score": req.new_score
+    }, role="all")
+
+    return {
+        "status": "success",
+        "message": f"Dispute '{dispute_id}' resolved with verdict: {req.resolution}.",
+        "dispute": result
+    }

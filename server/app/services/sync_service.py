@@ -193,7 +193,7 @@ class SyncService:
             version=data.get("version", 1),
             payload=data,
             actor_id=student_id or role,
-            scope={"roles": [role, "admin"] if role != "all" else ["student", "recruiter", "academician", "admin"], "student_id": student_id, "is_public": True}
+            scope={"roles": [role, "admin"] if role != "all" else ["student", "recruiter", "academician", "admin", "alumni"], "student_id": student_id, "is_public": True}
         )
 
     def publish_event(self, event_type: str, data: Dict[str, Any], role: str = "all", student_id: str = "") -> Dict[str, Any]:

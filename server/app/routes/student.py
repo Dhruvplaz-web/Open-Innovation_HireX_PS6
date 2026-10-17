@@ -20,7 +20,8 @@ from app.data.seed_data import (
     record_identity_reveal_consent,
     log_audit_trail,
     resolve_or_create_institution,
-    resolve_or_create_department
+    resolve_or_create_department,
+    get_or_create_student
 )
 from app.ml.job_matcher import matcher
 from app.ml.demand_predictor import trend_predictor
@@ -141,7 +142,8 @@ class StudentProfileUpdateRequest(BaseModel):
 
 @router.get("/dashboard")
 def get_student_dashboard(student_id: str = Query("std_1")):
-    student = next((s for s in STUDENTS if s["id"] == student_id), None) or canonical_store.get_student(student_id) or STUDENTS[0]
+    student = get_or_create_student(student_id)
+    is_new_student = student.get("verified_score", 0) == 0 and not student.get("skills")
     
     # 1. Match opportunities using ML Model 2 (Pillar 2: Strictly active non-expired drives)
     matched_opps = matcher.rank_opportunities_for_student(student, OPPORTUNITIES, include_expired=False)
@@ -161,6 +163,12 @@ def get_student_dashboard(student_id: str = Query("std_1")):
     
     # 2. Get Hero Chart data using ML Model 3
     chart_data = trend_predictor.get_trend_chart_data(role="student")
+    if is_new_student:
+        chart_data = {
+            "labels": ["Week 1", "Week 2", "Week 3", "Week 4"],
+            "candidate_scores": [0, 0, 0, 0],
+            "batch_averages": [65, 68, 70, 72]
+        }
     
     # 3. Friends / Peer Scoreboard
     peer_scores = [
@@ -170,41 +178,61 @@ def get_student_dashboard(student_id: str = Query("std_1")):
     peer_scores.sort(key=lambda x: x["score"], reverse=True)
     
     # 4. Learning Activity Stats
-    learning_stats = {
-        "verified_score": student["verified_score"],
-        "finished_lessons": 68,
-        "ongoing_lessons": 32,
-        "completed_assessments": student["assessments_completed"],
-        "rank": student["rank_in_college"],
-        "skills_breakdown": [
-            {"skill": k, "score": v["score"], "level": v["level"], "verified": v["verified"]}
-            for k, v in student["skills"].items()
-        ]
-    }
+    if is_new_student:
+        learning_stats = {
+            "verified_score": 0,
+            "finished_lessons": 0,
+            "ongoing_lessons": 0,
+            "completed_assessments": 0,
+            "rank": 0,
+            "skills_breakdown": []
+        }
+    else:
+        learning_stats = {
+            "verified_score": student["verified_score"],
+            "finished_lessons": 68,
+            "ongoing_lessons": 32,
+            "completed_assessments": student.get("assessments_completed", 0),
+            "rank": student.get("rank_in_college", 4),
+            "skills_breakdown": [
+                {"skill": k, "score": v["score"], "level": v["level"], "verified": v["verified"]}
+                for k, v in student.get("skills", {}).items()
+            ]
+        }
     
     # 5. Active student applications
-    student_apps = [a for a in APPLICATIONS if a.get("student_id") == student_id or a.get("student_email") == student.get("email")]
+    student_apps = [a for a in APPLICATIONS if a.get("student_id") == student_id or a.get("student_email") == student.get("email")] if not is_new_student else []
     
     # 6. Placement Readiness (5 Weighted Pillars & Next Best Action)
     skills_dict = student.get("skills", {})
-    tech_scores = [v["score"] for v in skills_dict.values() if isinstance(v, dict) and "score" in v]
-    tech_score = round(sum(tech_scores) / max(1, len(tech_scores))) if tech_scores else 86
-    
-    dsa_score = skills_dict.get("Data Structures", {}).get("score", 85) if isinstance(skills_dict.get("Data Structures"), dict) else 85
-    apt_score = round(min(100, dsa_score * 0.95 + student.get("assessments_completed", 14) * 0.5))
-    
-    proj_score = min(100, int(student.get("projects_count", 6) * 16.5))
-    
-    cgpa = student.get("cgpa", 8.92)
-    cred_score = round(min(100, (cgpa / 10.0) * 100 + 5))
-    
-    interview_score = 74
-    overall_readiness = round(tech_score * 0.35 + apt_score * 0.25 + proj_score * 0.20 + cred_score * 0.10 + interview_score * 0.10)
-    
-    rank_in_college = student.get("rank_in_college", 4)
-    college_name = student.get("college", "RSCOE")
-    short_college = "RSCOE" if "RSCOE" in college_name else college_name[:8]
-    percentile_rank = f"Top {rank_in_college}% {short_college}"
+    if is_new_student:
+        tech_score = 0
+        apt_score = 0
+        proj_score = 0
+        cgpa = student.get("cgpa", 8.0)
+        cred_score = round(min(100, (cgpa / 10.0) * 100))
+        interview_score = 0
+        overall_readiness = 0
+        percentile_rank = "New Member (Unranked)"
+    else:
+        tech_scores = [v["score"] for v in skills_dict.values() if isinstance(v, dict) and "score" in v]
+        tech_score = round(sum(tech_scores) / max(1, len(tech_scores))) if tech_scores else 86
+        
+        dsa_score = skills_dict.get("Data Structures", {}).get("score", 85) if isinstance(skills_dict.get("Data Structures"), dict) else 85
+        apt_score = round(min(100, dsa_score * 0.95 + student.get("assessments_completed", 14) * 0.5))
+        
+        proj_score = min(100, int(student.get("projects_count", 6) * 16.5))
+        
+        cgpa = student.get("cgpa", 8.92)
+        cred_score = round(min(100, (cgpa / 10.0) * 100 + 5))
+        
+        interview_score = 74
+        overall_readiness = round(tech_score * 0.35 + apt_score * 0.25 + proj_score * 0.20 + cred_score * 0.10 + interview_score * 0.10)
+        
+        rank_in_college = student.get("rank_in_college", 4)
+        college_name = student.get("college", "RSCOE")
+        short_college = "RSCOE" if "RSCOE" in college_name else college_name[:8]
+        percentile_rank = f"Top {rank_in_college}% {short_college}"
 
     pillars = [
         {
@@ -365,7 +393,7 @@ def get_opportunities(
     By default returns strictly ACTIVE and CLOSING_SOON drives.
     If include_expired=True, returns all drives including past read-only archives.
     """
-    student = next((s for s in STUDENTS if s["id"] == student_id), STUDENTS[0])
+    student = get_or_create_student(student_id)
     ranked = matcher.rank_opportunities_for_student(student, OPPORTUNITIES, include_expired=include_expired)
     for opp_res in ranked:
         opp_obj = next((o for o in OPPORTUNITIES if o.get("id") == opp_res.get("id")), None)
@@ -476,11 +504,11 @@ def submit_student_registration(req: StudentRegistrationRequest):
             "year": req.graduating_year,
             "cgpa": 8.5,
             "avatar": f"https://api.dicebear.com/7.x/avataaars/svg?seed={req.full_name}",
-            "verified_score": 75,
+            "verified_score": 0,
             "skills": {},
             "projects_count": len(projects_data),
             "assessments_completed": 0,
-            "rank_in_college": len(STUDENTS) + 1,
+            "rank_in_college": 0,
             "target_role": "Full-Stack AI Engineer",
             "bio": f"Engineering student at {req.college_name} ({req.stream_branch}).",
             "linkedin_connected": is_li_connected
@@ -823,17 +851,13 @@ def update_student_profile(req: StudentProfileUpdateRequest):
             "year": req.year or "3rd Year",
             "cgpa": req.cgpa or 8.5,
             "avatar": f"https://api.dicebear.com/7.x/avataaars/svg?seed={req.name or 'Student'}",
-            "verified_score": 80,
-            "skills": req.skills or {
-                "Python": {"level": "Intermediate", "score": 85, "verified": True},
-                "React": {"level": "Intermediate", "score": 82, "verified": True},
-                "Data Structures": {"level": "Intermediate", "score": 80, "verified": True}
-            },
-            "projects_count": 3,
-            "assessments_completed": 5,
-            "rank_in_college": 12,
+            "verified_score": 0,
+            "skills": req.skills if req.skills is not None else {},
+            "projects_count": 0,
+            "assessments_completed": 0,
+            "rank_in_college": 0,
             "target_role": req.target_role or "Full-Stack AI Engineer",
-            "bio": req.bio or "Passionate student developer."
+            "bio": req.bio or "New member setting up verified skill passport."
         }
         STUDENTS.append(student)
     else:
@@ -970,7 +994,7 @@ def get_student_skill_passport(student_id: str = Query("std_1")):
     - LinkedIn Evidence (Professional signal only, never auto-verified)
     - Academic Record
     """
-    student = next((s for s in STUDENTS if s["id"] == student_id), STUDENTS[0])
+    student = get_or_create_student(student_id)
     passport = skill_intelligence.evaluate_skill_passport(student)
 
     verified_count = sum(1 for p in passport if p["assessmentScore"] >= 70)
@@ -984,7 +1008,7 @@ def get_student_skill_passport(student_id: str = Query("std_1")):
         "department": student.get("department", ""),
         "year": student.get("year", "3rd Year"),
         "cgpa": student.get("cgpa", 8.5),
-        "verified_score": student.get("verified_score", 75),
+        "verified_score": student.get("verified_score", 0),
         "total_skills": len(passport),
         "verified_skills_count": verified_count,
         "improvement_required_count": improvement_count,
@@ -1000,7 +1024,7 @@ def get_student_career_path(student_id: str = Query("std_1")):
     Generates actionable Career Pathway for student:
     Current Readiness -> Target Role -> Required Skills -> Gaps -> Recommended Interventions -> Matching Opportunities.
     """
-    student = next((s for s in STUDENTS if s["id"] == student_id), STUDENTS[0])
+    student = get_or_create_student(student_id)
     pathway = skill_intelligence.generate_career_pathway(student, OPPORTUNITIES)
     return {
         "status": "success",
@@ -1021,6 +1045,15 @@ def get_student_skill_history(
     Returns historical versioned assessment progression for line charts over time.
     Does not overwrite past attempts.
     """
+    student = get_or_create_student(student_id)
+    if student.get("verified_score", 0) == 0 and not student.get("skills"):
+        return {
+            "status": "success",
+            "student_id": student["id"],
+            "skill": skill,
+            "total_attempts": 0,
+            "history_by_skill": {}
+        }
     history = [h for h in STUDENT_SKILL_HISTORY if h["student_id"] == student_id]
     if skill:
         c_sk = normalize_skill_name(skill)
@@ -1308,9 +1341,7 @@ def get_student_jd_analysis(
     Returns JD-Based Skill Analysis for the student against active opportunities.
     Pure explainable logic with deterministic scoring and critical gap highlighting.
     """
-    student = next((s for s in STUDENTS if s["id"] == student_id), None)
-    if not student:
-        raise HTTPException(status_code=404, detail="Student not found.")
+    student = get_or_create_student(student_id)
 
     active_opps = filter_active_opportunities(OPPORTUNITIES, include_expired=False)
 

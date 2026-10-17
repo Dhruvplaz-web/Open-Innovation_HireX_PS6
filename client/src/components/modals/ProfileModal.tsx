@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, ShieldCheck, Award, GraduationCap, CheckCircle2, Code2, BookOpen, User } from 'lucide-react';
+import { X, ShieldCheck, Award, GraduationCap, CheckCircle2, Code2, BookOpen, User, Camera, ExternalLink } from 'lucide-react';
 import { StudentProfile } from '../../types';
 
 interface ProfileModalProps {
@@ -7,13 +7,22 @@ interface ProfileModalProps {
   onClose: () => void;
   student: StudentProfile;
   onOpenAssessment?: () => void;
+  onNavigateTab?: (tab: string) => void;
+  onOpenAvatarModal?: () => void;
 }
 
-export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, student, onOpenAssessment }) => {
+export const ProfileModal: React.FC<ProfileModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  student, 
+  onOpenAssessment,
+  onNavigateTab,
+  onOpenAvatarModal 
+}) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
       <div className="bg-white dark:bg-card-dark w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
@@ -24,21 +33,44 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, stu
 
         {/* Profile Header */}
         <div className="flex items-center gap-4 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
-          <img
-            src={student.avatar}
-            alt={student.name}
-            className="w-16 h-16 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-0.5 object-cover"
-          />
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{student.name}</h2>
-              <span className="text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60 px-2 py-0.5 rounded-md flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                Verified
-              </span>
+          <div 
+            className="relative group cursor-pointer"
+            onClick={() => {
+              if (onOpenAvatarModal) {
+                onClose();
+                onOpenAvatarModal();
+              } else if (onNavigateTab) {
+                onClose();
+                onNavigateTab('profile');
+              }
+            }}
+            title="Click to customize profile photo"
+          >
+            <img
+              src={student.avatar}
+              alt={student.name}
+              className="w-16 h-16 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-0.5 object-cover group-hover:opacity-85 transition"
+            />
+            <div className="absolute inset-0 rounded-xl bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
+              <Camera className="w-4 h-4 text-white" />
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">{student.target_role}</p>
-            <p className="text-xs text-slate-400 mt-0.5">{student.college} • {student.year}</p>
+            <span className="absolute -bottom-1 -right-1 p-0.5 rounded-md bg-emerald-500 text-white shadow-xs">
+              <ShieldCheck className="w-3 h-3" />
+            </span>
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight truncate">{student.name}</h2>
+                <span className="text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60 px-2 py-0.5 rounded-md flex items-center gap-1 shrink-0">
+                  <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                  Verified
+                </span>
+              </div>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{student.target_role}</p>
+            <p className="text-xs text-slate-400 mt-0.5 truncate">{student.college} • {student.year}</p>
           </div>
         </div>
 
@@ -84,18 +116,35 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, stu
             ))}
           </div>
 
-          {onOpenAssessment && (
-            <button
-              onClick={() => {
-                onClose();
-                onOpenAssessment();
-              }}
-              className="w-full mt-3 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs flex items-center justify-center gap-1.5"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Verify New Skill or QR Certificate</span>
-            </button>
-          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+            {onOpenAssessment && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenAssessment();
+                }}
+                className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-black dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold transition shadow-xs flex items-center justify-center gap-1.5"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Verify Skill / QR</span>
+              </button>
+            )}
+
+            {onNavigateTab && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onNavigateTab('profile');
+                }}
+                className="w-full py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-bold transition flex items-center justify-center gap-1.5"
+              >
+                <User className="w-3.5 h-3.5 text-indigo-500" />
+                <span>Open Full Dossier</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Academic & NEP 2020 Accreditation */}

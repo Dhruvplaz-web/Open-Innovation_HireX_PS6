@@ -253,6 +253,86 @@ export const apiService = {
       if (!res.ok) throw new Error("API call failed");
       return await res.json();
     } catch {
+      const isDemo = studentId === "std_1";
+      if (!isDemo) {
+        return {
+          student: {
+            id: studentId,
+            name: "New Student",
+            email: "",
+            college: "JSPM RSCOE, Pune",
+            department: "Computer Engineering",
+            year: "3rd Year",
+            cgpa: 8.0,
+            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${studentId}`,
+            verified_score: 0,
+            skills: {},
+            projects_count: 0,
+            assessments_completed: 0,
+            rank_in_college: 0,
+            target_role: "Full-Stack AI Developer",
+            bio: "New member setting up verified skill passport."
+          },
+          matched_opportunities: FALLBACK_OPPORTUNITIES.map(o => ({
+            ...o,
+            match_percentage: 0,
+            matched_skills: [],
+            missing_skills: o.matched_skills.concat(o.missing_skills || []),
+            explanation: "Verification Required: Complete assessments or verify certificates to compute match."
+          })),
+          chart_data: {
+            labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+            candidate_scores: [0, 0, 0, 0],
+            batch_averages: [65, 68, 70, 72]
+          },
+          peer_scores: FALLBACK_PEERS,
+          placement_readiness: {
+            overall_score: 0,
+            verified_score: 0,
+            percentile: 0,
+            target_role: "Full-Stack Developer",
+            readiness_band: "Needs Verification",
+            pillars: [
+              { id: 'technical', name: 'Verified Technical Skills', score: 0, weight: 0.35, status: 'Not Started' },
+              { id: 'aptitude', name: 'Cognitive Aptitude', score: 0, weight: 0.25, status: 'Not Started' },
+              { id: 'projects', name: 'AST Verified Projects', score: 0, weight: 0.20, status: 'Not Started' },
+              { id: 'academic', name: 'Academic Standing', score: 80, weight: 0.20, status: 'Pending' }
+            ],
+            radar_dimensions: [
+              { dimension: 'Algorithms', candidate_score: 0, batch_avg: 72, industry_benchmark: 85 },
+              { dimension: 'System Design', candidate_score: 0, batch_avg: 65, industry_benchmark: 80 },
+              { dimension: 'Code Quality', candidate_score: 0, batch_avg: 70, industry_benchmark: 85 },
+              { dimension: 'Problem Solving', candidate_score: 0, batch_avg: 74, industry_benchmark: 88 },
+              { dimension: 'CS Fundamentals', candidate_score: 0, batch_avg: 68, industry_benchmark: 82 }
+            ],
+            counterfactual_levers: [
+              {
+                lever_id: 'lever_1',
+                action: 'Complete your first Code Lab assessment',
+                projected_delta: 25,
+                effort_tier: 'Quick Win (~2 hours)',
+                associated_pillar: 'technical'
+              },
+              {
+                lever_id: 'lever_2',
+                action: 'Scan and verify an NPTEL or AWS certificate',
+                projected_delta: 20,
+                effort_tier: 'Instant (1 min)',
+                associated_pillar: 'technical'
+              }
+            ]
+          },
+          campus_benchmarks: FALLBACK_BENCHMARKS.map(b => ({ ...b, is_cleared: false })),
+          learning_stats: {
+            verified_score: 0,
+            finished_lessons: 0,
+            ongoing_lessons: 0,
+            completed_assessments: 0,
+            rank: 0,
+            skills_breakdown: []
+          }
+        };
+      }
       return {
         student: FALLBACK_STUDENT,
         matched_opportunities: FALLBACK_OPPORTUNITIES,
@@ -1990,6 +2070,23 @@ export const apiService = {
       if (!res.ok) throw new Error("Failed to fetch skill passport");
       return await res.json();
     } catch {
+      const isDemo = studentId === "std_1";
+      if (!isDemo) {
+        return {
+          status: "success",
+          student_id: studentId,
+          student_name: "New Student",
+          college: "JSPM RSCOE, Pune",
+          department: "Computer Engineering",
+          year: "3rd Year",
+          cgpa: 8.0,
+          verified_score: 0,
+          total_skills: 0,
+          verified_skills_count: 0,
+          improvement_required_count: 0,
+          passport: []
+        };
+      }
       return {
         status: "success",
         student_id: studentId,
@@ -2079,6 +2176,30 @@ export const apiService = {
       if (!res.ok) throw new Error("Failed to fetch career pathway");
       return await res.json();
     } catch {
+      const isDemo = studentId === "std_1";
+      if (!isDemo) {
+        return {
+          status: "success",
+          career_pathway: {
+            targetRole: "Full-Stack Developer",
+            overallReadinessPct: 0,
+            verifiedStrengths: [],
+            identifiedGaps: [
+              { skill: "Core Engineering Fundamentals", current_score: 0, target_score: 75, gap: 75 }
+            ],
+            recommendedCourses: [
+              {
+                skill: "Algorithmic Verification",
+                courseTitle: "Code Lab Benchmark Challenges",
+                provider: "HireX Interactive Lab",
+                duration: "Self-Paced",
+                expectedImprovement: "Complete verification to establish baseline skill identity."
+              }
+            ],
+            targetOpportunities: []
+          }
+        };
+      }
       return {
         status: "success",
         career_pathway: {
@@ -4132,6 +4253,508 @@ export const apiService = {
       console.warn("Backend auditTruthfulResumeClaims failed:", e);
       return { status: "error", message: e.message || "Network error" };
     }
+  },
+
+  async getCohortDisputes(status?: string) {
+    try {
+      const q = status ? `?status=${encodeURIComponent(status)}` : '';
+      const res = await fetch(`${API_BASE}/academician/disputes${q}`);
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend getCohortDisputes failed:", e);
+    }
+    return { status: "success", total: 0, disputes: [] };
+  },
+
+  async resolveCohortDispute(disputeId: string, payload: {
+    resolution: string;
+    notes?: string;
+    new_score?: number;
+    reviewer_email?: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/academician/disputes/${disputeId}/resolve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+      const err = await res.json().catch(() => ({}));
+      return { status: "error", message: err.detail || "Resolution failed" };
+    } catch (e: any) {
+      console.warn("Backend resolveCohortDispute failed:", e);
+      return { status: "error", message: e.message || "Network error" };
+    }
+  },
+
+  // -------------------------------------------------------------
+  // ALUMNI PORTAL SUITE
+  // -------------------------------------------------------------
+  async getAlumniProfile(alumniId?: string, email?: string) {
+    try {
+      const q = alumniId ? `?alumni_id=${encodeURIComponent(alumniId)}` : email ? `?email=${encodeURIComponent(email)}` : '';
+      const res = await fetch(`${API_BASE}/alumni/profile${q}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data.profile;
+      }
+    } catch (e) {
+      console.warn("Backend getAlumniProfile failed, using fallback:", e);
+    }
+    return {
+      id: "alm_1",
+      name: "Vikram Aditya",
+      email: "vikram.aditya@google.com",
+      college: "JSPM RSCOE, Pune",
+      department: "Computer Engineering",
+      batch: "2021",
+      passing_year: 2021,
+      current_company: "Google",
+      designation: "Staff Software Engineer (Cloud Infrastructure & AI)",
+      city: "Bengaluru / Pune",
+      linkedin_url: "https://linkedin.com/in/vikram-aditya-google",
+      github_url: "https://github.com/vikram-aditya",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Vikram",
+      bio: "JSPM RSCOE Batch 2021 alumnus. Mentoring juniors on Distributed Systems, Cloud Architecture, and Career Pathways.",
+      skills: ["Distributed Systems", "Go", "Python", "Kubernetes", "GCP", "System Design"],
+      is_verified_alumni: true,
+      verification_status: "APPROVED",
+      privacy_settings: {
+        show_company: true,
+        show_email_to_mentees: true,
+        show_phone: false,
+        allow_referral_requests: true,
+        allow_mentorship: true
+      },
+      impact_score: 480,
+      mentees_count: 14,
+      referrals_count: 6,
+      sessions_delivered: 18
+    };
+  },
+
+  async updateAlumniProfile(alumniId: string, updates: any) {
+    try {
+      const res = await fetch(`${API_BASE}/alumni/profile?alumni_id=${encodeURIComponent(alumniId)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data.profile;
+      }
+    } catch (e) {
+      console.warn("Backend updateAlumniProfile failed:", e);
+    }
+    return updates;
+  },
+
+  async getAlumniDashboard(alumniId?: string, email?: string) {
+    try {
+      const q = alumniId ? `?alumni_id=${encodeURIComponent(alumniId)}` : email ? `?email=${encodeURIComponent(email)}` : '';
+      const res = await fetch(`${API_BASE}/alumni/dashboard${q}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data.dashboard;
+      }
+    } catch (e) {
+      console.warn("Backend getAlumniDashboard failed, using fallback:", e);
+    }
+    return {
+      profile: await this.getAlumniProfile(alumniId, email),
+      stats: {
+        impact_score: 480,
+        mentees_helped: 14,
+        referrals_made: 3,
+        students_referred_count: 4,
+        sessions_delivered: 18,
+        pending_requests_count: 1,
+        accepted_sessions_count: 1,
+        insights_shared: 1
+      },
+      pending_requests: [
+        {
+          id: "req_alm_1",
+          alumni_id: "alm_1",
+          student_id: "std_1",
+          student_name: "Dhruv Patil",
+          student_avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Dhruv",
+          target_role: "Full-Stack AI Engineer",
+          topic: "Google Cloud Infrastructure & High-Performance Microservices",
+          message: "Hi Vikram Sir, I am building autonomous multi-signal placement verification systems. Would love your guidance on high-throughput microservices architecture and Google L3/L4 interview prep.",
+          status: "PENDING",
+          scheduled_time: "2026-10-24 18:30 IST",
+          meeting_link: "https://meet.google.com/hxr-alumni-guidance",
+          feedback_notes: "",
+          created_at: new Date().toISOString()
+        }
+      ],
+      upcoming_sessions: [
+        {
+          id: "req_alm_2",
+          alumni_id: "alm_1",
+          student_id: "std_2",
+          student_name: "Yuvraj Kadam",
+          student_avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Yuvraj",
+          target_role: "Backend Engineer",
+          topic: "System Design & Distributed Cache Review",
+          message: "Hello Sir, I wanted feedback on my Redis queue implementation and DSA roadmaps for top product companies.",
+          status: "ACCEPTED",
+          scheduled_time: "2026-10-20 19:00 IST",
+          meeting_link: "https://meet.google.com/hxr-sys-design-review",
+          feedback_notes: "Strong algorithmic fundamentals. Focus on linear time complexity guarantees.",
+          created_at: new Date().toISOString()
+        }
+      ],
+      active_referrals: [
+        {
+          id: "ref_alm_1",
+          alumni_id: "alm_1",
+          company: "Google",
+          role: "Software Engineer II - Cloud Backend",
+          job_url: "https://careers.google.com/jobs/results/1092812",
+          location: "Bengaluru / Pune (Hybrid)",
+          experience_required: "0-2 Years",
+          status: "OPEN",
+          created_at: new Date().toISOString(),
+          student_referrals: [
+            {
+              student_id: "std_1",
+              student_name: "Dhruv Patil",
+              status: "SHORTLISTED",
+              applied_at: new Date().toISOString(),
+              endorsement_note: "Verified 88% skill score. High integrity AST clean code score."
+            }
+          ]
+        }
+      ],
+      college_announcements: [
+        {
+          id: "ann_1",
+          title: "JSPM RSCOE Annual Alumni Conclave & Hackathon 2026",
+          date: "2026-11-15",
+          desc: "Inviting industry alumni for project evaluations and keynote addresses on AI Systems."
+        },
+        {
+          id: "ann_2",
+          title: "NAAC & NBA Accreditation Academic Feedback Cycle",
+          date: "2026-10-30",
+          desc: "Placement cell request: Share industry tools survey to calibrate Computer Engineering syllabus."
+        }
+      ]
+    };
+  },
+
+  async getAlumniMentorshipRequests(alumniId?: string, status?: string) {
+    try {
+      const q = new URLSearchParams();
+      if (alumniId) q.set('alumni_id', alumniId);
+      if (status) q.set('status', status);
+      const res = await fetch(`${API_BASE}/alumni/mentorship/requests?${q.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data.requests;
+      }
+    } catch (e) {
+      console.warn("Backend getAlumniMentorshipRequests failed:", e);
+    }
+    const dash = await this.getAlumniDashboard(alumniId);
+    return [...dash.pending_requests, ...dash.upcoming_sessions];
+  },
+
+  async createAlumniMentorshipRequest(payload: {
+    alumni_id: string;
+    student_id: string;
+    student_name: string;
+    student_avatar?: string;
+    target_role: string;
+    topic: string;
+    message: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/alumni/mentorship/requests`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend createAlumniMentorshipRequest failed:", e);
+    }
+    return {
+      status: "success",
+      request: {
+        id: `req_alm_${Date.now()}`,
+        ...payload,
+        status: "PENDING",
+        created_at: new Date().toISOString()
+      }
+    };
+  },
+
+  async actionAlumniMentorshipRequest(requestId: string, payload: {
+    action: string;
+    scheduled_time?: string;
+    meeting_link?: string;
+    feedback_notes?: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/alumni/mentorship/requests/${requestId}/action`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend actionAlumniMentorshipRequest failed:", e);
+    }
+    return {
+      status: "success",
+      request: {
+        id: requestId,
+        status: payload.action,
+        scheduled_time: payload.scheduled_time,
+        meeting_link: payload.meeting_link,
+        feedback_notes: payload.feedback_notes
+      }
+    };
+  },
+
+  async getAlumniReferrals(alumniId?: string) {
+    try {
+      const q = alumniId ? `?alumni_id=${encodeURIComponent(alumniId)}` : '';
+      const res = await fetch(`${API_BASE}/alumni/referrals${q}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data.referrals;
+      }
+    } catch (e) {
+      console.warn("Backend getAlumniReferrals failed:", e);
+    }
+    const dash = await this.getAlumniDashboard(alumniId);
+    return dash.active_referrals;
+  },
+
+  async postAlumniReferral(payload: {
+    alumni_id: string;
+    alumni_name?: string;
+    company: string;
+    role: string;
+    job_url?: string;
+    location: string;
+    experience_required?: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/alumni/referrals/post`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend postAlumniReferral failed:", e);
+    }
+    return {
+      status: "success",
+      referral: {
+        id: `ref_alm_${Date.now()}`,
+        ...payload,
+        status: "OPEN",
+        created_at: new Date().toISOString(),
+        student_referrals: []
+      }
+    };
+  },
+
+  async applyToAlumniReferral(referralId: string, payload: {
+    student_id: string;
+    student_name: string;
+    endorsement_note?: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/alumni/referrals/${referralId}/apply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend applyToAlumniReferral failed:", e);
+    }
+    return {
+      status: "success",
+      message: "Referral request submitted to alumnus."
+    };
+  },
+
+  async getAlumniInsights() {
+    try {
+      const res = await fetch(`${API_BASE}/alumni/insights`);
+      if (res.ok) {
+        const data = await res.json();
+        return data.insights;
+      }
+    } catch (e) {
+      console.warn("Backend getAlumniInsights failed:", e);
+    }
+    return [
+      {
+        id: "ins_alm_1",
+        alumni_id: "alm_1",
+        alumni_name: "Vikram Aditya",
+        company: "Google",
+        designation: "Staff Software Engineer",
+        role_interviewed: "Software Engineer (L3/L4)",
+        rounds_breakdown: [
+          {
+            round_name: "Round 1: DSA & Graph Traversal",
+            focus: "DFS/BFS, Dijkstra, dynamic array allocation",
+            sample_questions: ["Shortest path in weighted DAG with negative edge constraints", "Implement LRU with O(1) eviction"],
+            difficulty: "HARD"
+          },
+          {
+            round_name: "Round 2: Algorithmic Optimization & DP",
+            focus: "Interval scheduling, 2D dynamic programming",
+            sample_questions: ["Max non-overlapping task intervals with dependencies", "Subarray sum divisible by K"],
+            difficulty: "HARD"
+          },
+          {
+            round_name: "Round 3: System Design & Microservices",
+            focus: "Rate limiters, caching strategies, horizontal partitioning",
+            sample_questions: ["Design high-throughput distributed URL shortener with analytics", "Message broker idempotency"],
+            difficulty: "MEDIUM"
+          },
+          {
+            round_name: "Round 4: Googleyness & Collaborative Leadership",
+            focus: "Handling technical disagreements, ownership, ethical AI",
+            sample_questions: ["Tell me about a time you pushed back on a product requirement with engineering data"],
+            difficulty: "MEDIUM"
+          }
+        ],
+        skills_we_actually_use: ["Go", "Kubernetes", "gRPC", "Protobuf", "Distributed Tracing", "Cloud Spanner"],
+        tips_for_juniors: "Don't jump straight into code during technical rounds. Clarify corner cases (empty inputs, concurrency, scale limits). Write clean, modular functions with self-documenting names.",
+        upvotes: 48,
+        created_at: new Date().toISOString()
+      }
+    ];
+  },
+
+  async postAlumniInsight(payload: any) {
+    try {
+      const res = await fetch(`${API_BASE}/alumni/insights/post`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend postAlumniInsight failed:", e);
+    }
+    return {
+      status: "success",
+      insight: {
+        id: `ins_alm_${Date.now()}`,
+        ...payload,
+        upvotes: 0,
+        created_at: new Date().toISOString()
+      }
+    };
+  },
+
+  async submitAlumniEndorsement(payload: {
+    alumni_id: string;
+    alumni_name: string;
+    student_id: string;
+    student_name: string;
+    skill: string;
+    context: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/alumni/endorsements/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Backend submitAlumniEndorsement failed:", e);
+    }
+    return {
+      status: "success",
+      endorsement: {
+        id: `end_alm_${Date.now()}`,
+        ...payload,
+        weight: 1.25,
+        created_at: new Date().toISOString()
+      }
+    };
+  },
+
+  async getAlumniDirectory(query?: string, department?: string, company?: string) {
+    try {
+      const q = new URLSearchParams();
+      if (query) q.set('query', query);
+      if (department) q.set('department', department);
+      if (company) q.set('company', company);
+      const res = await fetch(`${API_BASE}/alumni/directory?${q.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data.directory;
+      }
+    } catch (e) {
+      console.warn("Backend getAlumniDirectory failed:", e);
+    }
+    return [
+      {
+        id: "alm_1",
+        name: "Vikram Aditya",
+        email: "vikram.aditya@google.com",
+        college: "JSPM RSCOE, Pune",
+        department: "Computer Engineering",
+        batch: "2021",
+        passing_year: 2021,
+        current_company: "Google",
+        designation: "Staff Software Engineer",
+        city: "Bengaluru",
+        skills: ["Distributed Systems", "Go", "Python", "Kubernetes", "GCP"],
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Vikram",
+        is_verified_alumni: true,
+        impact_score: 480
+      },
+      {
+        id: "alm_2",
+        name: "Sneha Rao",
+        email: "sneha.rao@microsoft.com",
+        college: "JSPM RSCOE, Pune",
+        department: "Computer Engineering",
+        batch: "2020",
+        passing_year: 2020,
+        current_company: "Microsoft",
+        designation: "Senior Software Engineer",
+        city: "Hyderabad",
+        skills: ["C#", "Azure", "Microservices", "SQL"],
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sneha",
+        is_verified_alumni: true,
+        impact_score: 390
+      },
+      {
+        id: "alm_3",
+        name: "Rohit Deshmukh",
+        email: "rohit.deshmukh@amazon.com",
+        college: "JSPM RSCOE, Pune",
+        department: "Information Technology",
+        batch: "2022",
+        passing_year: 2022,
+        current_company: "Amazon",
+        designation: "Machine Learning Engineer",
+        city: "Pune",
+        skills: ["PyTorch", "AWS", "Python", "LLMs"],
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rohit",
+        is_verified_alumni: true,
+        impact_score: 260
+      }
+    ];
   }
 };
 

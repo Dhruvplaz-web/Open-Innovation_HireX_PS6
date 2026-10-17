@@ -1,5 +1,24 @@
 import React from 'react';
-import { Home, Briefcase, Code2, Zap, Award, User, Sun, Moon, ShieldCheck, GraduationCap, Building, FolderGit2, Lock } from 'lucide-react';
+import {
+  Home,
+  Briefcase,
+  Code2,
+  Zap,
+  Award,
+  User,
+  Sun,
+  Moon,
+  Info,
+  ShieldCheck,
+  UserCheck,
+  GraduationCap,
+  FolderGit2,
+  Lock,
+  Users,
+  TrendingUp,
+  ShieldAlert,
+  LucideIcon
+} from 'lucide-react';
 import { Role } from '../../types';
 
 interface LeftIconRailProps {
@@ -9,6 +28,15 @@ interface LeftIconRailProps {
   toggleDark: () => void;
   openModal: (modal: string) => void;
   currentRole?: Role;
+  onSignOut?: () => void;
+}
+
+interface RailItem {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  color: string;
+  activeMatch?: string[];
 }
 
 export const LeftIconRail: React.FC<LeftIconRailProps> = ({
@@ -19,215 +47,331 @@ export const LeftIconRail: React.FC<LeftIconRailProps> = ({
   openModal,
   currentRole = 'student'
 }) => {
+  // Navigation items per role matching the exact original structure and color highlights
+  const getRoleItems = (): RailItem[] => {
+    switch (currentRole) {
+      case 'student':
+        return [
+          {
+            id: 'dashboard',
+            label: 'Command Center (Readiness & Peer Benchmarks)',
+            icon: Home,
+            color: 'text-slate-400',
+            activeMatch: ['dashboard']
+          },
+          {
+            id: 'passport',
+            label: 'Skill Verification & Proctored Assessment',
+            icon: ShieldCheck,
+            color: 'text-emerald-400',
+            activeMatch: ['passport', 'skill-passport', 'skill-verification', 'verification', 'workflow', 'journey']
+          },
+          {
+            id: 'collaboration',
+            label: 'Project & Research Collaboration Hub',
+            icon: FolderGit2,
+            color: 'text-amber-400',
+            activeMatch: ['collaboration', 'project-hub', 'projects']
+          },
+          {
+            id: 'incognito',
+            label: 'Incognito Talent Matching & Recruiter Invitations',
+            icon: Lock,
+            color: 'text-purple-400',
+            activeMatch: ['incognito', 'talent-visibility']
+          },
+          {
+            id: 'opportunities',
+            label: 'Campus Drives & ATS Resume Scanner',
+            icon: Briefcase,
+            color: 'text-slate-400',
+            activeMatch: ['opportunities', 'applications', 'interviews']
+          },
+          {
+            id: 'codelab',
+            label: 'Algorithmic Code Lab & AST Auditor',
+            icon: Code2,
+            color: 'text-slate-400',
+            activeMatch: ['codelab', 'code-lab']
+          },
+          {
+            id: 'aptitude',
+            label: 'Gamified Aptitude Arena & Cognitive Battery',
+            icon: Zap,
+            color: 'text-slate-400',
+            activeMatch: ['aptitude']
+          },
+          {
+            id: 'transcript',
+            label: 'Official AICTE Skill Transcript & AI Mock Interview',
+            icon: Award,
+            color: 'text-slate-400',
+            activeMatch: ['transcript']
+          },
+          {
+            id: 'profile',
+            label: 'Complete Student Profile & Portfolio',
+            icon: User,
+            color: 'text-slate-400',
+            activeMatch: ['profile']
+          }
+        ];
+
+      case 'recruiter':
+        return [
+          {
+            id: 'dashboard',
+            label: 'Talent Pipeline & Candidate Search',
+            icon: Users,
+            color: 'text-slate-400',
+            activeMatch: ['dashboard']
+          },
+          {
+            id: 'opportunities',
+            label: 'Campus Drives & Job Postings',
+            icon: Briefcase,
+            color: 'text-slate-400',
+            activeMatch: ['opportunities']
+          },
+          {
+            id: 'collaboration',
+            label: 'Capstone Projects Showcase',
+            icon: FolderGit2,
+            color: 'text-amber-400',
+            activeMatch: ['collaboration', 'project-hub', 'projects']
+          },
+          {
+            id: 'incognito',
+            label: 'Incognito Candidate Pool',
+            icon: Lock,
+            color: 'text-purple-400',
+            activeMatch: ['incognito', 'talent-visibility']
+          }
+        ];
+
+      case 'academician':
+        return [
+          {
+            id: 'dashboard',
+            label: 'Institutional Command & NAAC Index',
+            icon: GraduationCap,
+            color: 'text-slate-400',
+            activeMatch: ['dashboard']
+          },
+          {
+            id: 'opportunities',
+            label: 'Placement Drives & Job Ingestion',
+            icon: Briefcase,
+            color: 'text-slate-400',
+            activeMatch: ['opportunities']
+          },
+          {
+            id: 'collaboration',
+            label: 'Student Capstones & Research',
+            icon: FolderGit2,
+            color: 'text-amber-400',
+            activeMatch: ['collaboration', 'project-hub', 'projects']
+          },
+          {
+            id: 'transcript',
+            label: 'NAAC / NBA Accreditation Reports',
+            icon: TrendingUp,
+            color: 'text-emerald-400',
+            activeMatch: ['transcript']
+          }
+        ];
+
+      case 'alumni':
+        return [
+          {
+            id: 'dashboard',
+            label: 'Alumni Impact & Scorecard',
+            icon: Award,
+            color: 'text-amber-400',
+            activeMatch: ['dashboard']
+          },
+          {
+            id: 'opportunities',
+            label: 'Referrals Pipeline & Jobs',
+            icon: Briefcase,
+            color: 'text-slate-400',
+            activeMatch: ['opportunities']
+          },
+          {
+            id: 'collaboration',
+            label: 'Mentee Projects & Guidance',
+            icon: FolderGit2,
+            color: 'text-amber-400',
+            activeMatch: ['collaboration', 'project-hub', 'projects']
+          }
+        ];
+
+      case 'admin':
+        return [
+          {
+            id: 'dashboard',
+            label: 'Platform Governance & Defense',
+            icon: ShieldAlert,
+            color: 'text-rose-400',
+            activeMatch: ['dashboard']
+          },
+          {
+            id: 'collaboration',
+            label: 'System Projects & Code Audit',
+            icon: FolderGit2,
+            color: 'text-amber-400',
+            activeMatch: ['collaboration', 'project-hub', 'projects']
+          }
+        ];
+
+      default:
+        return [
+          {
+            id: 'dashboard',
+            label: 'Command Center',
+            icon: Home,
+            color: 'text-slate-400',
+            activeMatch: ['dashboard']
+          }
+        ];
+    }
+  };
+
+  const roleItems = getRoleItems();
+
+  const isItemActive = (item: RailItem) => {
+    if (item.activeMatch && item.activeMatch.includes(activeTab)) {
+      return true;
+    }
+    return activeTab === item.id;
+  };
+
   return (
-    <aside className="w-16 md:w-20 flex flex-col items-center justify-between py-6 px-2 select-none shrink-0" aria-label="Main Navigation">
-      {/* Top Logo Icon -> Navigates to Landing Page */}
-      <div 
+    <aside
+      className="w-16 md:w-20 flex flex-col items-center justify-between py-4 px-2 select-none shrink-0 z-30 h-screen transition-all duration-200"
+      aria-label="Main Navigation"
+    >
+      {/* Top Logo Icon Pill -> Navigates to Landing Page */}
+      <div
         onClick={() => setActiveTab('landing')}
         title="HireX Landing Page • JSPM RSCOE"
-        className="w-11 h-11 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center shadow-sm cursor-pointer hover:scale-102 active:scale-98 transition-all duration-150 group relative border border-slate-800 dark:border-slate-200"
+        className="w-11 h-11 rounded-2xl bg-[#0d0e15] text-white flex items-center justify-center shadow-md cursor-pointer hover:scale-105 active:scale-95 transition-all duration-150 group relative border border-white/[0.08]"
       >
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 2L2 7l10 5 10-5-10-5z" />
           <path d="M2 17l10 5 10-5" />
           <path d="M2 12l10 5 10-5" />
         </svg>
-        <span className="absolute left-16 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-semibold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md border border-slate-800 dark:border-slate-200">
+        <span className="absolute left-16 bg-slate-900 text-white text-xs font-semibold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md border border-slate-800">
           Return to Landing Page
         </span>
       </div>
 
-      {/* Center Nav Rail Container — Student Functions */}
-      <nav className="flex flex-col items-center bg-white dark:bg-slate-900/90 backdrop-blur-md py-3 px-1.5 rounded-2xl shadow-sm border border-slate-200/90 dark:border-slate-800 gap-1.5 my-auto">
-        {currentRole === 'student' ? (
-          <>
-            {/* 1. Command Center / Dashboard */}
-            <button
-              onClick={() => setActiveTab('dashboard')}
-              title="Command Center (Readiness & Peer Benchmarks)"
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'dashboard'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
-              }`}
-              aria-label="Dashboard"
-            >
-              <Home className="w-4.5 h-4.5" />
-            </button>
+      {/* Center Nav Rail Capsule — Exact Match to Reference Design */}
+      <nav
+        className="flex flex-col items-center bg-[#0d0e15] border border-white/[0.08] py-2.5 px-1.5 rounded-[28px] shadow-2xl gap-1.5 my-auto max-h-[calc(100vh-170px)] overflow-y-auto no-scrollbar"
+        aria-label="Role Functions"
+      >
+        {/* Dynamic Role-Aware Items */}
+        {roleItems.map((item) => {
+          const Icon = item.icon;
+          const active = isItemActive(item);
 
-            {/* 1.5 Skill Verification & Proctored Assessment */}
+          return (
             <button
-              onClick={() => setActiveTab('passport')}
-              title="Skill Verification & Proctored Assessment (3 Tiers, Biometric & Fullscreen Integrity)"
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'passport' || activeTab === 'skill-passport' || activeTab === 'skill-verification' || activeTab === 'verification'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                  : 'text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/60'
+              key={item.id}
+              type="button"
+              onClick={() => setActiveTab(item.id)}
+              title={item.label}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer group relative ${
+                active
+                  ? 'bg-[#182035] text-white shadow-sm ring-1 ring-blue-500/30'
+                  : `${item.color} hover:text-white hover:bg-white/[0.06]`
               }`}
-              aria-label="Skill Verification"
+              aria-label={item.label}
             >
-              <ShieldCheck className="w-4.5 h-4.5" />
+              <Icon className="w-4.5 h-4.5 shrink-0" />
+              <span className="absolute left-14 bg-slate-900 text-white text-xs font-semibold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md border border-slate-800">
+                {item.label}
+              </span>
             </button>
+          );
+        })}
 
-            {/* 2. Project & Research Collaboration Hub */}
-            <button
-              onClick={() => setActiveTab('collaboration')}
-              title="Project & Research Collaboration Hub (Capstone & R&D)"
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'collaboration' || activeTab === 'project-hub'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                  : 'text-amber-500 hover:text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/60'
-              }`}
-              aria-label="Collaboration Hub"
-            >
-              <FolderGit2 className="w-4.5 h-4.5" />
-            </button>
+        {/* Divider Line */}
+        <div className="w-5 h-[1px] bg-slate-800/80 my-1 shrink-0" />
 
-            {/* 2.7 Anonymous / Incognito Talent Matching */}
-            <button
-              onClick={() => setActiveTab('incognito')}
-              title="Incognito Talent Matching & Recruiter Invitations"
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'incognito' || activeTab === 'talent-visibility'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                  : 'text-purple-600 hover:text-purple-800 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/60'
-              }`}
-              aria-label="Incognito Talent"
-            >
-              <Lock className="w-4.5 h-4.5" />
-            </button>
+        {/* Universal Utility Icons: Info, Account / Auth, Legal & Compliance */}
+        {/* Info / About */}
+        <button
+          type="button"
+          onClick={() => openModal('about')}
+          title="About Project & Hackathon"
+          className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer group relative"
+          aria-label="About Project"
+        >
+          <Info className="w-4.5 h-4.5 shrink-0" />
+          <span className="absolute left-14 bg-slate-900 text-white text-xs font-semibold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md border border-slate-800">
+            About Project & Verification
+          </span>
+        </button>
 
-            {/* 3. Campus Placement Drives & ATS Scanner */}
-            <button
-              onClick={() => setActiveTab('opportunities')}
-              title="Campus Drives & ATS Resume Scanner"
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'opportunities'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
-              }`}
-              aria-label="Campus Drives"
-            >
-              <Briefcase className="w-4.5 h-4.5" />
-            </button>
+        {/* Account & Firebase Authentication */}
+        <button
+          type="button"
+          onClick={() => openModal('auth')}
+          title="Firebase Auth & Persona Gateway"
+          className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer group relative"
+          aria-label="Account & Auth"
+        >
+          <UserCheck className="w-4.5 h-4.5 shrink-0" />
+          <span className="absolute left-14 bg-slate-900 text-white text-xs font-semibold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md border border-slate-800">
+            Firebase Auth & Persona Gateway
+          </span>
+        </button>
 
-            {/* 4. In-Browser Code Lab & AST Complexity Auditor */}
-            <button
-              onClick={() => setActiveTab('codelab')}
-              title="Algorithmic Code Lab & AST Auditor"
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'codelab'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
-              }`}
-              aria-label="Code Lab"
-            >
-              <Code2 className="w-4.5 h-4.5" />
-            </button>
-
-            {/* 5. Gamified Aptitude Arena & Cognitive Battery */}
-            <button
-              onClick={() => setActiveTab('aptitude')}
-              title="Gamified Aptitude Arena & Cognitive Battery"
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'aptitude'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
-              }`}
-              aria-label="Gamified Aptitude Arena & Cognitive Battery"
-            >
-              <Zap className="w-4.5 h-4.5" />
-            </button>
-
-            {/* 6. AICTE Skill Transcript & Mock Interview */}
-            <button
-              onClick={() => setActiveTab('transcript')}
-              title="Official AICTE Skill Transcript & AI Mock Interview"
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'transcript'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
-              }`}
-              aria-label="Skill Transcript"
-            >
-              <Award className="w-4.5 h-4.5" />
-            </button>
-
-            {/* 7. Verified Student Profile & Portfolio */}
-            <button
-              onClick={() => setActiveTab('profile')}
-              title="Complete Student Profile & Portfolio"
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'profile'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
-              }`}
-              aria-label="Student Profile"
-            >
-              <User className="w-4.5 h-4.5" />
-            </button>
-          </>
-        ) : (
-          <>
-            {/* Non-Student Role Primary Workspace */}
-            <button
-              onClick={() => setActiveTab('dashboard')}
-              title={`${currentRole.toUpperCase()} Portal Workspace`}
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'dashboard'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
-              }`}
-              aria-label="Portal Workspace"
-            >
-              {currentRole === 'academician' ? (
-                <GraduationCap className="w-4.5 h-4.5" />
-              ) : currentRole === 'recruiter' ? (
-                <Briefcase className="w-4.5 h-4.5" />
-              ) : (
-                <ShieldCheck className="w-4.5 h-4.5" />
-              )}
-            </button>
-
-            {/* Non-Student Collaboration Hub Shortcut */}
-            <button
-              onClick={() => setActiveTab('collaboration')}
-              title="Project & Research Collaboration Hub"
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'collaboration'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                  : 'text-amber-500 hover:text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/60'
-              }`}
-              aria-label="Collaboration Hub"
-            >
-              <FolderGit2 className="w-4.5 h-4.5" />
-            </button>
-          </>
-        )}
-
+        {/* Legal & Compliance */}
+        <button
+          type="button"
+          onClick={() => openModal('legal')}
+          title="Compliance & DPDP Act 2023"
+          className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer group relative"
+          aria-label="Legal & Compliance"
+        >
+          <ShieldCheck className="w-4.5 h-4.5 shrink-0" />
+          <span className="absolute left-14 bg-slate-900 text-white text-xs font-semibold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md border border-slate-800">
+            Compliance & DPDP Act 2023
+          </span>
+        </button>
       </nav>
 
-      {/* Bottom Theme Switcher Pill (Sun/Moon) */}
-      <div className="bg-white dark:bg-slate-900/90 backdrop-blur-md p-1 rounded-xl shadow-sm border border-slate-200/90 dark:border-slate-800 flex flex-col gap-1">
+      {/* Bottom Theme Switcher Pill (Sun / Moon) — Exact Match to Reference */}
+      <div className="bg-[#0d0e15] border border-white/[0.08] p-1 rounded-2xl shadow-xl flex flex-col gap-1 items-center shrink-0">
         <button
+          type="button"
           onClick={toggleDark}
-          title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-          className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
-            !isDark ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'
+          title={!isDark ? "Radiant Light Mode Active" : "Switch to Light Mode"}
+          className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+            !isDark
+              ? 'bg-[#182035] text-white ring-1 ring-blue-500/20'
+              : 'text-slate-400 hover:text-white'
           }`}
           aria-label="Light mode"
         >
-          <Sun className="w-3.5 h-3.5" />
+          <Sun className="w-4 h-4" />
         </button>
         <button
+          type="button"
           onClick={toggleDark}
-          title={isDark ? "Dark mode active" : "Switch to Dark Mode"}
-          className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
-            isDark ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'
+          title={isDark ? "Midnight Dark Mode Active" : "Switch to Dark Mode"}
+          className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+            isDark
+              ? 'bg-[#182035] text-white ring-1 ring-blue-500/20'
+              : 'text-slate-400 hover:text-white'
           }`}
           aria-label="Dark mode"
         >
-          <Moon className="w-3.5 h-3.5" />
+          <Moon className="w-4 h-4" />
         </button>
       </div>
     </aside>

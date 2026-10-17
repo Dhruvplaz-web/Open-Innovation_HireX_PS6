@@ -404,6 +404,26 @@ def update_application_status(
         new_value=matched_status
     )
 
+    try:
+        from app.services.sync_service import sync_service
+        sync_service.publish_event(
+            "APPLICATION_STATUS_UPDATED",
+            {
+                "application_id": req.application_id,
+                "student_id": app_item.get("student_id"),
+                "student_name": app_item.get("student_name"),
+                "company": app_item.get("company"),
+                "job_title": app_item.get("job_title") or app_item.get("title"),
+                "old_status": old_status,
+                "new_status": matched_status,
+                "note": req.note
+            },
+            role="all",
+            student_id=app_item.get("student_id", "")
+        )
+    except Exception as e:
+        print(f"[Recruiter] Warning publishing status update event: {e}")
+
     return {
         "status": "success",
         "message": f"Updated application status to '{matched_status}'. Synchronized with Student and Academician portals.",

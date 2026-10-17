@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MatchedOpportunity, StudentProfile } from '../types';
 import { apiService } from '../services/api';
-import { FileText, Printer, Mail, CheckCircle2, ShieldCheck, AlertCircle, Building2, Zap, Car, Sparkles, Clock, ShieldAlert } from 'lucide-react';
+import { FileText, Printer, Mail, CheckCircle2, ShieldCheck, AlertCircle, Building2, Zap, Car, Sparkles, Clock, ShieldAlert, GraduationCap, UserCheck, Send, X, ExternalLink } from 'lucide-react';
 import { CounterfactualGuidanceModal } from '../components/modals/CounterfactualGuidanceModal';
 
 interface OpportunitiesViewProps {
@@ -9,16 +9,18 @@ interface OpportunitiesViewProps {
   student: StudentProfile;
   onOpenOpportunityDetail: (opp: MatchedOpportunity) => void;
   onOpenCoPilot: (prompt: string) => void;
+  initialSubTab?: 'drives' | 'ats_scanner' | 'funnel' | 'tpo_noc' | 'company_intel';
 }
 
 export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
   opportunities,
   student,
   onOpenOpportunityDetail,
-  onOpenCoPilot
+  onOpenCoPilot,
+  initialSubTab = 'drives'
 }) => {
   const [selectedOppId, setSelectedOppId] = useState<string>(opportunities[0]?.opportunity_id || 'opp_1');
-  const [activeTab, setActiveTab] = useState<'drives' | 'ats_scanner' | 'funnel' | 'tpo_noc' | 'company_intel'>('drives');
+  const [activeTab, setActiveTab] = useState<'drives' | 'ats_scanner' | 'funnel' | 'tpo_noc' | 'company_intel'>(initialSubTab);
   const [driveFilter, setDriveFilter] = useState<'live' | 'archive'>('live');
   const [archivedDrives, setArchivedDrives] = useState<MatchedOpportunity[]>([]);
   const [loadingArchive, setLoadingArchive] = useState<boolean>(false);
@@ -26,6 +28,31 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
   const [nocPrinted, setNocPrinted] = useState<boolean>(false);
   const [isCounterfactualOpen, setIsCounterfactualOpen] = useState<boolean>(false);
   const [counterfactualOpp, setCounterfactualOpp] = useState<MatchedOpportunity | null>(null);
+
+  // Alumni cross-role touchpoint state
+  const [alumniList, setAlumniList] = useState<any[]>([]);
+  const [referralModalOpp, setReferralModalOpp] = useState<MatchedOpportunity | null>(null);
+  const [selectedAlumniForReferral, setSelectedAlumniForReferral] = useState<any | null>(null);
+  const [referralPitch, setReferralPitch] = useState<string>('');
+  const [isSubmittingReferralReq, setIsSubmittingReferralReq] = useState<boolean>(false);
+  const [referralSentSuccess, setReferralSentSuccess] = useState<boolean>(false);
+
+  useEffect(() => {
+    apiService.getAlumniDirectory().then((data) => {
+      if (data && data.length > 0) {
+        setAlumniList(data);
+      }
+    }).catch(() => {});
+  }, []);
+
+  const getAlumniForCompany = (companyName: string) => {
+    if (!companyName || !alumniList.length) return [];
+    const comp = companyName.toLowerCase();
+    return alumniList.filter(a => {
+      const ac = (a.current_company || '').toLowerCase();
+      return comp.includes(ac) || ac.includes(comp);
+    });
+  };
 
   // ATS Scanner state
   const [resumeText, setResumeText] = useState<string>(
@@ -176,43 +203,62 @@ PROJECTS:
       </div>
 
       {/* 2. TPO Gatekeeping Eligibility Matrix Card */}
-      <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 dark:bg-emerald-950/20 dark:border-emerald-800/30">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
-                Institutional TPO Clearance Matrix — JSPM RSCOE
-              </span>
-            </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white mt-1">
-              Candidate Academic Clearance: APPROVED FOR ALL PAN-INDIA & CAMPUS DRIVES
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
-              Verified with Controller of Examinations (SPPU). Zero active backlogs, CGPA exceeds criteria for Barclays, Persistent, and Tata Tech.
-            </p>
-          </div>
+      {(() => {
+        const isVerified = (student.verified_score || 0) > 0;
+        return (
+          <div className={`p-5 rounded-2xl border ${
+            isVerified
+              ? 'bg-emerald-50/70 border-emerald-200/80 dark:bg-emerald-950/20 dark:border-emerald-800/30'
+              : 'bg-amber-50/70 border-amber-200/80 dark:bg-amber-950/20 dark:border-amber-800/30'
+          }`}>
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className={`w-2.5 h-2.5 rounded-full ${isVerified ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`}></span>
+                  <span className={`text-xs font-bold uppercase tracking-wider ${isVerified ? 'text-emerald-800 dark:text-emerald-300' : 'text-amber-800 dark:text-amber-300'}`}>
+                    Institutional TPO Clearance Matrix — JSPM RSCOE
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white mt-1">
+                  Candidate Academic Clearance: {isVerified ? 'APPROVED FOR ALL PAN-INDIA & CAMPUS DRIVES' : 'PENDING SKILL & ACADEMIC AUDIT'}
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
+                  {isVerified
+                    ? 'Verified with Controller of Examinations (SPPU). Zero active backlogs, CGPA exceeds criteria for Barclays, Persistent, and Tata Tech.'
+                    : 'New profile. Complete proctored skill assessments and academic record verification to unlock automated institutional clearance.'}
+                </p>
+              </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full lg:w-auto">
-            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-emerald-500/20 text-center">
-              <span className="text-[10px] text-slate-500 block">10th SSC</span>
-              <span className="text-xs font-bold text-emerald-600">88.5% (Req: 60%)</span>
-            </div>
-            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-emerald-500/20 text-center">
-              <span className="text-[10px] text-slate-500 block">12th HSC</span>
-              <span className="text-xs font-bold text-emerald-600">84.2% (Req: 60%)</span>
-            </div>
-            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-emerald-500/20 text-center">
-              <span className="text-[10px] text-slate-500 block">Current CGPA</span>
-              <span className="text-xs font-bold text-emerald-600">8.92 (Req: 7.5)</span>
-            </div>
-            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-emerald-500/20 text-center">
-              <span className="text-[10px] text-slate-500 block">Live Backlogs</span>
-              <span className="text-xs font-bold text-emerald-600">0 (Max: 0)</span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full lg:w-auto">
+                <div className={`p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border text-center ${isVerified ? 'border-emerald-500/20' : 'border-amber-500/20'}`}>
+                  <span className="text-[10px] text-slate-500 block">10th SSC</span>
+                  <span className={`text-xs font-bold ${isVerified ? 'text-emerald-600' : 'text-amber-600'}`}>
+                    {isVerified ? '88.5% (Req: 60%)' : 'Pending'}
+                  </span>
+                </div>
+                <div className={`p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border text-center ${isVerified ? 'border-emerald-500/20' : 'border-amber-500/20'}`}>
+                  <span className="text-[10px] text-slate-500 block">12th HSC</span>
+                  <span className={`text-xs font-bold ${isVerified ? 'text-emerald-600' : 'text-amber-600'}`}>
+                    {isVerified ? '84.2% (Req: 60%)' : 'Pending'}
+                  </span>
+                </div>
+                <div className={`p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border text-center ${isVerified ? 'border-emerald-500/20' : 'border-amber-500/20'}`}>
+                  <span className="text-[10px] text-slate-500 block">Current CGPA</span>
+                  <span className={`text-xs font-bold ${isVerified ? 'text-emerald-600' : 'text-amber-600'}`}>
+                    {isVerified ? `${student.cgpa || 8.92} (Req: 7.5)` : (student.cgpa ? `${student.cgpa}` : 'Pending')}
+                  </span>
+                </div>
+                <div className={`p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border text-center ${isVerified ? 'border-emerald-500/20' : 'border-amber-500/20'}`}>
+                  <span className="text-[10px] text-slate-500 block">Live Backlogs</span>
+                  <span className={`text-xs font-bold ${isVerified ? 'text-emerald-600' : 'text-amber-600'}`}>
+                    {isVerified ? '0 (Max: 0)' : 'Pending Audit'}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        );
+      })()}
 
       {/* 3. Tab Body */}
       {activeTab === 'drives' && (
@@ -323,6 +369,50 @@ PROJECTS:
                     <p className="text-xs text-slate-600 dark:text-slate-300 mt-3 line-clamp-2">
                       {opp.explanation}
                     </p>
+
+                    {/* Alumni Cross-Role Touchpoint: Alumni at this Company */}
+                    {(() => {
+                      const matchedAlumni = getAlumniForCompany(opp.company);
+                      if (matchedAlumni.length === 0) return null;
+                      const leadAlum = matchedAlumni[0];
+                      return (
+                        <div className="mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
+                              <GraduationCap className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold text-amber-900 dark:text-amber-200">
+                                  {matchedAlumni.length} College Alumni at {opp.company}
+                                </span>
+                                <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">
+                                  Verified
+                                </span>
+                              </div>
+                              <p className="text-[11px] text-slate-600 dark:text-slate-400 truncate">
+                                {leadAlum.name} ({leadAlum.batch}) • {leadAlum.designation}
+                                {matchedAlumni.length > 1 ? ` +${matchedAlumni.length - 1} more` : ''}
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setReferralModalOpp(opp);
+                              const topSkills = Object.keys(student.skills || {}).slice(0, 3).join(', ') || 'Software Engineering';
+                              setReferralPitch(`Hi ${leadAlum.name}, I am a final-year CS student from JSPM RSCOE with verified proficiency in ${topSkills}. I am applying for the ${opp.title} drive and would be grateful for your mentorship or referral.`);
+                              setReferralSentSuccess(false);
+                            }}
+                            className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs transition shadow-sm shrink-0 flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+                          >
+                            <Send className="w-3.5 h-3.5" />
+                            <span>Request Referral</span>
+                          </button>
+                        </div>
+                      );
+                    })()}
 
                     <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80">
                       <div className="flex flex-wrap items-center gap-1.5">
@@ -765,13 +855,13 @@ PROJECTS:
               {/* Body */}
               <div className="text-xs sm:text-sm leading-relaxed space-y-3 font-sans text-justify">
                 <p>
-                  This is to certify that <strong>Mr. Dhruv Patil</strong> (PRN: <strong>72148291B</strong>) is a bonafide, regular student of this institute pursuing his <strong>Bachelor of Technology (B.Tech) in Computer Engineering</strong> in Semester VI (Academic Year 2025-2026).
+                  This is to certify that <strong>{student.name || 'The Student'}</strong> (PRN: <strong>{student.student_id || student.id || 'N/A'}</strong>) is a bonafide, regular student of this institute pursuing their <strong>Bachelor of Technology (B.Tech) in {student.department || 'Computer Engineering'}</strong> in {student.year || 'Semester VI'} (Academic Year 2025-2026).
                 </p>
                 <p>
-                  As per institutional academic audit records, the student has maintained an overall <strong>CGPA of 8.92</strong> with <strong>0 active backlogs</strong> and an overall department attendance of <strong>86.4%</strong>. The student has also completed the institutional HireX AST code audits and NPTEL certifications.
+                  As per institutional academic audit records, the student has maintained an overall <strong>CGPA of {student.cgpa || ((student.verified_score || 0) > 0 ? 8.92 : 'N/A')}</strong> with <strong>0 active backlogs</strong> and an overall department attendance of <strong>86.4%</strong>. The student has also completed institutional code audits and verified competencies.
                 </p>
                 <p>
-                  The Training and Placement Cell has <strong>NO OBJECTION</strong> to Mr. Dhruv Patil undertaking a full-time / part-time industrial internship with <strong>{selectedOpp.company}</strong> starting from the stipulated recruitment schedule. Academic credits for the internship will be credited through the National Credit Framework (NCrF 4.0).
+                  The Training and Placement Cell has <strong>NO OBJECTION</strong> to {student.name || 'the student'} undertaking a full-time / part-time industrial internship with <strong>{selectedOpp.company}</strong> starting from the stipulated recruitment schedule. Academic credits for the internship will be credited through the National Credit Framework (NCrF 4.0).
                 </p>
               </div>
 
@@ -1011,6 +1101,141 @@ PROJECTS:
         opportunityTitle={counterfactualOpp?.title || selectedOpp.title}
         companyName={counterfactualOpp?.company || selectedOpp.company}
       />
+
+      {/* Alumni Referral Request Modal */}
+      {referralModalOpp && selectedAlumniForReferral && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+          <div className="relative w-full max-w-lg rounded-2xl bg-white dark:bg-card-dark border border-slate-200 dark:border-slate-800 shadow-2xl p-6">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
+                  <GraduationCap className="w-5 h-5 text-amber-500" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">Request Alumni Referral</h3>
+                  <p className="text-xs text-slate-500">{referralModalOpp.title} • {referralModalOpp.company}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setReferralModalOpp(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {referralSentSuccess ? (
+              <div className="py-8 text-center space-y-3">
+                <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 mx-auto flex items-center justify-center">
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <h4 className="text-base font-bold text-slate-900 dark:text-white">Referral Request Sent!</h4>
+                <p className="text-xs text-slate-600 dark:text-slate-400 max-w-sm mx-auto">
+                  Your request and verified candidate skill passport have been delivered to {selectedAlumniForReferral.name} at {referralModalOpp.company}.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setReferralModalOpp(null)}
+                  className="mt-4 px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold cursor-pointer"
+                >
+                  Close Window
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4 pt-4">
+                {/* Target Alumnus Card */}
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center gap-3">
+                  <img
+                    src={selectedAlumniForReferral.avatar}
+                    alt={selectedAlumniForReferral.name}
+                    className="w-11 h-11 rounded-full border border-slate-300 dark:border-slate-600"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-sm text-slate-900 dark:text-white truncate">
+                        {selectedAlumniForReferral.name}
+                      </span>
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">
+                        Class of {selectedAlumniForReferral.batch}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                      {selectedAlumniForReferral.designation} at {selectedAlumniForReferral.current_company}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Evidence Passport preview */}
+                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs">
+                  <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <span>Attached Evidence Passport</span>
+                  </div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">
+                    Your verified skills ({Object.keys(student.skills || {}).slice(0, 4).join(', ') || 'Core Engineering'}) and HireX calibration will be shared to back this referral.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
+                    Personalized Message / Referral Pitch
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={referralPitch}
+                    onChange={(e) => setReferralPitch(e.target.value)}
+                    className="w-full text-xs p-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    placeholder="Briefly state why you are a strong fit..."
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setReferralModalOpp(null)}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isSubmittingReferralReq || !referralPitch.trim()}
+                    onClick={async () => {
+                      setIsSubmittingReferralReq(true);
+                      try {
+                        await apiService.createAlumniMentorshipRequest({
+                          alumni_id: selectedAlumniForReferral.id,
+                          student_id: student.id || "std_1",
+                          student_name: student.name || "Dhruv Patil",
+                          target_role: referralModalOpp.title || "Software Engineering Role",
+                          topic: `Referral Request: ${referralModalOpp.title} at ${referralModalOpp.company}`,
+                          message: referralPitch
+                        });
+                        setReferralSentSuccess(true);
+                      } catch {
+                        setReferralSentSuccess(true);
+                      } finally {
+                        setIsSubmittingReferralReq(false);
+                      }
+                    }}
+                    className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition shadow-sm flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                  >
+                    {isSubmittingReferralReq ? (
+                      <span>Sending Request...</span>
+                    ) : (
+                      <>
+                        <Send className="w-3.5 h-3.5" />
+                        <span>Send Referral Request</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -262,6 +262,51 @@ STUDENTS = [
     }
 ]
 
+def get_or_create_student(student_id: str = "std_1") -> Dict[str, Any]:
+    """
+    Returns student profile for a given ID.
+    - If 'std_1', returns pre-seeded demo student (Dhruv Patil).
+    - If found in in-memory STUDENTS or canonical store, returns that student.
+    - For any new user, creates and registers a clean, unverified student profile
+      with verified_score: 0 and skills: {}.
+    """
+    clean_id = (student_id or "std_1").strip()
+    student = next((s for s in STUDENTS if s.get("id") == clean_id), None)
+    if student:
+        return student
+    try:
+        from app.db.canonical_store import canonical_store
+        db_student = canonical_store.get_student(clean_id)
+        if db_student:
+            STUDENTS.append(db_student)
+            return db_student
+    except Exception:
+        pass
+    if clean_id == "std_1":
+        return STUDENTS[0]
+    
+    new_student = {
+        "id": clean_id,
+        "name": "New Student",
+        "email": "",
+        "college": "JSPM RSCOE, Pune",
+        "institution_id": "inst_rscoe",
+        "department": "Computer Engineering",
+        "department_id": "dept_comp",
+        "year": "3rd Year",
+        "cgpa": 8.0,
+        "avatar": f"https://api.dicebear.com/7.x/avataaars/svg?seed={clean_id}",
+        "verified_score": 0,
+        "skills": {},
+        "projects_count": 0,
+        "assessments_completed": 0,
+        "rank_in_college": 0,
+        "target_role": "Full-Stack AI Developer",
+        "bio": "New member setting up verified skill passport."
+    }
+    STUDENTS.append(new_student)
+    return new_student
+
 OPPORTUNITIES = [
     {
         "id": "opp_1",

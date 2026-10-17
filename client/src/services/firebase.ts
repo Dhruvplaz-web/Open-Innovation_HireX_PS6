@@ -8,6 +8,7 @@ import {
   signOut, 
   onAuthStateChanged,
   updateProfile,
+  sendPasswordResetEmail,
   User
 } from 'firebase/auth';
 import { 
@@ -55,6 +56,7 @@ export {
   signOut,
   onAuthStateChanged,
   updateProfile,
+  sendPasswordResetEmail,
   doc,
   getDoc,
   setDoc,
