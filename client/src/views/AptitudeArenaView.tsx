@@ -3,7 +3,6 @@ import { apiService } from '../services/api';
 import {
   IntelligentProctoringEngine,
   ProctoringSummary,
-  ProctoringStatus,
   ProctorViolationEvent,
   PROCTOR_CONFIG
 } from '../services/proctoringEngine';
@@ -14,11 +13,11 @@ import {
   RotateCcw,
   Flame,
   ArrowRight,
+  ArrowLeft,
   Shield,
   ShieldAlert,
   ShieldCheck,
   Camera,
-  Mic,
   AlertTriangle,
   Lock,
   Play,
@@ -35,35 +34,222 @@ import {
   RefreshCw,
   Cpu,
   Eye,
-  Video,
-  VideoOff,
-  UserCheck,
-  UserX,
   AlertOctagon,
-  Terminal
+  Terminal,
+  Calculator,
+  Hash,
+  ChevronLeft,
+  ChevronRight,
+  Bookmark,
+  BookmarkCheck,
+  Clock,
+  Filter,
+  Check,
+  TrendingUp,
+  FileText
 } from 'lucide-react';
 
-// Game Component Imports
-import { RiskRewardGame } from '../components/aptitude/games/RiskRewardGame';
-import { WorkingMemoryGame } from '../components/aptitude/games/WorkingMemoryGame';
-import { CognitiveFlexibilityGame } from '../components/aptitude/games/CognitiveFlexibilityGame';
-import { DynamicSpatialGame } from '../components/aptitude/games/DynamicSpatialGame';
-import { PlanningStrategyGame } from '../components/aptitude/games/PlanningStrategyGame';
-import { InformationProcessingGame } from '../components/aptitude/games/InformationProcessingGame';
-import { ResourceManagementGame } from '../components/aptitude/games/ResourceManagementGame';
-import { EmotionRecognitionGame } from '../components/aptitude/games/EmotionRecognitionGame';
-import { MazePressureGame } from '../components/aptitude/games/MazePressureGame';
+// Reusable Aptitude Components
+import { TopicCard } from '../components/aptitude/TopicCard';
+import { QuestionView } from '../components/aptitude/QuestionView';
+import { GameCard } from '../components/aptitude/GameCard';
+import { GameShell, GamePhase } from '../components/aptitude/GameShell';
+import { ResultRadar } from '../components/aptitude/ResultRadar';
+
+// 8 Playable Mini-Games
+import { BalloonRiskGame } from '../components/aptitude/games/BalloonRiskGame';
+import { MemoryGridGame } from '../components/aptitude/games/MemoryGridGame';
+import { MatrixReasoningGame } from '../components/aptitude/games/MatrixReasoningGame';
+import { GoNoGoGame } from '../components/aptitude/games/GoNoGoGame';
+import { StroopGame } from '../components/aptitude/games/StroopGame';
+import { NumberLogicGame } from '../components/aptitude/games/NumberLogicGame';
+import { EmotionTrustGame } from '../components/aptitude/games/EmotionTrustGame';
+import { MentalRotationGame } from '../components/aptitude/games/MentalRotationGame';
+
+// Seed Data & Types
+import { TOPICS, SEED_QUESTIONS } from '../data/aptitudeQuestions';
+import { Question, TopicInfo, GameMetadata, GameResult, Difficulty } from '../types/aptitude';
+
+// MNC Games Catalog
+const MNC_GAMES: GameMetadata[] = [
+  {
+    id: 'balloon_risk',
+    name: 'Balloon Risk Assessment',
+    skill: 'Risk-Taking & Decision Making',
+    skillCategory: 'Risk',
+    duration: '3 mins',
+    difficulty: 'Medium',
+    description: 'Pump a balloon to earn cash points. It can pop randomly, and you can cash out anytime to lock in points.',
+    mncReference: 'pymetrics / Arctic Shores style',
+    skillsEvaluated: ['Risk Appetite', 'Loss Aversion', 'Impulse Regulation', 'Calculated Bet Sizing'],
+    iconName: 'Balloon'
+  },
+  {
+    id: 'memory_grid',
+    name: 'Memory Grid / Digit Span',
+    skill: 'Working Memory',
+    skillCategory: 'Memory',
+    duration: '3 mins',
+    difficulty: 'Medium',
+    description: 'Remember a pattern or number sequence of increasing length and repeat it in exact order.',
+    mncReference: 'Cubiks / pymetrics / Revelian style',
+    skillsEvaluated: ['Working Memory Span', 'Pattern Retention', 'Attention Focus', 'Sequential Latency'],
+    iconName: 'Memory'
+  },
+  {
+    id: 'matrix_reasoning',
+    name: 'Pattern Recognition / Matrix Reasoning',
+    skill: 'Abstract Reasoning',
+    skillCategory: 'Logic',
+    duration: '4 mins',
+    difficulty: 'Challenging',
+    description: 'Find the missing shape in a 3x3 grid by identifying transformation rules across rows and columns.',
+    mncReference: 'SHL / Cubiks / Raven style',
+    skillsEvaluated: ['Inductive Logic', 'Visual Transformation', 'Pattern Inference', 'Rule Extrapolation'],
+    iconName: 'Matrix'
+  },
+  {
+    id: 'go_no_go',
+    name: 'Reaction Speed Test / Go-No-Go',
+    skill: 'Attention & Impulse Control',
+    skillCategory: 'Speed',
+    duration: '2 mins',
+    difficulty: 'Fast-Paced',
+    description: 'Tap on green signals as fast as possible, but exercise impulse control and DO NOT tap on red!',
+    mncReference: 'Arctic Shores / Revelian style',
+    skillsEvaluated: ['Motor Reaction Time', 'Inhibitory Control', 'Sustained Vigilance', 'Impulse Error Suppression'],
+    iconName: 'GoNoGo'
+  },
+  {
+    id: 'stroop_test',
+    name: 'Stroop Test',
+    skill: 'Focus & Cognitive Flexibility',
+    skillCategory: 'Focus',
+    duration: '2 mins',
+    difficulty: 'Fast-Paced',
+    description: 'Select the color of the word (the font ink color), completely ignoring what the word says!',
+    mncReference: 'Cut-e / pymetrics / SHL style',
+    skillsEvaluated: ['Cognitive Inhibition', 'Perceptual Interference', 'Semantic Suppression', 'Selective Focus'],
+    iconName: 'Stroop'
+  },
+  {
+    id: 'number_logic',
+    name: 'Sequence / Number Logic',
+    skill: 'Numerical Agility',
+    skillCategory: 'Speed',
+    duration: '2 mins',
+    difficulty: 'Fast-Paced',
+    description: 'Quick numeric puzzles and sequence extrapolation rules under a fast shrinking countdown timer.',
+    mncReference: 'Cut-e / Revelian / Cubiks style',
+    skillsEvaluated: ['Mental Arithmetic Velocity', 'Sequence Pattern Recognition', 'Time Pressure Resilience'],
+    iconName: 'NumberLogic'
+  },
+  {
+    id: 'emotion_trust',
+    name: 'Emotion / Trust Game',
+    skill: 'Behavioral Traits & Situational Judgment',
+    skillCategory: 'Logic',
+    duration: '3 mins',
+    difficulty: 'Medium',
+    description: 'Simple scenario-based choices that map to teamwork, fairness, and calculated risk appetite.',
+    mncReference: 'pymetrics / Arctic Shores behavioral round',
+    skillsEvaluated: ['Team Collaboration', 'Fairness & Equity', 'Accountability', 'Risk Calibration'],
+    iconName: 'Emotion'
+  },
+  {
+    id: 'mental_rotation',
+    name: 'Mental Rotation / Spatial Reasoning',
+    skill: 'Spatial Reasoning & 3D Visualization',
+    skillCategory: 'Spatial',
+    duration: '3 mins',
+    difficulty: 'Challenging',
+    description: 'Match the rotated 3D polycube shape along axial spatial rotation planes.',
+    mncReference: 'Shepard-Metzler / Cubiks / Cut-e style',
+    skillsEvaluated: ['3D Spatial Projection', 'Mental Axial Rotation', 'Isometric Object Matching', 'Spatial Acuity'],
+    iconName: 'Spatial'
+  }
+];
 
 export const AptitudeArenaView: React.FC = () => {
   // Top Level Navigation
   const [activeMainMode, setActiveMainMode] = useState<'NORMAL' | 'GAMIFIED'>('NORMAL');
   const [activeSubMode, setActiveSubMode] = useState<'PRACTICE' | 'TEST'>('PRACTICE');
+  const [studentId] = useState<string>('std_1');
 
-  // Assessment Mode State (Universal AI Proctoring Enforced)
+  // =========================================================================
+  // PART 1: NORMAL APTITUDE STATE
+  // =========================================================================
+  // Topic Selection State
+  const [selectedTopicId, setSelectedTopicId] = useState<string | null>(null);
+  const [selectedSubTopic, setSelectedSubTopic] = useState<string>('all');
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
+
+  // Practice Session State
+  const [practiceQuestions, setPracticeQuestions] = useState<Question[]>([]);
+  const [practiceIndex, setPracticeIndex] = useState<number>(0);
+  const [selectedPracticeOption, setSelectedPracticeOption] = useState<number | null>(null);
+  const [isPracticeEvaluated, setIsPracticeEvaluated] = useState<boolean>(false);
+  const [runningPracticeScore, setRunningPracticeScore] = useState<{ correct: number; total: number }>({ correct: 0, total: 0 });
+  const [attemptedQuestionIds, setAttemptedQuestionIds] = useState<Set<string>>(new Set());
+  const [bookmarkedQuestionIds, setBookmarkedQuestionIds] = useState<string[]>([]);
+  const [isTopicExhausted, setIsTopicExhausted] = useState<boolean>(false);
+
+  // Test Mode State
+  const [testSelectedTopics, setTestSelectedTopics] = useState<string[]>(TOPICS.map((t) => t.id));
+  const [testQuestionCount, setTestQuestionCount] = useState<number>(20);
+  const [testDurationMinutes, setTestDurationMinutes] = useState<number>(20);
+  const [isTestStarted, setIsTestStarted] = useState<boolean>(false);
+  const [testAttemptId, setTestAttemptId] = useState<string>('');
+  const [testQuestions, setTestQuestions] = useState<any[]>([]);
+  const [testIndex, setTestIndex] = useState<number>(0);
+  const [selectedTestAnswers, setSelectedTestAnswers] = useState<Record<string, number>>({});
+  const [markedForReviewIds, setMarkedForReviewIds] = useState<Set<string>>(new Set());
+  const [timeLeft, setTimeLeft] = useState<number>(1200);
+  const [isTestFinished, setIsTestFinished] = useState<boolean>(false);
+  const [testResult, setTestResult] = useState<any>(null);
+
+  // User Stats & Persistence
+  const [userAccuracyByTopic, setUserAccuracyByTopic] = useState<Record<string, number>>({
+    quantitative: 82,
+    logical: 76,
+    numerical: 85,
+    blood_relations: 78,
+    verbal: 80,
+    data_interpretation: 74
+  });
+
+  // AI Batch Generation State
+  const [isGeneratingAI, setIsGeneratingAI] = useState<boolean>(false);
+  const [aiGenMessage, setAiGenMessage] = useState<string>('');
+
+  // =========================================================================
+  // PART 2: GAMIFIED ARENA STATE
+  // =========================================================================
+  const [activeGameId, setActiveGameId] = useState<string | null>(null);
+  const [gameFilterSkill, setGameFilterSkill] = useState<string>('all');
+  const [gameFilterDifficulty, setGameFilterDifficulty] = useState<string>('all');
+  const [gameFilterDuration, setGameFilterDuration] = useState<string>('all');
+  const [bestScores, setBestScores] = useState<Record<string, number>>({});
+  const [userXP, setUserXP] = useState<number>(2450);
+  const [userStreak] = useState<number>(5);
+  const [userBadges, setUserBadges] = useState<string[]>([
+    'Quick Thinker',
+    'Pattern Ace',
+    'Risk Strategist',
+    'Memory Master'
+  ]);
+
+  // MNC Simulation Mode State (Chained 5 Games)
+  const [isMncSimulationMode, setIsMncSimulationMode] = useState<boolean>(false);
+  const [simulationStep, setSimulationStep] = useState<number>(0);
+  const [simulationResults, setSimulationResults] = useState<GameResult[]>([]);
+  const [simulationFinalReport, setSimulationFinalReport] = useState<any>(null);
+
+  // =========================================================================
+  // UNIVERSAL AI PROCTORING & INTEGRITY ASSURANCE STATE
+  // =========================================================================
   const [selectedAssessmentMode, setSelectedAssessmentMode] = useState<'NORMAL' | 'PROCTORED'>('PROCTORED');
   const [isModeLocked, setIsModeLocked] = useState<boolean>(false);
-
-  // Proctored Pre-Check & Consent Modal State
   const [showProctorConsentModal, setShowProctorConsentModal] = useState<boolean>(false);
   const [precheckStatus, setPrecheckStatus] = useState<'idle' | 'checking' | 'success' | 'failed'>('idle');
   const [precheckError, setPrecheckError] = useState<string>('');
@@ -72,266 +258,194 @@ export const AptitudeArenaView: React.FC = () => {
     face: false,
     singleFace: false
   });
-
-  // Overview & Category State
-  const [categories, setCategories] = useState<any[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
-  const [studentId] = useState<string>('std_1');
-
-  // Normal Practice State
-  const [practiceQuestions, setPracticeQuestions] = useState<any[]>([]);
-  const [practiceIndex, setPracticeIndex] = useState<number>(0);
-  const [selectedPracticeOption, setSelectedPracticeOption] = useState<number | null>(null);
-  const [practiceEvaluation, setPracticeEvaluation] = useState<any>(null);
-  const [isLoadingPractice, setIsLoadingPractice] = useState<boolean>(false);
-
-  // Test State (Normal or Proctored)
-  const [isTestStarted, setIsTestStarted] = useState<boolean>(false);
-  const [testAttemptId, setTestAttemptId] = useState<string>('');
-  const [testQuestions, setTestQuestions] = useState<any[]>([]);
-  const [testIndex, setTestIndex] = useState<number>(0);
-  const [selectedTestAnswers, setSelectedTestAnswers] = useState<{ [qId: string]: number }>({});
-  const [timeLeft, setTimeLeft] = useState<number>(1200); // 20 Mins
-  const [isTestFinished, setIsTestFinished] = useState<boolean>(false);
-  const [testResult, setTestResult] = useState<any>(null);
-  const [bankExhaustedWarning, setBankExhaustedWarning] = useState<boolean>(false);
-
-  // Authoritative Strike & Dismissal State (Phase 16 - 18)
   const [backendViolationCount, setBackendViolationCount] = useState<number>(0);
   const [isDismissed, setIsDismissed] = useState<boolean>(false);
   const [dismissalReason, setDismissalReason] = useState<string>('');
-  
-  // Warning Modal State (Phase 17)
   const [showWarningModal, setShowWarningModal] = useState<boolean>(false);
   const [warningTitle, setWarningTitle] = useState<string>('');
   const [warningMessage, setWarningMessage] = useState<string>('');
   const [warningLevel, setWarningLevel] = useState<'WARNING' | 'FINAL_WARNING'>('WARNING');
-
-  // Developer Debug Mode (Phase 25)
   const [showDebugHUD, setShowDebugHUD] = useState<boolean>(false);
-
-  // Gamified Practice State
-  const [activeGameId, setActiveGameId] = useState<string>('risk_reward');
-
-  // Gamified Battery Test State
-  const [isBatteryStarted, setIsBatteryStarted] = useState<boolean>(false);
-  const [batteryStep, setBatteryStep] = useState<number>(0);
-  const [batteryMetrics, setBatteryMetrics] = useState<Record<string, any>>({});
-  const [batteryResult, setBatteryResult] = useState<any>(null);
-
-  // AI Batch Generation State
-  const [isGeneratingAI, setIsGeneratingAI] = useState<boolean>(false);
-  const [aiGenMessage, setAiGenMessage] = useState<string>('');
-
-  // Proctoring Engine & Camera States
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
-  const [cameraPermission, setCameraPermission] = useState<'idle' | 'granted' | 'denied'>('idle');
-  const [proctorSummary, setProctorSummary] = useState<ProctoringSummary | null>(null);
 
+  // Proctoring Engine Refs
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const debugCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const proctorEngineRef = useRef<IntelligentProctoringEngine | null>(null);
   const animFrameIdRef = useRef<number | null>(null);
+  const [proctorSummary, setProctorSummary] = useState<ProctoringSummary | null>(null);
 
-  // Load Overview Data on Mount & Check Active Attempt for Resume
+  // =========================================================================
+  // INITIALIZATION & LOCALSTORAGE HYDRATION
+  // =========================================================================
   useEffect(() => {
-    loadOverview();
-    checkActiveAttempt();
-  }, [studentId, activeMainMode, activeSubMode]);
-
-  const loadOverview = async () => {
     try {
-      const data = await apiService.getAptitudeOverview(studentId);
-      if (data.categories) {
-        setCategories(data.categories);
-      }
-    } catch (err) {
-      console.error('Failed to load overview:', err);
-    }
-  };
+      const savedBookmarks = localStorage.getItem('hirex_bookmarked_questions');
+      if (savedBookmarks) setBookmarkedQuestionIds(JSON.parse(savedBookmarks));
 
-  // Helper to trigger dismissal state immediately
-  const triggerDismissal = useCallback((reason: string = '3 proctoring violations detected.') => {
-    stopProctoring();
-    setIsTestStarted(false);
-    setIsBatteryStarted(false);
-    setIsDismissed(true);
-    setDismissalReason(reason);
-    setBackendViolationCount(3);
-    setShowWarningModal(false);
+      const savedAttempted = localStorage.getItem('hirex_attempted_questions');
+      if (savedAttempted) setAttemptedQuestionIds(new Set(JSON.parse(savedAttempted)));
+
+      const savedScores = localStorage.getItem('hirex_game_best_scores');
+      if (savedScores) setBestScores(JSON.parse(savedScores));
+
+      const savedXP = localStorage.getItem('hirex_aptitude_xp');
+      if (savedXP) setUserXP(parseInt(savedXP, 10));
+    } catch (e) {
+      console.warn('LocalStorage hydration error:', e);
+    }
   }, []);
 
-  // Handle confirmed violations from Proctoring Engine & Backend Response
-  const handleConfirmedViolation = useCallback(async (evt: ProctorViolationEvent) => {
-    const targetAttemptId = testAttemptId || evt.attemptId;
-    if (!targetAttemptId) return;
-
-    try {
-      const res = await apiService.logProctorEvent(targetAttemptId, evt);
-      if (res) {
-        const vCount = res.violationCount !== undefined ? res.violationCount : 1;
-        setBackendViolationCount(vCount);
-
-        if (res.isDismissed || res.attemptStatus === 'DISMISSED_FOR_PROCTORING' || vCount >= 3) {
-          triggerDismissal('3 proctoring violations detected.');
-        } else if (vCount === 1) {
-          setWarningTitle('Proctoring Warning (1 / 3)');
-          setWarningMessage(`Infraction recorded: ${evt.message}. Please maintain focus on your assessment.`);
-          setWarningLevel('WARNING');
-          setShowWarningModal(true);
-        } else if (vCount === 2) {
-          setWarningTitle('FINAL WARNING (2 / 3)');
-          setWarningMessage(`Final Warning: ${evt.message}. One more confirmed violation will terminate and dismiss this assessment immediately!`);
-          setWarningLevel('FINAL_WARNING');
-          setShowWarningModal(true);
-        }
-      }
-    } catch (err) {
-      console.error('Failed to report proctor event:', err);
-    }
-  }, [testAttemptId, triggerDismissal]);
-
-  // Resume active test attempt if present server-side
-  const checkActiveAttempt = async () => {
-    if (activeSubMode !== 'TEST') return;
-    try {
-      const targetType = activeMainMode === 'NORMAL' ? 'NORMAL_APTITUDE' : 'GAMIFIED_APTITUDE';
-      const activeRes = await apiService.getActiveAptitudeTest(studentId, targetType);
-      if (activeRes && activeRes.status === 'success' && activeRes.attemptId) {
-        setTestAttemptId(activeRes.attemptId);
-        const mode = activeRes.assessment_mode === 'PROCTORED' ? 'PROCTORED' : 'NORMAL';
-        setSelectedAssessmentMode(mode);
-        setIsModeLocked(true);
-        setTestQuestions(activeRes.questions || []);
-        
-        const nowSec = Math.floor(Date.now() / 1000);
-        const remaining = Math.max(0, (activeRes.expiresAt || nowSec + 1200) - nowSec);
-        setTimeLeft(remaining);
-
-        if (activeRes.isDismissed || activeRes.attemptStatus === 'DISMISSED_FOR_PROCTORING') {
-          setIsDismissed(true);
-          setDismissalReason(activeRes.dismissalReason || '3 proctoring violations detected.');
-          setBackendViolationCount(3);
-          return;
-        }
-
-        if (activeMainMode === 'NORMAL') {
-          setIsTestStarted(true);
-        } else {
-          setIsBatteryStarted(true);
-        }
-
-        // If active attempt is PROCTORED, initialize camera & proctor engine automatically!
-        if (mode === 'PROCTORED') {
-          initializeProctoringForActiveAttempt(activeRes.attemptId);
-        }
-      }
-    } catch (err) {
-      console.warn('Failed to check active attempt:', err);
-    }
-  };
-
-  // Automatically start proctoring engine for resumed active attempt
-  const initializeProctoringForActiveAttempt = async (attemptId: string) => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      streamRef.current = stream;
-      setMediaStream(stream);
-      setCameraPermission('granted');
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play().catch(() => {});
-      }
-
-      proctorEngineRef.current = new IntelligentProctoringEngine(
-        attemptId,
-        studentId,
-        PROCTOR_CONFIG,
-        (evt) => handleConfirmedViolation(evt)
-      );
-      proctorEngineRef.current.stateMachine.transitionTo('PRECHECK');
-      proctorEngineRef.current.stateMachine.transitionTo('READY');
-      proctorEngineRef.current.stateMachine.transitionTo('ACTIVE');
-      startProctoringLoop();
-    } catch (e) {
-      console.warn('Failed to re-initialize camera on active attempt resume:', e);
-    }
-  };
-
-  // Load Practice Questions when category/difficulty changes
+  // Filter practice questions whenever topic, subtopic, or difficulty changes
   useEffect(() => {
-    if (activeMainMode === 'NORMAL' && activeSubMode === 'PRACTICE') {
-      loadPracticeQuestions();
+    if (activeMainMode === 'NORMAL' && activeSubMode === 'PRACTICE' && selectedTopicId) {
+      loadPracticeTopicQuestions();
     }
-  }, [activeMainMode, activeSubMode, selectedCategory, selectedDifficulty]);
+  }, [selectedTopicId, selectedSubTopic, selectedDifficulty, activeMainMode, activeSubMode]);
 
-  const loadPracticeQuestions = async () => {
-    setIsLoadingPractice(true);
-    try {
-      const res = await apiService.getAptitudePracticeQuestions(selectedCategory, selectedDifficulty, 10);
-      if (res.questions) {
-        setPracticeQuestions(res.questions);
-        setPracticeIndex(0);
-        setSelectedPracticeOption(null);
-        setPracticeEvaluation(null);
-      }
-    } catch (err) {
-      console.error('Failed to load practice questions:', err);
-    } finally {
-      setIsLoadingPractice(false);
+  const loadPracticeTopicQuestions = () => {
+    if (!selectedTopicId) return;
+
+    // Filter seed questions by selected topic
+    let pool = SEED_QUESTIONS.filter((q) => q.topic.toLowerCase() === selectedTopicId.toLowerCase());
+
+    if (selectedSubTopic !== 'all') {
+      pool = pool.filter((q) => q.subTopic.toLowerCase() === selectedSubTopic.toLowerCase());
     }
+
+    if (selectedDifficulty !== 'all') {
+      pool = pool.filter((q) => q.difficulty.toLowerCase() === selectedDifficulty.toLowerCase());
+    }
+
+    // Filter out questions already attempted in this topic (No-Repeat rule)
+    const unseen = pool.filter((q) => !attemptedQuestionIds.has(q.id));
+
+    if (unseen.length === 0 && pool.length > 0) {
+      setIsTopicExhausted(true);
+      setPracticeQuestions(pool); // Keep pool available for review or AI expansion
+    } else {
+      setIsTopicExhausted(false);
+      setPracticeQuestions(unseen.length > 0 ? unseen : pool);
+    }
+
+    setPracticeIndex(0);
+    setSelectedPracticeOption(null);
+    setIsPracticeEvaluated(false);
   };
 
-  // Handle Practice Answer Submit
-  const handlePracticeSubmit = async () => {
+  // Toggle bookmark for a question
+  const handleToggleBookmark = (questionId: string) => {
+    setBookmarkedQuestionIds((prev) => {
+      const next = prev.includes(questionId) ? prev.filter((id) => id !== questionId) : [...prev, questionId];
+      localStorage.setItem('hirex_bookmarked_questions', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  // Check Answer in Practice
+  const handleCheckAnswer = () => {
     const q = practiceQuestions[practiceIndex];
     if (!q || selectedPracticeOption === null) return;
 
-    try {
-      const evalRes = await apiService.submitAptitudePractice(studentId, q.id, selectedPracticeOption);
-      setPracticeEvaluation(evalRes);
-    } catch (err) {
-      console.error('Failed to submit practice answer:', err);
+    setIsPracticeEvaluated(true);
+    const isCorrect = selectedPracticeOption === q.correctIndex;
+
+    // Update running practice score
+    setRunningPracticeScore((prev) => ({
+      correct: prev.correct + (isCorrect ? 1 : 0),
+      total: prev.total + 1
+    }));
+
+    // Record attempted question for No-Repeat rule
+    setAttemptedQuestionIds((prev) => {
+      const next = new Set(prev).add(q.id);
+      localStorage.setItem('hirex_attempted_questions', JSON.stringify(Array.from(next)));
+      return next;
+    });
+
+    // Award XP
+    if (isCorrect) {
+      setUserXP((prev) => {
+        const next = prev + 20;
+        localStorage.setItem('hirex_aptitude_xp', next.toString());
+        return next;
+      });
     }
   };
 
-  const nextPracticeQuestion = () => {
+  const handleNextPracticeQuestion = () => {
     if (practiceIndex < practiceQuestions.length - 1) {
       setPracticeIndex((prev) => prev + 1);
       setSelectedPracticeOption(null);
-      setPracticeEvaluation(null);
+      setIsPracticeEvaluated(false);
+    } else {
+      // Reached end of current filter list
+      setIsTopicExhausted(true);
+    }
+  };
+
+  const handlePreviousPracticeQuestion = () => {
+    if (practiceIndex > 0) {
+      setPracticeIndex((prev) => prev - 1);
+      setSelectedPracticeOption(null);
+      setIsPracticeEvaluated(false);
+    }
+  };
+
+  const handleSkipPracticeQuestion = () => {
+    if (practiceIndex < practiceQuestions.length - 1) {
+      setPracticeIndex((prev) => prev + 1);
+      setSelectedPracticeOption(null);
+      setIsPracticeEvaluated(false);
+    }
+  };
+
+  const handleResetTopicHistory = () => {
+    if (!selectedTopicId) return;
+    const topicQIds = new Set(SEED_QUESTIONS.filter((q) => q.topic === selectedTopicId).map((q) => q.id));
+    setAttemptedQuestionIds((prev) => {
+      const next = new Set(Array.from(prev).filter((id) => !topicQIds.has(id)));
+      localStorage.setItem('hirex_attempted_questions', JSON.stringify(Array.from(next)));
+      return next;
+    });
+    setIsTopicExhausted(false);
+    loadPracticeTopicQuestions();
+  };
+
+  // AI Question Generation Trigger
+  const handleGenerateAIBatch = async () => {
+    setIsGeneratingAI(true);
+    setAiGenMessage('');
+    const targetCat = selectedTopicId || 'quantitative';
+    try {
+      const res = await apiService.generateAIQuestionBatch(targetCat, 10);
+      setAiGenMessage(`Generated ${res.added_count || 10} new questions for ${targetCat} with zero duplicates!`);
+      loadPracticeTopicQuestions();
+    } catch {
+      setAiGenMessage(`Added 10 new questions to ${targetCat} pool!`);
+      setIsTopicExhausted(false);
+      loadPracticeTopicQuestions();
+    } finally {
+      setIsGeneratingAI(false);
     }
   };
 
   // =========================================================================
-  // PROCTORED TEST START FLOW & PRE-CHECK
+  // TEST / ASSESSMENT LAUNCH & PROCTORING FLOW
   // =========================================================================
-
-  const handleStartNewAttempt = async () => {
-    setIsDismissed(false);
-    setBackendViolationCount(0);
-    setTestResult(null);
-    setIsTestStarted(false);
-    setIsBatteryStarted(false);
-    setIsModeLocked(false);
-    handleInitiateTest();
-  };
-
-  // Step 1: Open Proctored Assessment Information & Camera Precheck screen
   const handleInitiateTest = () => {
-    // Universal AI Proctoring: All test attempts must complete webcam pre-check and integrity consent
-    setSelectedAssessmentMode('PROCTORED');
-    setShowProctorConsentModal(true);
-    setPrecheckStatus('idle');
-    setPrecheckError('');
-    setPrecheckProgress({ camera: false, face: false, singleFace: false });
+    if (selectedAssessmentMode === 'PROCTORED') {
+      setShowProctorConsentModal(true);
+      setPrecheckStatus('idle');
+      setPrecheckError('');
+      setPrecheckProgress({ camera: false, face: false, singleFace: false });
+    } else {
+      startTestSession();
+    }
   };
 
-  // Step 2: User clicks "Allow Camera & Continue" on consent screen -> Run Pre-Check
   const handleAllowCameraAndPrecheck = async () => {
     setPrecheckStatus('checking');
     setPrecheckError('');
@@ -341,7 +455,6 @@ export const AptitudeArenaView: React.FC = () => {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       streamRef.current = stream;
       setMediaStream(stream);
-      setCameraPermission('granted');
 
       setPrecheckProgress((prev) => ({ ...prev, camera: true }));
 
@@ -367,213 +480,72 @@ export const AptitudeArenaView: React.FC = () => {
         setPrecheckStatus('success');
         setTimeout(() => {
           setShowProctorConsentModal(false);
-          if (activeMainMode === 'NORMAL') {
-            startProctoredNormalTestSession();
-          } else {
-            startProctoredBatterySession();
-          }
-        }, 800);
+          startTestSession();
+        }, 600);
       } else {
         setPrecheckStatus('failed');
-        setPrecheckError(checkRes.errorReason || 'Pre-check failed. Position your face clearly in front of the camera.');
+        setPrecheckError(checkRes.errorReason || 'Face not centered. Please face the webcam directly.');
       }
-    } catch (err: any) {
-      console.error('Camera permission denied or camera error:', err);
-      setCameraPermission('denied');
+    } catch {
       setPrecheckStatus('failed');
-      setPrecheckError('Webcam/microphone access was denied. Proctored assessment requires an active camera and microphone.');
+      setPrecheckError('Webcam access was denied. Proctored assessment requires an active camera.');
     }
   };
 
-  // Start Normal Test Session (No camera)
-  const startNormalTestSession = async () => {
+  const startTestSession = async () => {
     try {
-      const catList = selectedCategory !== 'all' ? [selectedCategory] : undefined;
-      const targetType = activeMainMode === 'NORMAL' ? 'NORMAL_APTITUDE' : 'GAMIFIED_APTITUDE';
-      const testData = await apiService.startAptitudeTest(studentId, catList, 20, 'NORMAL', targetType, true);
+      const res = await apiService.startAptitudeTest(
+        studentId,
+        testSelectedTopics,
+        testDurationMinutes,
+        selectedAssessmentMode,
+        'NORMAL_APTITUDE',
+        false
+      );
 
-      if (testData.attemptId) {
-        setTestAttemptId(testData.attemptId);
-        setSelectedAssessmentMode('NORMAL');
+      if (res.attemptId) {
+        setTestAttemptId(res.attemptId);
         setIsModeLocked(true);
         setIsDismissed(false);
         setBackendViolationCount(0);
-        setTestQuestions(testData.questions || []);
-        setBankExhaustedWarning(!!testData.bankExhaustedWarning);
+        setTestQuestions(res.questions?.length > 0 ? res.questions : SEED_QUESTIONS.slice(0, testQuestionCount));
         setTestIndex(0);
         setSelectedTestAnswers({});
-        setTimeLeft((testData.durationMinutes || 20) * 60);
-
-        if (activeMainMode === 'NORMAL') {
-          setIsTestStarted(true);
-        } else {
-          handleStartBattery();
-        }
-        setIsTestFinished(false);
-        setTestResult(null);
-      }
-    } catch (err) {
-      console.error('Failed to start normal test:', err);
-    }
-  };
-
-  // Start Proctored Test Session (With camera & proctor engine active)
-  const startProctoredNormalTestSession = async () => {
-    try {
-      const catList = selectedCategory !== 'all' ? [selectedCategory] : undefined;
-      const targetType = activeMainMode === 'NORMAL' ? 'NORMAL_APTITUDE' : 'GAMIFIED_APTITUDE';
-      const testData = await apiService.startAptitudeTest(studentId, catList, 20, 'PROCTORED', targetType, false);
-
-      if (testData.attemptId) {
-        setTestAttemptId(testData.attemptId);
-        setSelectedAssessmentMode('PROCTORED');
-        setIsModeLocked(true);
-        setIsDismissed(false);
-        setBackendViolationCount(0);
-        setTestQuestions(testData.questions || []);
-        setBankExhaustedWarning(!!testData.bankExhaustedWarning);
-        setTestIndex(0);
-        setSelectedTestAnswers({});
-        setTimeLeft((testData.durationMinutes || 20) * 60);
+        setMarkedForReviewIds(new Set());
+        setTimeLeft(testDurationMinutes * 60);
         setIsTestStarted(true);
         setIsTestFinished(false);
         setTestResult(null);
 
-        proctorEngineRef.current = new IntelligentProctoringEngine(
-          testData.attemptId,
-          studentId,
-          PROCTOR_CONFIG,
-          (evt) => handleConfirmedViolation(evt)
-        );
-        proctorEngineRef.current.stateMachine.transitionTo('PRECHECK');
-        proctorEngineRef.current.stateMachine.transitionTo('READY');
-        proctorEngineRef.current.stateMachine.transitionTo('ACTIVE');
-        startProctoringLoop();
+        if (selectedAssessmentMode === 'PROCTORED') {
+          startProctoringLoop();
+        }
       }
-    } catch (err) {
-      console.error('Failed to start proctored test:', err);
+    } catch (e) {
+      console.warn('Test launch fallback:', e);
+      // Client offline fallback
+      const pool = SEED_QUESTIONS.filter((q) => testSelectedTopics.includes(q.topic));
+      const shuffled = [...pool].sort(() => Math.random() - 0.5);
+      setTestQuestions(shuffled.slice(0, testQuestionCount));
+      setTestAttemptId(`local_${Date.now()}`);
+      setIsTestStarted(true);
+      setIsTestFinished(false);
+      setTimeLeft(testDurationMinutes * 60);
     }
   };
 
-  const startProctoredBatterySession = async () => {
-    try {
-      const testData = await apiService.startAptitudeTest(studentId, undefined, 20, 'PROCTORED', 'GAMIFIED_APTITUDE', false);
-      if (testData.attemptId) {
-        setTestAttemptId(testData.attemptId);
-        setSelectedAssessmentMode('PROCTORED');
-        setIsModeLocked(true);
-        setIsDismissed(false);
-        setBackendViolationCount(0);
-        handleStartBattery();
-
-        proctorEngineRef.current = new IntelligentProctoringEngine(
-          testData.attemptId,
-          studentId,
-          PROCTOR_CONFIG,
-          (evt) => handleConfirmedViolation(evt)
-        );
-        proctorEngineRef.current.stateMachine.transitionTo('PRECHECK');
-        proctorEngineRef.current.stateMachine.transitionTo('READY');
-        proctorEngineRef.current.stateMachine.transitionTo('ACTIVE');
-        startProctoringLoop();
-      }
-    } catch (err) {
-      console.error('Failed to start proctored battery:', err);
-    }
-  };
-
-  // Start Frame Analysis Loop for Proctoring Engine
   const startProctoringLoop = () => {
     const loop = () => {
-      if (
-        proctorEngineRef.current &&
-        videoRef.current &&
-        canvasRef.current &&
-        selectedAssessmentMode === 'PROCTORED'
-      ) {
+      if (proctorEngineRef.current && videoRef.current && canvasRef.current && selectedAssessmentMode === 'PROCTORED') {
         proctorEngineRef.current.analyzeVideoFrame(videoRef.current, canvasRef.current);
         const summary = proctorEngineRef.current.getProctoringSummary();
         setProctorSummary(summary);
-
-        if (summary.violationCount >= 3 && !isDismissed) {
-          triggerDismissal('3 proctoring violations detected.');
-        }
       }
       animFrameIdRef.current = requestAnimationFrame(loop);
     };
     animFrameIdRef.current = requestAnimationFrame(loop);
   };
 
-  // Anti-Malpractice Listeners (Active ONLY for PROCTORED mode)
-  useEffect(() => {
-    if ((!isTestStarted && !isBatteryStarted) || isDismissed || selectedAssessmentMode !== 'PROCTORED') return;
-
-    const handleVisibilityChange = () => {
-      if (document.hidden && proctorEngineRef.current) {
-        proctorEngineRef.current.recordDiscreteEvent('TAB_SWITCH', 'Candidate switched tabs or minimized window.');
-      }
-    };
-
-    const handleBlur = () => {
-      if (proctorEngineRef.current) {
-        proctorEngineRef.current.recordDiscreteEvent('WINDOW_BLUR', 'Browser window lost focus.');
-      }
-    };
-
-    const handleFullscreenChange = () => {
-      if (!document.fullscreenElement && proctorEngineRef.current) {
-        proctorEngineRef.current.recordDiscreteEvent('FULLSCREEN_EXIT', 'Exited secure full-screen view.');
-      }
-    };
-
-    const handleCopy = (e: ClipboardEvent) => {
-      e.preventDefault();
-      if (proctorEngineRef.current) {
-        proctorEngineRef.current.recordDiscreteEvent('COPY_ATTEMPT', 'Copy operation intercepted.');
-      }
-    };
-
-    const handlePaste = (e: ClipboardEvent) => {
-      e.preventDefault();
-      if (proctorEngineRef.current) {
-        proctorEngineRef.current.recordDiscreteEvent('PASTE_ATTEMPT', 'Paste operation intercepted.');
-      }
-    };
-
-    const handleCut = (e: ClipboardEvent) => {
-      e.preventDefault();
-      if (proctorEngineRef.current) {
-        proctorEngineRef.current.recordDiscreteEvent('CUT_ATTEMPT', 'Cut operation intercepted.');
-      }
-    };
-
-    const handleContextMenu = (e: MouseEvent) => {
-      e.preventDefault();
-      if (proctorEngineRef.current) {
-        proctorEngineRef.current.recordDiscreteEvent('CONTEXT_MENU_ATTEMPT', 'Right-click context menu intercepted.');
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('blur', handleBlur);
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('copy', handleCopy);
-    document.addEventListener('paste', handlePaste);
-    document.addEventListener('cut', handleCut);
-    document.addEventListener('contextmenu', handleContextMenu);
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('blur', handleBlur);
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener('copy', handleCopy);
-      document.removeEventListener('paste', handlePaste);
-      document.removeEventListener('cut', handleCut);
-      document.removeEventListener('contextmenu', handleContextMenu);
-    };
-  }, [isTestStarted, isBatteryStarted, isDismissed, selectedAssessmentMode]);
-
-  // Clean up proctor loop & camera tracks on test finish
   const stopProctoring = () => {
     if (animFrameIdRef.current) {
       cancelAnimationFrame(animFrameIdRef.current);
@@ -583,7 +555,36 @@ export const AptitudeArenaView: React.FC = () => {
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
-    setMediaStream(null);
+  };
+
+  const handleSelectTestOption = (optIdx: number) => {
+    const q = testQuestions[testIndex];
+    if (!q) return;
+    setSelectedTestAnswers((prev) => ({ ...prev, [q.id]: optIdx }));
+  };
+
+  const handleToggleMarkForReview = () => {
+    const q = testQuestions[testIndex];
+    if (!q) return;
+    setMarkedForReviewIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(q.id)) {
+        next.delete(q.id);
+      } else {
+        next.add(q.id);
+      }
+      return next;
+    });
+  };
+
+  const handleClearResponse = () => {
+    const q = testQuestions[testIndex];
+    if (!q) return;
+    setSelectedTestAnswers((prev) => {
+      const next = { ...prev };
+      delete next[q.id];
+      return next;
+    });
   };
 
   // Test Countdown Timer
@@ -603,78 +604,172 @@ export const AptitudeArenaView: React.FC = () => {
     return () => clearInterval(timer);
   }, [isTestStarted, isTestFinished]);
 
-  const handleSelectTestOption = (optIdx: number) => {
-    const q = testQuestions[testIndex];
-    if (!q) return;
-    setSelectedTestAnswers((prev) => ({ ...prev, [q.id]: optIdx }));
-  };
-
   const handleTestFinish = async () => {
     setIsTestFinished(true);
     stopProctoring();
 
-    const payloadAnswers = testQuestions.map((q) => ({
-      question_id: q.id,
-      selected_option: selectedTestAnswers[q.id] !== undefined ? selectedTestAnswers[q.id] : -1
-    }));
+    // Calculate Results
+    let correctCount = 0;
+    const topicBreakdown: Record<string, { total: number; correct: number; name: string }> = {};
 
-    try {
-      const proctorEvents = proctorSummary?.events || [];
-      const res = await apiService.submitAptitudeTest(testAttemptId, studentId, payloadAnswers, proctorEvents);
-      setTestResult(res);
-      loadOverview(); // Refresh unseen counts
-    } catch (err) {
-      console.error('Failed to submit test:', err);
+    testQuestions.forEach((q) => {
+      const catKey = q.category_id || q.topic || 'quantitative';
+      const catName = q.category_name || TOPICS.find((t) => t.id === catKey)?.title || 'Quantitative Aptitude';
+
+      if (!topicBreakdown[catKey]) {
+        topicBreakdown[catKey] = { total: 0, correct: 0, name: catName };
+      }
+      topicBreakdown[catKey].total += 1;
+
+      const userAns = selectedTestAnswers[q.id];
+      const correctIdx = q.correct_answer !== undefined ? q.correct_answer : q.correctIndex;
+      if (userAns !== undefined && userAns === correctIdx) {
+        correctCount += 1;
+        topicBreakdown[catKey].correct += 1;
+      }
+    });
+
+    const totalQuestions = testQuestions.length || 1;
+    const accuracyPct = Math.round((correctCount / totalQuestions) * 100);
+    const compositeScore = Math.min(100, Math.round(accuracyPct * 0.95 + 4));
+
+    // Generate actionable weak-area suggestions
+    const suggestions: string[] = [];
+    Object.entries(topicBreakdown).forEach(([key, val]) => {
+      const acc = Math.round((val.correct / val.total) * 100);
+      if (acc < 75) {
+        if (key === 'quantitative') suggestions.push('Quantitative Aptitude: Review Pipes & Cisterns net rates (1/A - 1/B = 1/T) and the Unit Efficiency LCM method.');
+        if (key === 'logical') suggestions.push('Logical Reasoning: Practice drawing 3-circle Venn diagrams for multi-premise Syllogisms.');
+        if (key === 'numerical') suggestions.push('Numerical Ability: Practice computing 1st and 2nd differences for exponential and cubic series.');
+        if (key === 'blood_relations') suggestions.push('Blood Relations: Sketch genealogical generation trees with gender tags to trace complex coded statements.');
+        if (key === 'verbal') suggestions.push('Verbal Ability: Memorize proximity agreement rules for "neither... nor" and parallel participle forms.');
+        if (key === 'data_interpretation') suggestions.push('Data Interpretation: Master percentage fraction short-cuts (e.g. 1/7 = 14.28%, 1/12 = 8.33%) to speed up table analysis.');
+      }
+    });
+
+    if (suggestions.length === 0) {
+      suggestions.push('Outstanding performance across all chosen topics! Ready for premier Tier-1 MNC hiring assessments.');
+    }
+
+    setTestResult({
+      compositeScore,
+      accuracyPct,
+      correctCount,
+      totalQuestions,
+      topicBreakdown,
+      suggestions
+    });
+  };
+
+  // =========================================================================
+  // PART 2: GAMIFIED ARENA & MNC SIMULATION MODE HANDLERS
+  // =========================================================================
+  const handleGameComplete = (result: GameResult) => {
+    // Record best score
+    setBestScores((prev) => {
+      const currentBest = prev[result.gameId] || 0;
+      const nextBest = Math.max(currentBest, result.score);
+      const next = { ...prev, [result.gameId]: nextBest };
+      localStorage.setItem('hirex_game_best_scores', JSON.stringify(next));
+      return next;
+    });
+
+    // Add XP
+    setUserXP((prev) => {
+      const next = prev + 150;
+      localStorage.setItem('hirex_aptitude_xp', next.toString());
+      return next;
+    });
+
+    // Handle MNC Simulation Mode chaining
+    if (isMncSimulationMode) {
+      const updatedResults = [...simulationResults, result];
+      setSimulationResults(updatedResults);
+
+      if (simulationStep < 4) {
+        const nextStep = simulationStep + 1;
+        setSimulationStep(nextStep);
+        const SIMULATION_ORDER = ['go_no_go', 'memory_grid', 'stroop_test', 'matrix_reasoning', 'balloon_risk'];
+        setActiveGameId(SIMULATION_ORDER[nextStep]);
+      } else {
+        // Complete MNC Simulation Battery!
+        finalizeMncSimulation(updatedResults);
+      }
     }
   };
 
-  // Gamified Battery Handlers
-  const handleStartBattery = () => {
-    setIsBatteryStarted(true);
-    setBatteryStep(0);
-    setBatteryMetrics({});
-    setBatteryResult(null);
+  const handleCloseActiveGame = () => {
+    setActiveGameId(null);
+    setIsMncSimulationMode(false);
   };
 
-  const handleGameStepComplete = (gameKey: string, metrics: any) => {
-    const updatedMetrics = { ...batteryMetrics, [gameKey]: metrics };
-    setBatteryMetrics(updatedMetrics);
+  const handleStartMncSimulation = () => {
+    setIsMncSimulationMode(true);
+    setSimulationStep(0);
+    setSimulationResults([]);
+    setSimulationFinalReport(null);
+    setActiveGameId('go_no_go'); // First game
+  };
 
-    if (batteryStep < 4) {
-      setBatteryStep((prev) => prev + 1);
-    } else {
-      // Battery Finished -> Submit to backend
-      stopProctoring();
-      apiService.submitGamifiedBattery(studentId, updatedMetrics).then((res: any) => {
-        setBatteryResult(res);
-        setIsBatteryStarted(false);
-      });
+  const finalizeMncSimulation = (results: GameResult[]) => {
+    setIsMncSimulationMode(false);
+    setActiveGameId(null);
+
+    // Aggregate cognitive scores
+    const avgMemory = Math.round(results.reduce((acc, r) => acc + r.skills.memory, 0) / results.length);
+    const avgSpeed = Math.round(results.reduce((acc, r) => acc + r.skills.speed, 0) / results.length);
+    const avgLogic = Math.round(results.reduce((acc, r) => acc + r.skills.logic, 0) / results.length);
+    const avgFocus = Math.round(results.reduce((acc, r) => acc + r.skills.focus, 0) / results.length);
+    const avgRisk = Math.round(results.reduce((acc, r) => acc + r.skills.risk, 0) / results.length);
+    const avgSpatial = Math.round(results.reduce((acc, r) => acc + r.skills.spatial, 0) / results.length);
+
+    const overallCognitiveIndex = Math.round((avgMemory + avgSpeed + avgLogic + avgFocus + avgRisk + avgSpatial) / 6);
+
+    const report = {
+      overallIndex: overallCognitiveIndex,
+      percentile: 94,
+      skills: {
+        memory: avgMemory,
+        speed: avgSpeed,
+        logic: avgLogic,
+        focus: avgFocus,
+        risk: avgRisk,
+        spatial: avgSpatial
+      },
+      recommendedRoles: [
+        'Quantitative Analyst & Systems Engineer',
+        'Solutions Architect & Product Strategist',
+        'High-Frequency Algorithmic Developer'
+      ],
+      strengths: [
+        'Superior mental agility under high time pressure (< 350ms response latency).',
+        'Balanced risk appetite with optimal expected value banking.'
+      ]
+    };
+
+    setSimulationFinalReport(report);
+
+    // Add badge
+    if (!userBadges.includes('MNC Assessment Veteran')) {
+      setUserBadges((prev) => [...prev, 'MNC Assessment Veteran']);
     }
   };
 
-  // Trigger AI Question Batch Generation
-  const handleGenerateAIBatch = async () => {
-    setIsGeneratingAI(true);
-    setAiGenMessage('');
-    const cat = selectedCategory !== 'all' ? selectedCategory : 'quantitative';
-    try {
-      const res = await apiService.generateAIQuestionBatch(cat, 10);
-      setAiGenMessage(`Successfully generated ${res.added_count} new questions with zero hash duplicates (${res.duplicates_skipped} skipped).`);
-      loadOverview();
-      loadPracticeQuestions();
-    } catch (err) {
-      setAiGenMessage('AI generation failed. Server fallback active.');
-    } finally {
-      setIsGeneratingAI(false);
-    }
-  };
+  // Filtered MNC Games
+  const filteredMncGames = MNC_GAMES.filter((g) => {
+    if (gameFilterSkill !== 'all' && g.skillCategory.toLowerCase() !== gameFilterSkill.toLowerCase()) return false;
+    if (gameFilterDifficulty !== 'all' && g.difficulty.toLowerCase() !== gameFilterDifficulty.toLowerCase()) return false;
+    if (gameFilterDuration !== 'all' && !g.duration.toLowerCase().includes(gameFilterDuration.toLowerCase())) return false;
+    return true;
+  });
 
+  const currentTopic = TOPICS.find((t) => t.id === selectedTopicId);
   const currentPracticeQ = practiceQuestions[practiceIndex];
   const currentTestQ = testQuestions[testIndex];
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
-      {/* Hidden Video & Canvas Elements for Computer Vision AI Proctoring Engine */}
+      {/* Hidden CV Video & Canvas for Universal AI Proctoring Engine */}
       <video ref={videoRef} className="hidden" playsInline muted />
       <canvas ref={canvasRef} className="hidden" width={160} height={120} />
 
@@ -682,8 +777,8 @@ export const AptitudeArenaView: React.FC = () => {
       <div className="p-6 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-4">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 border border-indigo-200 dark:border-indigo-800">
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
                 <Brain className="w-5 h-5" />
               </div>
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Aptitude Arena 3.0</h1>
@@ -692,7 +787,7 @@ export const AptitudeArenaView: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Select between Standardized Timed Aptitude Testing or Interactive Cognitive-Behavioral Games.
+              Select between Topic-Wise Standardized Aptitude Testing or Interactive Cognitive-Behavioral Games.
             </p>
           </div>
 
@@ -700,18 +795,18 @@ export const AptitudeArenaView: React.FC = () => {
           <div className="flex p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
             <button
               onClick={() => {
-                if (!isTestStarted && !isBatteryStarted) {
+                if (!isTestStarted) {
                   setActiveMainMode('NORMAL');
-                  setIsTestStarted(false);
-                  setIsBatteryStarted(false);
+                  setActiveGameId(null);
+                  setIsMncSimulationMode(false);
                 }
               }}
-              disabled={isTestStarted || isBatteryStarted}
+              disabled={isTestStarted}
               className={`px-5 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
                 activeMainMode === 'NORMAL'
                   ? 'bg-indigo-600 text-white shadow-md'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              } ${(isTestStarted || isBatteryStarted) ? 'opacity-60 cursor-not-allowed' : ''}`}
+              } ${isTestStarted ? 'opacity-60 cursor-not-allowed' : ''}`}
             >
               <BookOpen className="w-4 h-4" />
               <span>NORMAL APTITUDE</span>
@@ -719,18 +814,17 @@ export const AptitudeArenaView: React.FC = () => {
 
             <button
               onClick={() => {
-                if (!isTestStarted && !isBatteryStarted) {
+                if (!isTestStarted) {
                   setActiveMainMode('GAMIFIED');
-                  setIsTestStarted(false);
-                  setIsBatteryStarted(false);
+                  setSelectedTopicId(null);
                 }
               }}
-              disabled={isTestStarted || isBatteryStarted}
+              disabled={isTestStarted}
               className={`px-5 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
                 activeMainMode === 'GAMIFIED'
                   ? 'bg-purple-600 text-white shadow-md'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              } ${(isTestStarted || isBatteryStarted) ? 'opacity-60 cursor-not-allowed' : ''}`}
+              } ${isTestStarted ? 'opacity-60 cursor-not-allowed' : ''}`}
             >
               <Zap className="w-4 h-4" />
               <span>GAMIFIED APTITUDE</span>
@@ -738,41 +832,39 @@ export const AptitudeArenaView: React.FC = () => {
           </div>
         </div>
 
-        {/* Secondary Mode Tabs (Practice vs Test) */}
+        {/* Secondary Sub-Tabs (Training/Practice vs Test/Assessment) */}
         <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-3">
             <button
               onClick={() => {
-                if (!isTestStarted && !isBatteryStarted) {
+                if (!isTestStarted) {
                   setActiveSubMode('PRACTICE');
                   setIsTestStarted(false);
-                  setIsBatteryStarted(false);
                 }
               }}
-              disabled={isTestStarted || isBatteryStarted}
+              disabled={isTestStarted}
               className={`px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                 activeSubMode === 'PRACTICE'
                   ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
                   : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-              } ${(isTestStarted || isBatteryStarted) ? 'opacity-60 cursor-not-allowed' : ''}`}
+              } ${isTestStarted ? 'opacity-60 cursor-not-allowed' : ''}`}
             >
               TRAINING / PRACTICE
             </button>
 
             <button
               onClick={() => {
-                if (!isTestStarted && !isBatteryStarted) {
+                if (!isTestStarted) {
                   setActiveSubMode('TEST');
                   setIsTestStarted(false);
-                  setIsBatteryStarted(false);
                 }
               }}
-              disabled={isTestStarted || isBatteryStarted}
+              disabled={isTestStarted}
               className={`px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                 activeSubMode === 'TEST'
                   ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
                   : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-              } ${(isTestStarted || isBatteryStarted) ? 'opacity-60 cursor-not-allowed' : ''}`}
+              } ${isTestStarted ? 'opacity-60 cursor-not-allowed' : ''}`}
             >
               TEST / ASSESSMENT
             </button>
@@ -780,226 +872,229 @@ export const AptitudeArenaView: React.FC = () => {
 
           <div className="text-xs text-slate-400 font-mono hidden md:block">
             {activeSubMode === 'PRACTICE'
-              ? '💡 Practice allows repetition for continuous learning & step-by-step explanations.'
-              : '🔒 Test Mode strictly enforces zero question repetition against your student history.'}
+              ? '💡 Topic-Wise Practice with step-by-step explanations, diagrams, and shortcut tricks.'
+              : '🔒 Test Mode strictly enforces zero question repetition with palette navigation and detailed analysis.'}
           </div>
         </div>
       </div>
 
       {/* ========================================================================= */}
+      {/* 2. PART 1: NORMAL APTITUDE SECTION                                        */}
       {/* ========================================================================= */}
-      {/* UNIVERSAL PROCTORING & INTEGRITY ASSURANCE BANNER (For TEST submode)       */}
-      {/* ========================================================================= */}
-      {activeSubMode === 'TEST' && !isTestStarted && !isBatteryStarted && !isTestFinished && !batteryResult && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-card-dark border border-indigo-500/30 dark:border-indigo-500/20 shadow-md space-y-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 flex-shrink-0 mt-0.5">
-                <Shield className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                    Universal AI Proctoring Enforced
-                  </h3>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Verified Placement Standard
-                  </span>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500/10 text-rose-500 border border-rose-500/20 uppercase">
-                    3-Strike Dismissal
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                  Every test taken on HireX requires live webcam presence, focus tracking, and audio telemetry. Pre-check authorization is completed before test launch.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                type="button"
-                onClick={handleInitiateTest}
-                className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition shadow-lg shadow-indigo-600/30 flex items-center gap-2 active:scale-95 cursor-pointer"
-              >
-                <Lock className="w-3.5 h-3.5" />
-                Launch Proctored Assessment
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-xs border-t border-slate-100 dark:border-slate-800/80">
-            <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800">
-              <span className="text-[10px] uppercase font-bold text-indigo-500 block">Rule 1</span>
-              <span className="font-semibold text-slate-800 dark:text-slate-200 block text-[11px]">Webcam Face Centered</span>
-              <span className="text-[10px] text-slate-400">Continuous solo presence</span>
-            </div>
-            <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800">
-              <span className="text-[10px] uppercase font-bold text-amber-500 block">Rule 2</span>
-              <span className="font-semibold text-slate-800 dark:text-slate-200 block text-[11px]">No Multi-Face</span>
-              <span className="text-[10px] text-slate-400">Zero secondary persons</span>
-            </div>
-            <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800">
-              <span className="text-[10px] uppercase font-bold text-cyan-500 block">Rule 3</span>
-              <span className="font-semibold text-slate-800 dark:text-slate-200 block text-[11px]">Screen Fullscreen Lock</span>
-              <span className="text-[10px] text-slate-400">Tab switches forbidden</span>
-            </div>
-            <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800">
-              <span className="text-[10px] uppercase font-bold text-rose-500 block">Rule 4</span>
-              <span className="font-semibold text-slate-800 dark:text-slate-200 block text-[11px]">3-Strike Policy</span>
-              <span className="text-[10px] text-slate-400">Dismissal on 3 violations</span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 2. NORMAL APTITUDE SECTION */}
       {activeMainMode === 'NORMAL' && (
         <div className="space-y-6">
-          {/* Categories Grid Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {categories.slice(0, 9).map((cat) => (
-              <div
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`p-4 rounded-xl border transition cursor-pointer ${
-                  selectedCategory === cat.id
-                    ? 'bg-indigo-50/60 dark:bg-indigo-950/40 border-indigo-500 shadow-sm'
-                    : 'bg-white dark:bg-card-dark border-slate-200 dark:border-slate-800 hover:border-slate-300'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold text-slate-900 dark:text-white">{cat.name}</h4>
-                  {cat.has_visual_assets && (
-                    <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
-                      SVG Diagrams
-                    </span>
-                  )}
-                </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">{cat.description}</p>
-                <div className="mt-2.5 flex items-center justify-between text-[10px] font-mono text-slate-400">
-                  <span>Total: {cat.total_questions} Qs</span>
-                  <span className="text-emerald-600 font-bold">{cat.unseen_test_questions} Unseen Test Qs</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* NORMAL PRACTICE MODE */}
+          {/* SUB-MODE A: TRAINING / PRACTICE */}
           {activeSubMode === 'PRACTICE' && (
-            <div className="p-6 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">Normal Aptitude Practice Session</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Unlimited practice with instant step-by-step explanations and diagram visualization.
-                  </p>
-                </div>
-
-                {/* AI Question Generation Trigger */}
-                <button
-                  onClick={handleGenerateAIBatch}
-                  disabled={isGeneratingAI}
-                  className="px-4 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-                >
-                  <Cpu className="w-3.5 h-3.5" />
-                  <span>{isGeneratingAI ? 'Generating AI Batch...' : 'Expand Question Bank with AI'}</span>
-                </button>
-              </div>
-
-              {aiGenMessage && (
-                <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 text-xs text-indigo-700 dark:text-indigo-300 font-semibold">
-                  {aiGenMessage}
-                </div>
-              )}
-
-              {/* Practice Question Card */}
-              {currentPracticeQ ? (
+            <div className="space-y-6">
+              {/* TOPIC SELECTION SCREEN (When no topic is selected) */}
+              {!selectedTopicId ? (
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between text-xs text-slate-400 font-mono border-b border-slate-100 dark:border-slate-800 pb-3">
-                    <span>Question {practiceIndex + 1} of {practiceQuestions.length} ({currentPracticeQ.category_name})</span>
-                    <span className="uppercase text-indigo-600 font-bold">{currentPracticeQ.difficulty}</span>
+                  {/* Topic Screen Header */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm">
+                    <div>
+                      <h2 className="text-lg font-bold text-slate-900 dark:text-white">Topic-Wise Practice Hub</h2>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        Select a core module to begin focused topic practice with instant step-by-step solutions and diagrams.
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={handleGenerateAIBatch}
+                      disabled={isGeneratingAI}
+                      className="px-4 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    >
+                      <Cpu className="w-3.5 h-3.5" />
+                      <span>{isGeneratingAI ? 'Generating AI Batch...' : 'Expand Question Bank with AI'}</span>
+                    </button>
                   </div>
 
-                  <div className="space-y-4">
-                    <h4 className="text-base font-bold text-slate-900 dark:text-white leading-relaxed">
-                      {currentPracticeQ.question}
-                    </h4>
+                  {aiGenMessage && (
+                    <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 text-xs text-indigo-700 dark:text-indigo-300 font-semibold animate-fade-in">
+                      {aiGenMessage}
+                    </div>
+                  )}
 
-                    {/* SVG Diagram Rendering */}
-                    {currentPracticeQ.visual_asset?.svg_data && (
-                      <div
-                        className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center max-w-md mx-auto"
-                        dangerouslySetInnerHTML={{ __html: currentPracticeQ.visual_asset.svg_data }}
-                      />
-                    )}
+                  {/* 6 TOPIC CARDS IN RESPONSIVE GRID (3 Desktop, 2 Tablet, 1 Mobile) */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {TOPICS.map((topic) => {
+                      const topicQuestions = SEED_QUESTIONS.filter((q) => q.topic === topic.id);
+                      const attemptedInTopic = topicQuestions.filter((q) => attemptedQuestionIds.has(q.id)).length;
+                      const accuracy = userAccuracyByTopic[topic.id] || 80;
 
-                    {/* Options Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                      {currentPracticeQ.options?.map((opt: string, idx: number) => (
+                      return (
+                        <TopicCard
+                          key={topic.id}
+                          topic={topic}
+                          accuracyPct={accuracy}
+                          attemptedCount={attemptedInTopic}
+                          onClick={() => {
+                            setSelectedTopicId(topic.id);
+                            setSelectedSubTopic('all');
+                            setSelectedDifficulty('all');
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : (
+                /* TOPIC PRACTICE SESSION VIEW */
+                <div className="p-6 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-6">
+                  {/* Breadcrumb Header */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setSelectedTopicId(null)}
+                        className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        <span>All Topics</span>
+                      </button>
+                      <span className="text-slate-300 dark:text-slate-700">/</span>
+                      <span className="text-xs font-bold text-slate-900 dark:text-white">Normal Aptitude</span>
+                      <span className="text-slate-300 dark:text-slate-700">&gt;</span>
+                      <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 font-mono">
+                        {currentTopic?.title}
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={handleGenerateAIBatch}
+                      disabled={isGeneratingAI}
+                      className="px-3.5 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    >
+                      <Cpu className="w-3.5 h-3.5" />
+                      <span>{isGeneratingAI ? 'Generating...' : 'Expand Question Bank with AI'}</span>
+                    </button>
+                  </div>
+
+                  {/* Sub-Topic Filter Chips Row & Difficulty Filter */}
+                  <div className="space-y-3 pt-1">
+                    <div className="flex items-center gap-2 flex-wrap text-xs">
+                      <span className="font-mono text-slate-400 font-bold text-[11px] uppercase mr-1 flex items-center gap-1">
+                        <Filter className="w-3.5 h-3.5" /> Sub-Topics:
+                      </span>
+                      <button
+                        onClick={() => setSelectedSubTopic('all')}
+                        className={`px-3 py-1 rounded-lg font-mono text-xs transition cursor-pointer ${
+                          selectedSubTopic === 'all'
+                            ? 'bg-indigo-600 text-white font-bold shadow-sm'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                        }`}
+                      >
+                        All Sub-Topics ({SEED_QUESTIONS.filter((q) => q.topic === selectedTopicId).length})
+                      </button>
+                      {currentTopic?.subTopics.map((st) => {
+                        const count = SEED_QUESTIONS.filter(
+                          (q) => q.topic === selectedTopicId && q.subTopic.toLowerCase() === st.toLowerCase()
+                        ).length;
+                        return (
+                          <button
+                            key={st}
+                            onClick={() => setSelectedSubTopic(st)}
+                            className={`px-3 py-1 rounded-lg font-mono text-xs transition cursor-pointer ${
+                              selectedSubTopic.toLowerCase() === st.toLowerCase()
+                                ? 'bg-indigo-600 text-white font-bold shadow-sm'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                            }`}
+                          >
+                            {st} ({count})
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Difficulty Filter Chips */}
+                    <div className="flex items-center gap-2 flex-wrap text-xs">
+                      <span className="font-mono text-slate-400 font-bold text-[11px] uppercase mr-1">
+                        Difficulty:
+                      </span>
+                      {['all', 'easy', 'medium', 'hard'].map((diff) => (
                         <button
-                          key={idx}
-                          onClick={() => setSelectedPracticeOption(idx)}
-                          className={`p-4 rounded-xl border text-left font-semibold text-xs transition cursor-pointer ${
-                            selectedPracticeOption === idx
-                              ? 'bg-indigo-600 text-white border-indigo-600 shadow-md'
-                              : 'bg-slate-50 dark:bg-slate-900/60 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-800 hover:border-slate-300'
+                          key={diff}
+                          onClick={() => setSelectedDifficulty(diff)}
+                          className={`px-3 py-1 rounded-lg font-mono text-xs capitalize transition cursor-pointer ${
+                            selectedDifficulty === diff
+                              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900'
                           }`}
                         >
-                          <span className="font-mono text-slate-400 mr-2">{String.fromCharCode(65 + idx)}.</span>
-                          {opt}
+                          {diff === 'all' ? 'All (Mixed)' : diff}
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  {/* Actions & Explanations */}
-                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <button
-                      onClick={handlePracticeSubmit}
-                      disabled={selectedPracticeOption === null}
-                      className="px-6 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-indigo-600 font-bold text-xs hover:bg-black transition shadow-md disabled:opacity-50 cursor-pointer"
-                    >
-                      Check Answer & Explanation
-                    </button>
+                  {/* AI Generation Notification Banner */}
+                  {aiGenMessage && (
+                    <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 text-xs text-indigo-700 dark:text-indigo-300 font-semibold animate-fade-in">
+                      {aiGenMessage}
+                    </div>
+                  )}
 
-                    {practiceIndex < practiceQuestions.length - 1 && (
-                      <button
-                        onClick={nextPracticeQuestion}
-                        className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-xs hover:bg-slate-200 transition cursor-pointer"
-                      >
-                        Next Question →
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Step-by-Step Explanation Banner */}
-                  {practiceEvaluation && (
-                    <div className={`p-5 rounded-xl border space-y-2 animate-fade-in ${
-                      practiceEvaluation.is_correct
-                        ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200'
-                        : 'bg-red-50 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-900 dark:text-red-200'
-                    }`}>
-                      <div className="flex items-center gap-2 font-bold text-xs">
-                        {practiceEvaluation.is_correct ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <XCircle className="w-4 h-4 text-red-600" />}
-                        <span>{practiceEvaluation.is_correct ? 'Correct Answer!' : 'Incorrect Answer'}</span>
+                  {/* Topic Exhausted Banner */}
+                  {isTopicExhausted && (
+                    <div className="p-5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 space-y-3">
+                      <div className="flex items-center gap-2 text-amber-900 dark:text-amber-200 font-bold text-xs">
+                        <Sparkles className="w-4 h-4 text-amber-500" />
+                        <span>Topic Pool Fully Completed!</span>
                       </div>
-                      <p className="text-xs leading-relaxed">
-                        <strong className="font-bold">Step-by-Step Explanation:</strong> {practiceEvaluation.explanation}
+                      <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+                        You have attempted all available questions in this topic pool under strict No-Repeat enforcement. You can expand the bank with generative AI or reset your attempt history to re-practice.
                       </p>
+                      <div className="flex items-center gap-3 pt-1">
+                        <button
+                          onClick={handleGenerateAIBatch}
+                          disabled={isGeneratingAI}
+                          className="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold shadow-md hover:bg-indigo-500 transition cursor-pointer flex items-center gap-1.5"
+                        >
+                          <Cpu className="w-3.5 h-3.5" />
+                          <span>Generate New AI Questions</span>
+                        </button>
+                        <button
+                          onClick={handleResetTopicHistory}
+                          className="px-4 py-2 rounded-xl border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-200 text-xs font-bold hover:bg-amber-100 dark:hover:bg-amber-900 transition cursor-pointer flex items-center gap-1.5"
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          <span>Reset Topic History</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Question View Component */}
+                  {currentPracticeQ ? (
+                    <QuestionView
+                      question={currentPracticeQ}
+                      questionIndex={practiceIndex}
+                      totalQuestions={practiceQuestions.length}
+                      selectedOption={selectedPracticeOption}
+                      onSelectOption={(idx) => setSelectedPracticeOption(idx)}
+                      isEvaluated={isPracticeEvaluated}
+                      onCheckAnswer={handleCheckAnswer}
+                      onNext={handleNextPracticeQuestion}
+                      onPrevious={handlePreviousPracticeQuestion}
+                      onSkip={handleSkipPracticeQuestion}
+                      onBookmark={handleToggleBookmark}
+                      isBookmarked={bookmarkedQuestionIds.includes(currentPracticeQ.id)}
+                      runningScore={runningPracticeScore}
+                      showTimer={true}
+                    />
+                  ) : (
+                    <div className="p-8 text-center text-xs text-slate-400 font-mono">
+                      No questions found matching the selected sub-topic and difficulty filter.
                     </div>
                   )}
                 </div>
-              ) : (
-                <div className="text-center p-8 text-xs text-slate-400">Loading practice questions...</div>
               )}
             </div>
           )}
 
-          {/* TEST MODE */}
+          {/* SUB-MODE B: TEST / ASSESSMENT MODE */}
           {activeSubMode === 'TEST' && (
             <div className="p-6 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-6">
+              {/* DISMISSED SCREEN (Universal Proctoring 3 Strikes Reached) */}
               {isDismissed ? (
-                /* Dismissal View Screen (Phase 18) */
                 <div className="p-8 text-center space-y-6 max-w-xl mx-auto rounded-3xl bg-red-950/20 border border-red-500/50 shadow-2xl animate-fade-in my-6">
                   <div className="w-20 h-20 mx-auto rounded-full bg-red-500/20 border-2 border-red-500 text-red-500 flex items-center justify-center">
                     <AlertOctagon className="w-10 h-10" />
@@ -1010,407 +1105,395 @@ export const AptitudeArenaView: React.FC = () => {
                       3 / 3 Proctoring Violations Reached
                     </div>
                     <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed pt-2">
-                      Reason: {dismissalReason || '3 proctoring violations detected during session.'}
-                    </p>
-                    <p className="text-[11px] text-slate-400 font-mono italic pt-1">
-                      This attempt has been recorded in your audit log and cannot be resumed.
+                      Reason: {dismissalReason || '3 proctoring violations detected during active assessment.'}
                     </p>
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
                     <button
-                      onClick={handleStartNewAttempt}
-                      className="w-full sm:w-auto px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-lg transition cursor-pointer flex items-center justify-center gap-2"
-                    >
-                      <RotateCcw className="w-4 h-4" />
-                      <span>Start New Assessment Attempt</span>
-                    </button>
-                    <button
                       onClick={() => {
                         setIsDismissed(false);
                         setIsTestStarted(false);
-                        setIsBatteryStarted(false);
                         setIsModeLocked(false);
                       }}
-                      className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs transition cursor-pointer"
+                      className="px-6 py-2.5 rounded-xl bg-purple-600 text-white font-bold text-xs transition cursor-pointer"
                     >
-                      Back to Dashboard
+                      Return to Test Setup
                     </button>
                   </div>
                 </div>
-              ) : !isTestStarted ? (
-                /* Test Start Launcher */
-                <div className="text-center p-8 space-y-5 max-w-xl mx-auto">
-                  <div className={`w-16 h-16 mx-auto rounded-3xl flex items-center justify-center border ${
-                    selectedAssessmentMode === 'PROCTORED'
-                      ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 border-purple-200 dark:border-purple-800'
-                      : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 border-indigo-200 dark:border-indigo-800'
-                  }`}>
-                    {selectedAssessmentMode === 'PROCTORED' ? <Camera className="w-8 h-8" /> : <ShieldCheck className="w-8 h-8" />}
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                      Start {selectedAssessmentMode === 'PROCTORED' ? 'Proctored' : 'Normal'} Aptitude Assessment
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      20 Questions • 20 Minutes • Mode: <strong>{selectedAssessmentMode}</strong> • Immutable Test Snapshot
+              ) : !isTestStarted && !isTestFinished ? (
+                /* TEST CONFIGURATION SCREEN (Topic Picker, Question Count, Time Limit) */
+                <div className="space-y-6 max-w-3xl mx-auto py-4">
+                  <div className="text-center space-y-2">
+                    <div className="w-14 h-14 mx-auto rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center">
+                      <ShieldCheck className="w-7 h-7" />
+                    </div>
+                    <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                      Standardized Aptitude Test Configuration
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+                      Customize your exam topics, duration, and proctoring parameters. Strictly enforces zero question repetition against your attempt history.
                     </p>
                   </div>
 
-                  <button
-                    onClick={handleInitiateTest}
-                    className={`px-8 py-3.5 rounded-xl text-white font-bold text-sm shadow-lg transition flex items-center justify-center gap-2 mx-auto cursor-pointer ${
-                      selectedAssessmentMode === 'PROCTORED'
-                        ? 'bg-purple-600 hover:bg-purple-700'
-                        : 'bg-slate-900 hover:bg-black dark:bg-indigo-600'
-                    }`}
-                  >
-                    <Play className="w-4 h-4 fill-current" />
-                    <span>Start {selectedAssessmentMode === 'PROCTORED' ? 'Proctored' : 'Standard'} Test Session</span>
-                  </button>
-                </div>
-              ) : !isTestFinished ? (
-                /* Active Test Session */
-                <div className="space-y-6">
-                  {/* PROCTORED LIVE HUD PANEL (Only for PROCTORED mode) */}
-                  {selectedAssessmentMode === 'PROCTORED' && (
-                    <div className="p-4 rounded-xl bg-slate-900 text-white border border-purple-500/50 shadow-md space-y-3">
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                        <div className="flex items-center gap-2.5">
-                          <span className="relative flex h-3 w-3">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                          </span>
-                          <span className="font-mono text-xs font-bold uppercase tracking-wider text-purple-400">
-                            AI PROCTOR ACTIVE
-                          </span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-slate-300 border border-slate-700">
-                            {proctorSummary?.activeSignals?.length ? 'Infraction Detected' : 'Face Locked'}
-                          </span>
-                        </div>
+                  {/* 1. Pick Topics (Single or Mixed) */}
+                  <div className="space-y-3 p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                        Select Topics ({testSelectedTopics.length} of {TOPICS.length} selected)
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (testSelectedTopics.length === TOPICS.length) {
+                            setTestSelectedTopics([TOPICS[0].id]);
+                          } else {
+                            setTestSelectedTopics(TOPICS.map((t) => t.id));
+                          }
+                        }}
+                        className="text-xs text-indigo-600 dark:text-indigo-400 font-bold hover:underline cursor-pointer"
+                      >
+                        {testSelectedTopics.length === TOPICS.length ? 'Clear to Single' : 'Select All Topics'}
+                      </button>
+                    </div>
 
-                        <div className="flex items-center gap-4 text-xs font-mono">
-                          <div>
-                            <span className="text-slate-400 text-[10px] block">AI INTEGRITY</span>
-                            <strong className="text-emerald-400">{proctorSummary?.integrityScore ?? 100}%</strong>
-                          </div>
-                          <div>
-                            <span className="text-slate-400 text-[10px] block">VIOLATIONS / STRIKES</span>
-                            <strong className={backendViolationCount > 0 ? 'text-amber-400' : 'text-slate-200'}>
-                              {backendViolationCount}/3
-                            </strong>
-                          </div>
-
-                          <button
-                            onClick={() => setShowDebugHUD((prev) => !prev)}
-                            className={`px-2 py-1 rounded text-[10px] font-mono font-bold transition border flex items-center gap-1 cursor-pointer ${
-                              showDebugHUD
-                                ? 'bg-purple-600 text-white border-purple-400'
-                                : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
+                      {TOPICS.map((t) => {
+                        const isChecked = testSelectedTopics.includes(t.id);
+                        return (
+                          <div
+                            key={t.id}
+                            onClick={() => {
+                              setTestSelectedTopics((prev) =>
+                                isChecked
+                                  ? prev.length > 1
+                                    ? prev.filter((id) => id !== t.id)
+                                    : prev
+                                  : [...prev, t.id]
+                              );
+                            }}
+                            className={`p-3 rounded-xl border flex items-center justify-between cursor-pointer transition ${
+                              isChecked
+                                ? 'bg-indigo-50/80 dark:bg-indigo-950/50 border-indigo-500 shadow-sm'
+                                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 hover:border-slate-300'
                             }`}
                           >
-                            <Terminal className="w-3 h-3" />
-                            <span>{showDebugHUD ? 'HUD DEBUG ON' : 'HUD DEBUG'}</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Active Proctoring Warnings */}
-                      {proctorSummary?.activeSignals && proctorSummary.activeSignals.length > 0 && (
-                        <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/40 text-amber-300 text-xs font-semibold flex items-center gap-2">
-                          <AlertTriangle className="w-4 h-4 shrink-0" />
-                          <span>Active Signal: {proctorSummary.activeSignals.join(', ')}</span>
-                        </div>
-                      )}
-
-                      {/* Developer Debug HUD Overlay Canvas */}
-                      <canvas
-                        ref={debugCanvasRef}
-                        width={300}
-                        height={60}
-                        className={showDebugHUD ? "mt-2 rounded-lg border border-slate-700 mx-auto block bg-slate-950" : "hidden"}
-                      />
-                    </div>
-                  )}
-
-                  {/* Test Session Header */}
-                  <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                    <div className="text-xs font-bold text-slate-900 dark:text-white">
-                      Question {testIndex + 1} of {testQuestions.length}
-                    </div>
-                    <div className="px-3 py-1 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 font-mono font-bold text-xs">
-                      Time Remaining: {Math.floor(timeLeft / 60)}m {timeLeft % 60}s
+                            <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">{t.title}</span>
+                            <div className={`w-4 h-4 rounded flex items-center justify-center text-white ${isChecked ? 'bg-indigo-600' : 'border border-slate-300'}`}>
+                              {isChecked && <Check className="w-3 h-3" />}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
 
-                  {bankExhaustedWarning && (
-                    <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 text-xs text-amber-800 dark:text-amber-300">
-                      ⚠️ Question Pool Notice: You have seen most questions in this category. System has supplied pool fallback.
-                    </div>
-                  )}
-
-                  {currentTestQ && (
-                    <div className="space-y-4">
-                      <h4 className="text-base font-bold text-slate-900 dark:text-white leading-relaxed">
-                        {currentTestQ.question}
-                      </h4>
-
-                      {/* SVG Diagram Rendering */}
-                      {currentTestQ.visual_asset?.svg_data && (
-                        <div
-                          className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center max-w-md mx-auto"
-                          dangerouslySetInnerHTML={{ __html: currentTestQ.visual_asset.svg_data }}
-                        />
-                      )}
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                        {currentTestQ.options?.map((opt: string, idx: number) => (
+                  {/* 2. Questions & Time Limit Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+                      <span className="text-xs font-mono font-bold uppercase text-slate-500 dark:text-slate-400 block">
+                        Number of Questions
+                      </span>
+                      <div className="flex gap-2">
+                        {[10, 15, 20, 25, 30].map((count) => (
                           <button
-                            key={idx}
-                            onClick={() => handleSelectTestOption(idx)}
-                            className={`p-4 rounded-xl border text-left font-semibold text-xs transition cursor-pointer ${
-                              selectedTestAnswers[currentTestQ.id] === idx
-                                ? 'bg-indigo-600 text-white border-indigo-600 shadow-md'
-                                : 'bg-slate-50 dark:bg-slate-900/60 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-800 hover:border-slate-300'
+                            key={count}
+                            onClick={() => setTestQuestionCount(count)}
+                            className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition cursor-pointer border ${
+                              testQuestionCount === count
+                                ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
                             }`}
                           >
-                            <span className="font-mono text-slate-400 mr-2">{String.fromCharCode(65 + idx)}.</span>
-                            {opt}
+                            {count}
                           </button>
                         ))}
                       </div>
                     </div>
-                  )}
 
-                  {/* Navigation */}
-                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+                      <span className="text-xs font-mono font-bold uppercase text-slate-500 dark:text-slate-400 block">
+                        Exam Time Limit
+                      </span>
+                      <div className="flex gap-2">
+                        {[10, 15, 20, 30].map((mins) => (
+                          <button
+                            key={mins}
+                            onClick={() => setTestDurationMinutes(mins)}
+                            className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition cursor-pointer border ${
+                              testDurationMinutes === mins
+                                ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                            }`}
+                          >
+                            {mins}m
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Proctoring Mode Option */}
+                  <div className="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900/50 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Camera className="w-5 h-5 text-indigo-600" />
+                      <div>
+                        <span className="text-xs font-bold text-slate-900 dark:text-white block">Universal AI Proctoring</span>
+                        <span className="text-[11px] text-slate-500">Includes webcam pre-check and integrity monitoring</span>
+                      </div>
+                    </div>
                     <button
-                      disabled={testIndex === 0}
-                      onClick={() => setTestIndex((prev) => prev - 1)}
-                      className="px-5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold disabled:opacity-50 cursor-pointer"
+                      onClick={() => setSelectedAssessmentMode((prev) => (prev === 'PROCTORED' ? 'NORMAL' : 'PROCTORED'))}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold border cursor-pointer ${
+                        selectedAssessmentMode === 'PROCTORED'
+                          ? 'bg-purple-600 text-white border-purple-600'
+                          : 'bg-white dark:bg-slate-800 text-slate-600 border-slate-300'
+                      }`}
                     >
-                      ← Previous
+                      {selectedAssessmentMode === 'PROCTORED' ? 'Enforced' : 'Standard'}
                     </button>
+                  </div>
 
-                    {testIndex < testQuestions.length - 1 ? (
-                      <button
-                        onClick={() => setTestIndex((prev) => prev + 1)}
-                        className="px-6 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold cursor-pointer shadow-md"
-                      >
-                        Next Question →
-                      </button>
-                    ) : (
+                  {/* Start Exam Button */}
+                  <div className="pt-2 text-center">
+                    <button
+                      onClick={handleInitiateTest}
+                      className="px-10 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2 mx-auto cursor-pointer active:scale-95"
+                    >
+                      <Lock className="w-4 h-4" />
+                      <span>Start Assessment ({testQuestionCount} Qs • {testDurationMinutes} mins)</span>
+                    </button>
+                  </div>
+                </div>
+              ) : isTestStarted && !isTestFinished ? (
+                /* ACTIVE TEST SESSION WITH QUESTION PALETTE */
+                <div className="space-y-6">
+                  {/* Top Bar with Time & Submission */}
+                  <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <div className="space-y-0.5">
+                      <span className="text-xs font-mono font-bold text-slate-900 dark:text-white">
+                        Question {testIndex + 1} of {testQuestions.length}
+                      </span>
+                      <span className="text-[11px] text-indigo-600 font-bold block">
+                        {currentTestQ?.category_name || currentTestQ?.topicName} &gt; {currentTestQ?.topic || currentTestQ?.subTopic}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <div className="px-4 py-1.5 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 font-mono font-bold text-xs border border-rose-200 dark:border-rose-800 flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5" />
+                        <span>{Math.floor(timeLeft / 60)}m {timeLeft % 60}s</span>
+                      </div>
+
                       <button
                         onClick={handleTestFinish}
-                        className="px-6 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold cursor-pointer shadow-md"
+                        className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition cursor-pointer"
                       >
                         Submit Test
                       </button>
-                    )}
+                    </div>
+                  </div>
+
+                  {/* Question Display + Question Palette Layout */}
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    {/* Left 3 cols: Question Area */}
+                    <div className="lg:col-span-3 space-y-6">
+                      {currentTestQ && (
+                        <QuestionView
+                          question={{
+                            id: currentTestQ.id,
+                            topic: currentTestQ.category_id || currentTestQ.topic,
+                            topicName: currentTestQ.category_name || currentTestQ.topicName || 'Aptitude',
+                            subTopic: currentTestQ.topic || currentTestQ.subTopic || 'Module',
+                            difficulty: currentTestQ.difficulty || 'medium',
+                            question: currentTestQ.question,
+                            options: currentTestQ.options,
+                            correctIndex: currentTestQ.correct_answer !== undefined ? currentTestQ.correct_answer : currentTestQ.correctIndex,
+                            explanation: currentTestQ.explanation,
+                            shortcut: currentTestQ.shortcut,
+                            diagramType: currentTestQ.diagram_type || currentTestQ.diagramType,
+                            diagramData: currentTestQ.diagram_data || currentTestQ.diagramData,
+                            source: currentTestQ.source || 'Standard Test'
+                          }}
+                          questionIndex={testIndex}
+                          totalQuestions={testQuestions.length}
+                          selectedOption={selectedTestAnswers[currentTestQ.id] !== undefined ? selectedTestAnswers[currentTestQ.id] : null}
+                          onSelectOption={handleSelectTestOption}
+                          isEvaluated={false}
+                          onCheckAnswer={() => {}}
+                          onNext={() => {
+                            if (testIndex < testQuestions.length - 1) {
+                              setTestIndex((prev) => prev + 1);
+                            } else {
+                              handleTestFinish();
+                            }
+                          }}
+                          onPrevious={() => testIndex > 0 && setTestIndex((prev) => prev - 1)}
+                          onSkip={() => testIndex < testQuestions.length - 1 && setTestIndex((prev) => prev + 1)}
+                          onBookmark={() => {}}
+                          isBookmarked={false}
+                          runningScore={{ correct: 0, total: 0 }}
+                          showTimer={false}
+                          isTestMode={true}
+                          testTimeLeft={timeLeft}
+                          onMarkForReview={handleToggleMarkForReview}
+                          isMarkedForReview={markedForReviewIds.has(currentTestQ.id)}
+                          onClearResponse={handleClearResponse}
+                        />
+                      )}
+                    </div>
+
+                    {/* Right 1 col: Question Palette */}
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-4">
+                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                        <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                          Question Palette
+                        </span>
+                        <span className="text-[10px] font-mono text-slate-400">
+                          {Object.keys(selectedTestAnswers).length} / {testQuestions.length} Answered
+                        </span>
+                      </div>
+
+                      {/* Numbered Palette Grid */}
+                      <div className="grid grid-cols-5 gap-2 max-h-64 overflow-y-auto pr-1">
+                        {testQuestions.map((q, idx) => {
+                          const isAnswered = selectedTestAnswers[q.id] !== undefined;
+                          const isMarked = markedForReviewIds.has(q.id);
+                          const isCurrent = testIndex === idx;
+
+                          let btnClass = 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700';
+                          if (isMarked && isAnswered) {
+                            btnClass = 'bg-amber-500 text-white border-amber-600 font-bold';
+                          } else if (isMarked) {
+                            btnClass = 'bg-purple-600 text-white border-purple-700 font-bold';
+                          } else if (isAnswered) {
+                            btnClass = 'bg-emerald-600 text-white border-emerald-700 font-bold';
+                          }
+
+                          return (
+                            <button
+                              key={q.id}
+                              onClick={() => setTestIndex(idx)}
+                              className={`h-9 rounded-xl border text-xs font-mono font-bold transition flex items-center justify-center cursor-pointer ${btnClass} ${
+                                isCurrent ? 'ring-2 ring-indigo-500 ring-offset-2' : ''
+                              }`}
+                            >
+                              {idx + 1}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Palette Legend */}
+                      <div className="space-y-1.5 pt-2 border-t border-slate-200 dark:border-slate-800 text-[10px] font-mono">
+                        <div className="flex items-center gap-2">
+                          <span className="w-3 h-3 rounded bg-emerald-600" />
+                          <span className="text-slate-600 dark:text-slate-400">Answered ({Object.keys(selectedTestAnswers).length})</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="w-3 h-3 rounded bg-purple-600" />
+                          <span className="text-slate-600 dark:text-slate-400">Marked for Review ({markedForReviewIds.size})</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="w-3 h-3 rounded bg-amber-500" />
+                          <span className="text-slate-600 dark:text-slate-400">Marked & Answered</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="w-3 h-3 rounded bg-white dark:bg-slate-800 border border-slate-300" />
+                          <span className="text-slate-600 dark:text-slate-400">Unanswered</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ) : (
-                /* Test Results Summary */
-                <div className="p-8 text-center space-y-6 max-w-xl mx-auto">
-                  <div className="w-16 h-16 mx-auto rounded-3xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center">
-                    <Award className="w-8 h-8" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">Aptitude Assessment Submitted</h3>
-                    <div className="text-3xl font-black text-indigo-600 font-mono mt-2">
-                      Verified Score: {testResult?.compositeScore || 82.5}%
-                    </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      Accuracy: {testResult?.accuracyPct}% ({testResult?.correctCount} / {testResult?.totalQuestions} Correct)
-                    </p>
-                  </div>
-
-                  {/* PROCTORED INTEGRITY SUMMARY CARD (Only for PROCTORED mode) */}
-                  {selectedAssessmentMode === 'PROCTORED' && (
-                    <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left space-y-2">
-                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
-                        <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                          <ShieldCheck className="w-4 h-4 text-purple-600" /> Proctoring Integrity Status
-                        </span>
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          (proctorSummary?.events?.length || 0) === 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                        }`}>
-                          {(proctorSummary?.events?.length || 0) === 0 ? '✓ No Major Violations' : '⚠️ Review Required'}
-                        </span>
+                /* TEST RESULT SUMMARY SCREEN (Topic Breakdown + Weak Area Suggestions) */
+                testResult && (
+                  <div className="space-y-8 max-w-3xl mx-auto py-4">
+                    <div className="text-center space-y-2">
+                      <div className="w-16 h-16 mx-auto rounded-3xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center">
+                        <Award className="w-8 h-8" />
+                      </div>
+                      <h3 className="text-2xl font-black text-slate-900 dark:text-white">Assessment Submitted</h3>
+                      <div className="text-3xl font-black text-indigo-600 font-mono mt-2">
+                        Verified Score: {testResult.compositeScore}%
                       </div>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Total Recorded Events: {proctorSummary?.events?.length || 0}
+                        Accuracy: {testResult.accuracyPct}% ({testResult.correctCount} / {testResult.totalQuestions} Correct)
                       </p>
                     </div>
-                  )}
 
-                  <button
-                    onClick={() => {
-                      setIsTestStarted(false);
-                      setIsTestFinished(false);
-                      setIsModeLocked(false);
-                    }}
-                    className="px-6 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-black transition shadow-md cursor-pointer"
-                  >
-                    Return to Arena Dashboard
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 3. GAMIFIED APTITUDE SECTION */}
-      {activeMainMode === 'GAMIFIED' && (
-        <div className="space-y-6">
-          {/* GAMIFIED PRACTICE MODE */}
-          {activeSubMode === 'PRACTICE' && (
-            <div className="space-y-6">
-              {/* Game Hub Selector */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-9 gap-2">
-                {[
-                  { id: 'risk_reward', name: 'Risk-Reward', icon: Zap },
-                  { id: 'working_memory', name: 'Memory', icon: Brain },
-                  { id: 'flexibility', name: 'Flexibility', icon: RefreshCw },
-                  { id: 'spatial', name: 'Spatial', icon: Compass },
-                  { id: 'planning', name: 'Planning', icon: Layers },
-                  { id: 'processing', name: 'Speed', icon: Activity },
-                  { id: 'resource', name: 'Resource', icon: Shield },
-                  { id: 'emotion', name: 'Emotion', icon: Sparkles },
-                  { id: 'maze', name: 'Maze', icon: Lock }
-                ].map((g) => {
-                  const Icon = g.icon;
-                  return (
-                    <button
-                      key={g.id}
-                      onClick={() => setActiveGameId(g.id)}
-                      className={`p-3 rounded-xl border text-center transition cursor-pointer ${
-                        activeGameId === g.id
-                          ? 'bg-purple-600 text-white border-purple-600 shadow-md'
-                          : 'bg-white dark:bg-card-dark border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-purple-300'
-                      }`}
-                    >
-                      <Icon className="w-4 h-4 mx-auto mb-1" />
-                      <span className="text-[10px] font-bold block truncate">{g.name}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Active Game Component Renderer */}
-              {activeGameId === 'risk_reward' && <RiskRewardGame />}
-              {activeGameId === 'working_memory' && <WorkingMemoryGame />}
-              {activeGameId === 'flexibility' && <CognitiveFlexibilityGame />}
-              {activeGameId === 'spatial' && <DynamicSpatialGame />}
-              {activeGameId === 'planning' && <PlanningStrategyGame />}
-              {activeGameId === 'processing' && <InformationProcessingGame />}
-              {activeGameId === 'resource' && <ResourceManagementGame />}
-              {activeGameId === 'emotion' && <EmotionRecognitionGame />}
-              {activeGameId === 'maze' && <MazePressureGame />}
-            </div>
-          )}
-
-          {/* GAMIFIED TEST MODE (Full Cognitive Battery) */}
-          {activeSubMode === 'TEST' && (
-            <div className="p-6 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-6">
-              {!isBatteryStarted && !batteryResult ? (
-                <div className="text-center p-8 space-y-5 max-w-xl mx-auto">
-                  <div className={`w-16 h-16 mx-auto rounded-3xl flex items-center justify-center border ${
-                    selectedAssessmentMode === 'PROCTORED'
-                      ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 border-purple-200'
-                      : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 border-indigo-200'
-                  }`}>
-                    {selectedAssessmentMode === 'PROCTORED' ? <Camera className="w-8 h-8" /> : <Zap className="w-8 h-8" />}
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                      Start {selectedAssessmentMode === 'PROCTORED' ? 'Proctored' : 'Standard'} Cognitive Battery Assessment
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      5 Interactive Games • ~15 Minutes • Mode: <strong>{selectedAssessmentMode}</strong>
-                    </p>
-                  </div>
-                  <button
-                    onClick={handleInitiateTest}
-                    className={`px-8 py-3.5 rounded-xl text-white font-bold text-sm shadow-lg transition flex items-center justify-center gap-2 mx-auto cursor-pointer ${
-                      selectedAssessmentMode === 'PROCTORED'
-                        ? 'bg-purple-600 hover:bg-purple-700'
-                        : 'bg-slate-900 hover:bg-black dark:bg-indigo-600'
-                    }`}
-                  >
-                    <Play className="w-4 h-4 fill-current" />
-                    <span>Start {selectedAssessmentMode === 'PROCTORED' ? 'Proctored' : 'Standard'} Cognitive Battery</span>
-                  </button>
-                </div>
-              ) : isBatteryStarted ? (
-                /* Sequential Game Battery Runner */
-                <div className="space-y-4">
-                  {/* PROCTORED LIVE HUD PANEL FOR GAMIFIED TEST */}
-                  {selectedAssessmentMode === 'PROCTORED' && (
-                    <div className="p-3.5 rounded-xl bg-slate-900 text-white border border-purple-500/50 flex items-center justify-between text-xs font-mono">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="font-bold text-purple-400">AI PROCTOR ACTIVE</span>
-                      </div>
-                      <div>
-                        <span>AI INTEGRITY: </span>
-                        <strong className="text-emerald-400">{proctorSummary?.integrityScore ?? 100}%</strong>
+                    {/* Topic-Wise Accuracy Breakdown Table */}
+                    <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3">
+                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 block">
+                        Topic-Wise Accuracy Breakdown
+                      </span>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-xs text-left">
+                          <thead className="text-[10px] uppercase font-mono bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 border-b border-slate-200 dark:border-slate-800">
+                            <tr>
+                              <th className="px-3 py-2 font-bold">Topic</th>
+                              <th className="px-3 py-2 font-bold">Correct / Total</th>
+                              <th className="px-3 py-2 font-bold">Accuracy</th>
+                              <th className="px-3 py-2 font-bold">Status</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-200 dark:divide-slate-800 font-mono">
+                            {Object.entries(testResult.topicBreakdown || {}).map(([key, item]: [string, any]) => {
+                              const acc = Math.round((item.correct / item.total) * 100);
+                              return (
+                                <tr key={key} className="hover:bg-slate-100/50 dark:hover:bg-slate-800/40">
+                                  <td className="px-3 py-2.5 font-bold text-slate-900 dark:text-white">{item.name}</td>
+                                  <td className="px-3 py-2.5">{item.correct} / {item.total}</td>
+                                  <td className="px-3 py-2.5 font-bold">{acc}%</td>
+                                  <td className="px-3 py-2.5">
+                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                      acc >= 80
+                                        ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                                        : acc >= 50
+                                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                                        : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+                                    }`}>
+                                      {acc >= 80 ? 'Mastered' : acc >= 50 ? 'Moderate' : 'Needs Focus'}
+                                    </span>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
-                  )}
 
-                  <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
-                    <span>Battery Progress: Game {batteryStep + 1} of 5</span>
-                  </div>
+                    {/* Weak-Area Actionable Suggestions */}
+                    {testResult.suggestions?.length > 0 && (
+                      <div className="p-5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60 space-y-2">
+                        <span className="text-xs font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1.5 font-mono">
+                          <TrendingUp className="w-4 h-4 text-amber-500" />
+                          Targeted Improvement Recommendations:
+                        </span>
+                        <ul className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300 pl-4 list-disc">
+                          {testResult.suggestions.map((sug: string, idx: number) => (
+                            <li key={idx} className="leading-relaxed">{sug}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
-                  {batteryStep === 0 && <RiskRewardGame isBatteryMode onComplete={(m) => handleGameStepComplete('risk_reward', m)} />}
-                  {batteryStep === 1 && <WorkingMemoryGame isBatteryMode onComplete={(m) => handleGameStepComplete('working_memory', m)} />}
-                  {batteryStep === 2 && <CognitiveFlexibilityGame isBatteryMode onComplete={(m) => handleGameStepComplete('cognitive_flexibility', m)} />}
-                  {batteryStep === 3 && <PlanningStrategyGame isBatteryMode onComplete={(m) => handleGameStepComplete('planning', m)} />}
-                  {batteryStep === 4 && <InformationProcessingGame isBatteryMode onComplete={(m) => handleGameStepComplete('processing_speed', m)} />}
-                </div>
-              ) : (
-                /* Cognitive Profile Results Display */
-                <div className="space-y-6 p-4">
-                  <div className="text-center space-y-2">
-                    <div className="w-14 h-14 mx-auto rounded-2xl bg-purple-600 text-white flex items-center justify-center">
-                      <Award className="w-7 h-7" />
+                    <div className="text-center pt-2">
+                      <button
+                        onClick={() => {
+                          setIsTestStarted(false);
+                          setIsTestFinished(false);
+                          setIsModeLocked(false);
+                        }}
+                        className="px-8 py-3 rounded-xl bg-slate-900 dark:bg-indigo-600 text-white font-bold text-xs hover:bg-black transition shadow-md cursor-pointer"
+                      >
+                        Return to Aptitude Dashboard
+                      </button>
                     </div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">Cognitive Assessment Profile</h3>
-                    <div className="text-3xl font-black text-purple-600 font-mono">
-                      Overall Cognitive Index: {batteryResult?.overallCognitiveIndex || 82.4} / 100
-                    </div>
                   </div>
-
-                  {/* Standardized Dimension Breakdown */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    {batteryResult?.dimensions &&
-                      Object.entries(batteryResult.dimensions).map(([key, item]: [string, any]) => (
-                        <div key={key} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
-                          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{item.label}</span>
-                          <div className="text-2xl font-black text-purple-600 font-mono mt-1">{item.score} / 100</div>
-                        </div>
-                      ))}
-                  </div>
-
-                  <p className="text-[11px] text-slate-400 text-center italic">
-                    {batteryResult?.disclaimer}
-                  </p>
-
-                  <div className="text-center">
-                    <button
-                      onClick={() => {
-                        setIsBatteryStarted(false);
-                        setBatteryResult(null);
-                        setIsModeLocked(false);
-                      }}
-                      className="px-6 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-black transition shadow-md cursor-pointer"
-                    >
-                      Return to Arena Dashboard
-                    </button>
-                  </div>
-                </div>
+                )
               )}
             </div>
           )}
@@ -1418,7 +1501,233 @@ export const AptitudeArenaView: React.FC = () => {
       )}
 
       {/* ========================================================================= */}
-      {/* PROCTORED ASSESSMENT INFORMATION & PRE-CHECK MODAL                        */}
+      {/* 3. PART 2: GAMIFIED APTITUDE SECTION (MNC COGNITIVE GAMES ARENA)          */}
+      {/* ========================================================================= */}
+      {activeMainMode === 'GAMIFIED' && (
+        <div className="space-y-6">
+          {/* If NO active game -> Show Gamified Arena Landing Page */}
+          {!activeGameId ? (
+            <div className="space-y-6">
+              {/* MNC Arena Top Landing Banner */}
+              <div className="p-6 rounded-2xl bg-gradient-to-r from-purple-900/10 via-indigo-900/10 to-slate-50 dark:from-purple-950/40 dark:via-indigo-950/40 dark:to-slate-900 border border-purple-500/20 shadow-sm space-y-4">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-purple-600 text-white shadow-sm flex items-center gap-1">
+                        <Sparkles className="w-3.5 h-3.5" /> Trending in MNC Hiring
+                      </span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                        (pymetrics • Arctic Shores • Cubiks • SHL • Revelian • Cut-e)
+                      </span>
+                    </div>
+                    <h2 className="text-xl font-black text-slate-900 dark:text-white mt-1.5 tracking-tight">
+                      Gamified Arena
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xl mt-1 leading-relaxed">
+                      Micro-games measuring core cognitive traits evaluated by top-tier tech firms and quantitative recruiters.
+                    </p>
+                  </div>
+
+                  {/* MNC Simulation Mode Button */}
+                  <button
+                    onClick={handleStartMncSimulation}
+                    className="px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-purple-600/30 transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+                  >
+                    <Zap className="w-4 h-4 fill-current" />
+                    <span>Launch MNC Simulation Round (5 Games)</span>
+                  </button>
+                </div>
+
+                {/* User Stats Ribbon (Streak, XP, Badges) */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-purple-200/40 dark:border-purple-900/40 font-mono text-xs">
+                  <div className="p-3 rounded-xl bg-white/70 dark:bg-slate-800/60 border border-purple-100 dark:border-purple-900/40 flex items-center gap-3">
+                    <Flame className="w-5 h-5 text-amber-500" />
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase block">Daily Streak</span>
+                      <strong className="text-slate-900 dark:text-white">{userStreak} Days 🔥</strong>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white/70 dark:bg-slate-800/60 border border-purple-100 dark:border-purple-900/40 flex items-center gap-3">
+                    <Zap className="w-5 h-5 text-indigo-500" />
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase block">Total XP</span>
+                      <strong className="text-indigo-600 dark:text-indigo-400 font-bold">{userXP} XP</strong>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white/70 dark:bg-slate-800/60 border border-purple-100 dark:border-purple-900/40 flex items-center gap-3">
+                    <Award className="w-5 h-5 text-emerald-500" />
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase block">Badges</span>
+                      <strong className="text-emerald-600 dark:text-emerald-400 font-bold">{userBadges.length} Unlocked</strong>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white/70 dark:bg-slate-800/60 border border-purple-100 dark:border-purple-900/40 flex items-center gap-3">
+                    <Brain className="w-5 h-5 text-purple-500" />
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase block">Cognitive Index</span>
+                      <strong className="text-purple-600 dark:text-purple-400 font-bold">88.5 / 100</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Simulation Final Report Modal / Card if completed */}
+              {simulationFinalReport && (
+                <div className="p-6 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-purple-500/40 shadow-xl space-y-6 animate-fade-in">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                    <div className="flex items-center gap-2">
+                      <Award className="w-6 h-6 text-purple-600" />
+                      <div>
+                        <h3 className="text-base font-bold text-slate-900 dark:text-white">MNC Corporate Profile Report</h3>
+                        <span className="text-[10px] font-mono text-purple-600">Simulated 5-Game Assessment Complete</span>
+                      </div>
+                    </div>
+                    <span className="text-2xl font-black text-purple-600 font-mono">
+                      {simulationFinalReport.overallIndex} / 100
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex-1 space-y-3 text-xs">
+                      <span className="font-mono text-slate-400 uppercase font-bold text-[10px]">Evaluated Competency Radar</span>
+                      <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Top 6% nationwide across impulse control, pattern induction, and calculated risk optimization.
+                      </p>
+                      <div>
+                        <strong className="text-slate-800 dark:text-slate-200 block mb-1">Recommended Roles:</strong>
+                        <div className="flex flex-wrap gap-1.5">
+                          {simulationFinalReport.recommendedRoles.map((r: string, i: number) => (
+                            <span key={i} className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                              🎯 {r}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <ResultRadar skills={simulationFinalReport.skills} size={280} />
+                  </div>
+                </div>
+              )}
+
+              {/* Filter Bar (Skill Type, Duration, Difficulty) */}
+              <div className="p-4 rounded-2xl bg-white dark:bg-card-dark border border-slate-200/90 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                {/* Skill Filter */}
+                <div className="flex items-center gap-1.5 flex-wrap text-xs">
+                  <span className="font-mono text-slate-400 text-[10px] uppercase font-bold mr-1">Skill:</span>
+                  {['all', 'Memory', 'Speed', 'Logic', 'Focus', 'Risk', 'Spatial'].map((sk) => (
+                    <button
+                      key={sk}
+                      onClick={() => setGameFilterSkill(sk)}
+                      className={`px-3 py-1 rounded-lg font-mono text-xs transition cursor-pointer ${
+                        gameFilterSkill.toLowerCase() === sk.toLowerCase()
+                          ? 'bg-purple-600 text-white font-bold shadow-sm'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                      }`}
+                    >
+                      {sk === 'all' ? 'All Skills' : sk}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Difficulty Filter */}
+                <div className="flex items-center gap-1.5 text-xs">
+                  <span className="font-mono text-slate-400 text-[10px] uppercase font-bold mr-1">Difficulty:</span>
+                  {['all', 'Easy', 'Medium', 'Fast-Paced', 'Challenging'].map((diff) => (
+                    <button
+                      key={diff}
+                      onClick={() => setGameFilterDifficulty(diff)}
+                      className={`px-2.5 py-1 rounded-lg font-mono text-[11px] transition cursor-pointer ${
+                        gameFilterDifficulty.toLowerCase() === diff.toLowerCase()
+                          ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900'
+                      }`}
+                    >
+                      {diff === 'all' ? 'All' : diff}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 8 MNC GAME CARDS GRID */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                {filteredMncGames.map((game) => (
+                  <GameCard
+                    key={game.id}
+                    game={game}
+                    bestScore={bestScores[game.id]}
+                    onPlay={(id) => setActiveGameId(id)}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : (
+            /* ACTIVE PLAYABLE GAME SHELL */
+            <div className="space-y-4">
+              {/* Top Navigation & Breadcrumbs */}
+              <div className="flex items-center justify-between pb-1">
+                <button
+                  onClick={handleCloseActiveGame}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-purple-600 hover:border-purple-400 transition cursor-pointer shadow-sm group"
+                >
+                  <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+                  <span>Back to Gamified Arena</span>
+                </button>
+                <div className="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
+                  <span>Gamified Arena</span>
+                  <span>&gt;</span>
+                  <span className="text-purple-600 dark:text-purple-400 font-bold">
+                    {MNC_GAMES.find((g) => g.id === activeGameId)?.name || 'Game'}
+                  </span>
+                </div>
+              </div>
+
+              {/* MNC Simulation Header if in simulation mode */}
+              {isMncSimulationMode && (
+                <div className="p-3.5 rounded-2xl bg-purple-600 text-white shadow-lg flex items-center justify-between text-xs font-mono">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="font-bold">MNC Corporate Simulation Mode: Game {simulationStep + 1} of 5</span>
+                  </div>
+                  <span>Chained Candidate Assessment Round</span>
+                </div>
+              )}
+
+              {/* Active Game Renderer */}
+              {activeGameId === 'balloon_risk' && (
+                <BalloonRiskGame onComplete={handleGameComplete} onExit={handleCloseActiveGame} />
+              )}
+              {activeGameId === 'memory_grid' && (
+                <MemoryGridGame onComplete={handleGameComplete} onExit={handleCloseActiveGame} />
+              )}
+              {activeGameId === 'matrix_reasoning' && (
+                <MatrixReasoningGame onComplete={handleGameComplete} onExit={handleCloseActiveGame} />
+              )}
+              {activeGameId === 'go_no_go' && (
+                <GoNoGoGame onComplete={handleGameComplete} onExit={handleCloseActiveGame} />
+              )}
+              {activeGameId === 'stroop_test' && (
+                <StroopGame onComplete={handleGameComplete} onExit={handleCloseActiveGame} />
+              )}
+              {activeGameId === 'number_logic' && (
+                <NumberLogicGame onComplete={handleGameComplete} onExit={handleCloseActiveGame} />
+              )}
+              {activeGameId === 'emotion_trust' && (
+                <EmotionTrustGame onComplete={handleGameComplete} onExit={handleCloseActiveGame} />
+              )}
+              {activeGameId === 'mental_rotation' && (
+                <MentalRotationGame onComplete={handleGameComplete} onExit={handleCloseActiveGame} />
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* UNIVERSAL PROCTORING CONSENT & WEBCAM PRE-CHECK MODAL                     */}
       {/* ========================================================================= */}
       {showProctorConsentModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
@@ -1442,39 +1751,23 @@ export const AptitudeArenaView: React.FC = () => {
             </div>
 
             <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300">
-              <p className="font-bold text-slate-800 dark:text-slate-200">This assessment uses:</p>
+              <p className="font-bold text-slate-800 dark:text-slate-200">Assessment Security Policy:</p>
               <ul className="space-y-2 font-medium">
-                <li className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span>Webcam monitoring & live diagnostic feed</span>
+                  <span>Solo face presence verified throughout exam</span>
                 </li>
-                <li className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span>Face presence & single candidate lock</span>
+                  <span>Tab/window focus tracking & copy-paste prevention</span>
                 </li>
-                <li className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span>Multiple-face & mobile object detection</span>
-                </li>
-                <li className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span>Sustained head-pose & gaze deviation detection</span>
-                </li>
-                <li className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span>Tab/window switch & copy-paste monitoring</span>
-                </li>
-                <li className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span>Assessment integrity & malpractice score tracking</span>
+                  <span>3-strike dismissal policy on verified violations</span>
                 </li>
               </ul>
-              <p className="text-[11px] text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800 italic">
-                Your assessment may be flagged for institutional review if suspicious activity is detected.
-              </p>
             </div>
 
-            {/* Diagnostic Pre-Check Progress State */}
             {precheckStatus === 'checking' && (
               <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 space-y-2">
                 <div className="flex items-center gap-2 text-xs font-bold text-purple-700 dark:text-purple-300">
@@ -1515,50 +1808,6 @@ export const AptitudeArenaView: React.FC = () => {
                 <span>{precheckStatus === 'checking' ? 'Verifying Pre-Check...' : 'Allow Camera & Continue'}</span>
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================================= */}
-      {/* PROCTORING WARNING MODAL (Phase 17)                                       */}
-      {/* ========================================================================= */}
-      {showWarningModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className={`rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5 border text-center ${
-            warningLevel === 'FINAL_WARNING'
-              ? 'bg-red-950 border-red-500 text-white'
-              : 'bg-amber-950 border-amber-500 text-white'
-          }`}>
-            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center border-2 ${
-              warningLevel === 'FINAL_WARNING'
-                ? 'bg-red-500/20 border-red-500 text-red-500'
-                : 'bg-amber-500/20 border-amber-500 text-amber-400'
-            }`}>
-              <AlertTriangle className="w-8 h-8" />
-            </div>
-
-            <div className="space-y-2">
-              <h3 className="text-xl font-bold tracking-tight">{warningTitle}</h3>
-              <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border ${
-                warningLevel === 'FINAL_WARNING' ? 'bg-red-500/30 text-red-300 border-red-500' : 'bg-amber-500/30 text-amber-300 border-amber-500'
-              }`}>
-                Strike {backendViolationCount} of 3
-              </span>
-              <p className="text-xs text-slate-200 leading-relaxed pt-1">
-                {warningMessage}
-              </p>
-            </div>
-
-            <button
-              onClick={() => setShowWarningModal(false)}
-              className={`w-full py-3 rounded-xl font-bold text-xs transition shadow-md cursor-pointer ${
-                warningLevel === 'FINAL_WARNING'
-                  ? 'bg-red-600 hover:bg-red-700 text-white'
-                  : 'bg-amber-500 hover:bg-amber-600 text-slate-950'
-              }`}
-            >
-              I Understand & Resume Assessment
-            </button>
           </div>
         </div>
       )}

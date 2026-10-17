@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "saved_at": 1792231006.3776586,
+  "saved_at": 1792232992.5016463,
   "users": {},
   "students": {
     "std_1": {
@@ -555,6 +555,39 @@
       "version": 1,
       "created_at": 1792229143.634906,
       "updated_at": 1792229143.634906,
+      "deleted_at": null,
+      "profile_completion": 0
+    },
+    "p9p1rVa1ZZNCTgYhcLLXcbf7IIS2": {
+      "id": "p9p1rVa1ZZNCTgYhcLLXcbf7IIS2",
+      "name": "New Student",
+      "email": "",
+      "college": "JSPM RSCOE, Pune",
+      "institution_id": "inst_rscoe",
+      "department": "Computer Engineering",
+      "department_id": "dept_comp",
+      "year": "3rd Year",
+      "batch": "2026",
+      "cgpa": 0.0,
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=p9p1rVa1ZZNCTgYhcLLXcbf7IIS2",
+      "verified_score": 0,
+      "placement_readiness_score": 0,
+      "skills": {},
+      "claimed_skills": [],
+      "projects_count": 0,
+      "assessments_completed": 0,
+      "rank_in_college": 0,
+      "target_role": "Full-Stack AI Developer",
+      "bio": "New member setting up verified skill passport.",
+      "academic_kyc": {
+        "ssc_10th": null,
+        "hsc_12th": null,
+        "cgpa": 0.0,
+        "active_backlogs": 0
+      },
+      "version": 1,
+      "created_at": 1792232992.4791596,
+      "updated_at": 1792232992.4791596,
       "deleted_at": null,
       "profile_completion": 0
     }

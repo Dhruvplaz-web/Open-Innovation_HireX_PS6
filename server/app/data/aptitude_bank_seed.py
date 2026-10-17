@@ -68,6 +68,18 @@ RAW_EXEMPLARS = [
     },
     # 3. QUANTITATIVE APTITUDE
     {
+        "id": "q_quant_pipes_1",
+        "category_id": "quantitative",
+        "category_name": "Quantitative Aptitude",
+        "topic": "Pipes & Cisterns",
+        "difficulty": "medium",
+        "question": "Pipe A can fill a tank in 12 hours, while Pipe B can empty it in 18 hours. If both pipes are opened simultaneously in an empty tank, in how many hours will the tank be completely filled?",
+        "options": ["30 hours", "36 hours", "24 hours", "42 hours"],
+        "correct_answer": 1,
+        "explanation": "Combined rate = (1/12) - (1/18) = (3 - 2)/36 = 1/36 per hour. Tank is filled in 36 hours.",
+        "visual_asset": None
+    },
+    {
         "id": "q_quant_ex1",
         "category_id": "quantitative",
         "category_name": "Quantitative Aptitude",
